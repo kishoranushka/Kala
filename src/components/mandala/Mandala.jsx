@@ -1,0 +1,66 @@
+import { useId } from 'react';
+import cx from '@/utils/cx';
+
+/* Hand-drawn style mandalas built from rotated petal paths. Groups marked data-spin turn forever. */
+
+export const PETAL_LARGE = 'M0,-280 C30,-250 34,-214 0,-190 C-34,-214 -30,-250 0,-280Z';
+export const PETAL_SMALL = 'M0,-150 C22,-128 22,-106 0,-92 C-22,-106 -22,-128 0,-150Z';
+
+/* a unique, selector-safe id for <defs> */
+export function useSvgId() {
+  return useId().replace(/:/g, '');
+}
+
+/* `count` copies of a <defs> shape, evenly rotated around the centre */
+export function Petals({ href, count, start = 0, ...props }) {
+  const step = 360 / count;
+  return Array.from({ length: count }, (_, i) => {
+    const angle = start + step * i;
+    return <use key={i} href={href} transform={angle ? `rotate(${angle})` : undefined} {...props} />;
+  });
+}
+
+/* the double mandala behind page intros: twelve outer petals, eight inner, an accent dot ring */
+export function PageMandala({ className, style, stroke = '#C9B79C', outerSpin = 200, innerSpin = -130, accentRing = true }) {
+  const id = useSvgId();
+  return (
+    <svg viewBox="-300 -300 600 600" aria-hidden="true" fill="none" stroke={stroke} strokeWidth="1" className={cx('pointer-events-none absolute', className)} style={style}>
+      <defs>
+        <path id={`${id}a`} d={PETAL_LARGE} />
+        <path id={`${id}b`} d={PETAL_SMALL} />
+      </defs>
+      <g data-spin={outerSpin}>
+        <circle r="292" />
+        <circle r="270" strokeDasharray="1 8" />
+        <Petals href={`#${id}a`} count={12} />
+        <circle r="186" />
+      </g>
+      <g data-spin={innerSpin}>
+        {accentRing && <circle r="160" strokeWidth="3" strokeLinecap="round" strokeDasharray="0 12.6" className="stroke-accent" opacity=".5" />}
+        <Petals href={`#${id}b`} count={8} />
+        <circle r="80" />
+        <circle r="30" />
+      </g>
+    </svg>
+  );
+}
+
+/* a single turning ring of twelve petals — the watermark on dark chapters, menus and the viewing room */
+export function RingMandala({ className, stroke = '#FFFEFA', spin = 200, rings = [186, 120, 60], ...props }) {
+  const id = useSvgId();
+  return (
+    <svg viewBox="-300 -300 600 600" aria-hidden="true" fill="none" stroke={stroke} strokeWidth="1" className={cx('pointer-events-none', className)} {...props}>
+      <defs>
+        <path id={id} d={PETAL_LARGE} />
+      </defs>
+      <g data-spin={spin}>
+        <circle r="292" />
+        <circle r="270" strokeDasharray="1 8" />
+        {rings.map((r) => (
+          <circle key={r} r={r} />
+        ))}
+        <Petals href={`#${id}`} count={12} />
+      </g>
+    </svg>
+  );
+}

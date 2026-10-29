@@ -1,0 +1,252 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ KALA design tokens */
+@theme {
+  /* desktop-first breakpoints, used as max-* variants (max-lg: = under 1024px) */
+  --breakpoint-*: initial;
+  --breakpoint-xs: 421px;
+  --breakpoint-sm: 720px;
+  --breakpoint-nav: 901px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-wide: 1181px;
+  --breakpoint-xl: 1200px;
+
+  --color-ivory: #f6f2eb;
+  --color-paper: #fffefa;
+  --color-ink: #22211f;
+  --color-ink-soft: #4a4741;
+  --color-stone-ink: #6b645a;
+  --color-divider: #e5e0d8;
+  --color-line: #8f887d;
+  --color-cobalt: #294dce;
+  --color-cobalt-press: #1f3ba6;
+  --color-cobalt-wash: #e8ecfa;
+  --color-clay-ink: #9a5434;
+  --color-on-inverse-muted: #b9b2a6;
+  --color-success: #2f6b4a;
+  --color-success-wash: #e3efe6;
+  --color-warning: #8a5a12;
+  --color-warning-wash: #f6ebd6;
+  --color-error: #b3261e;
+  --color-error-wash: #f8e4e1;
+  --color-wall: #eae4da;
+  --color-oak: #c9b79c;
+  --color-chapter: #22211f;
+  --color-accent: #c9531f;
+  --color-film: #1b1a18;
+  --color-hairline: rgb(255 254 250 / 0.18);
+
+  --font-display: "Cormorant Garamond", "Cormorant", Garamond, "Times New Roman", serif;
+  --font-sans: Manrope, "Helvetica Neue", Arial, sans-serif;
+
+  /* named sizes set only the size; line height is inherited unless given (text-sm/[22px]) */
+  --text-xs: 12px;
+  --text-xs--line-height: inherit;
+  --text-sm: 14px;
+  --text-sm--line-height: inherit;
+  --text-base: 16px;
+  --text-base--line-height: inherit;
+  --text-lg: 18px;
+  --text-lg--line-height: inherit;
+  --text-xl: 20px;
+  --text-xl--line-height: inherit;
+  --text-2xl: 24px;
+  --text-2xl--line-height: inherit;
+  --text-4xl: 36px;
+  --text-4xl--line-height: inherit;
+
+  --shadow-hang: 0 1px 2px rgba(34, 33, 31, 0.08), 0 22px 40px -18px rgba(34, 33, 31, 0.38);
+  --shadow-float: 0 2px 4px rgba(34, 33, 31, 0.06), 0 60px 90px -40px rgba(34, 33, 31, 0.55);
+  --shadow-pop: 0 12px 32px -10px rgba(34, 33, 31, 0.22);
+  --shadow-focus: 0 0 0 2px #f6f2eb, 0 0 0 4px #294dce;
+
+  --ease-gallery: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-glide: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ------------------------------------------------------------------ base */
+@layer base {
+  body {
+    background: var(--color-ivory);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 26px;
+    -webkit-font-smoothing: antialiased;
+  }
+  img,
+  svg,
+  video {
+    max-width: none;
+  }
+  a {
+    color: var(--color-cobalt);
+  }
+  a:hover {
+    color: var(--color-cobalt-press);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-cobalt);
+    outline-offset: 3px;
+  }
+
+  /* dark chapters: footer, menu, and the inverse sections */
+  .inverse :focus-visible {
+    outline-color: var(--color-paper);
+  }
+  .inverse a {
+    color: var(--color-paper);
+  }
+  .inverse a:hover {
+    color: var(--color-on-inverse-muted);
+  }
+
+  html.kala-cursor,
+  html.kala-cursor * {
+    cursor: none !important;
+  }
+  html.kala-cursor :is(input, textarea, select) {
+    cursor: auto !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      transition-duration: 1ms !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ layout + type presets */
+@utility wrap {
+  width: 100%;
+  max-width: 1488px;
+  margin-inline: auto;
+  padding-inline: 64px;
+  @media (width < 1200px) {
+    padding-inline: 40px;
+  }
+  @media (width < 720px) {
+    padding-inline: 20px;
+  }
+}
+
+@utility grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 32px;
+  @media (width < 1200px) {
+    column-gap: 24px;
+  }
+  @media (width < 720px) {
+    column-gap: 16px;
+  }
+}
+
+@utility eyebrow {
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-stone-ink);
+  .inverse & {
+    color: var(--color-on-inverse-muted);
+  }
+}
+
+@utility meta {
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--color-stone-ink);
+}
+
+@utility lead {
+  font-size: 18px;
+  line-height: 30px;
+  color: var(--color-ink-soft);
+  max-width: 46ch;
+  .inverse & {
+    color: var(--color-on-inverse-muted);
+  }
+}
+
+@utility art-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 500;
+}
+
+@utility price {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility heading-1 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(46px, 6.4vw, 96px);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+}
+
+@utility heading-2 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4.4vw, 64px);
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+}
+
+/* outline-only numerals (chapter and archive numbers): text-outline-accent, text-outline-oak… */
+@utility text-outline-* {
+  color: transparent;
+  -webkit-text-stroke: 1px --value(--color-*);
+}
+
+@utility select-chevron {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2322211F' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+/* ------------------------------------------------------------------ motion masks + crops
+   Class names the GSAP choreography selects on (src/motion). */
+@layer components {
+  .lm {
+    display: block;
+    overflow: hidden;
+    padding: 0 0.1em 0.1em 0;
+    margin-bottom: -0.1em;
+  }
+  .li {
+    display: block;
+    will-change: transform;
+  }
+  .wm {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding: 0 0.06em 0.14em 0;
+    margin: 0 -0.06em -0.14em 0;
+  }
+  .wi {
+    display: inline-block;
+    will-change: transform;
+  }
+
+  /* hides the Instagram avatar captured in the bottom-left corner of the Krishna and Radha photo */
+  .crop-ig {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 108% !important;
+    height: 108% !important;
+    transform-origin: 100% 0;
+  }
+}
