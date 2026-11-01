@@ -1,19 +1,19 @@
 import { Link } from 'react-router-dom';
 import { CONTACT, EMAIL_PATTERN } from '@/data/site';
-import { STUDIO } from '@/data/works';
+import { PHOTOS } from '@/data/works';
 import { useFormFlow } from '@/hooks/useFormFlow';
 import FormSuccess from '@/components/form/FormSuccess';
 import { Checkbox, ErrorSummary, Field, FieldRow, Input, Select, Textarea, describe } from '@/components/form/Fields';
-import PageIntro from '@/components/sections/PageIntro';
+import PageTop from '@/components/sections/PageTop';
 import Button from '@/components/ui/Button';
 import Disclosure from '@/components/ui/Disclosure';
 import Icon from '@/components/ui/Icon';
 import { SplitWords } from '@/components/ui/Typography';
 
 const WAYS = [
-  { icon: 'mail', label: 'Email', value: CONTACT.email, href: '#message' },
-  { icon: 'instagram', label: 'Instagram', value: CONTACT.instagram, href: '#top' },
-  { icon: 'youtube', label: 'YouTube', value: CONTACT.youtube, href: '#top' },
+  { icon: 'mail', label: 'Email', value: CONTACT.email, href: `mailto:${CONTACT.email}` },
+  { icon: 'instagram', label: 'Instagram', value: CONTACT.instagramHandle, href: CONTACT.instagram, external: true },
+  { icon: 'youtube', label: 'YouTube', value: CONTACT.youtubeHandle, href: CONTACT.youtube, external: true },
   { icon: 'pin', label: 'Studio', value: CONTACT.location },
 ];
 
@@ -132,7 +132,7 @@ export default function ContactPage() {
   return (
     <>
       {/* ============================== SAY HELLO */}
-      <PageIntro labelledBy="hi-h" crumbs={[{ label: 'Contact' }]}>
+      <PageTop labelledBy="hi-h" crumbs={[{ label: 'Contact' }]} bodyClassName="mt-8 grid-12">
         <div className="col-[1/7] max-lg:col-span-full">
           <p data-intro className="eyebrow">
             Contact
@@ -154,20 +154,20 @@ export default function ContactPage() {
           <p data-intro className="lead mt-8">
             A question about a painting, shipping, a collaboration, or simply a hello. I read every message personally and reply as soon as I can.
           </p>
-          <ul data-intro className="mt-10 grid list-none grid-cols-2 gap-x-8 border-t border-line p-0 max-sm:grid-cols-1">
+          <ul data-intro className="m-0 mt-10 list-none border-t border-line p-0">
             {WAYS.map((way) => {
               const content = (
                 <>
                   <Icon name={way.icon} />
                   <span className="text-xs font-semibold tracking-[.12em] text-muted uppercase max-sm:col-start-2">{way.label}</span>
-                  <span className="font-display text-[clamp(22px,2.4vw,32px)] leading-[1.1] max-sm:col-start-2">{way.value}</span>
+                  <span className="min-w-0 font-display text-[clamp(20px,2vw,28px)] leading-[1.15] [overflow-wrap:anywhere] max-sm:col-start-2">{way.value}</span>
                   {way.href ? <Icon name="arrow" size={18} className="max-sm:hidden" /> : <span />}
                 </>
               );
               return (
                 <li key={way.label} className="border-b border-divider">
                   {way.href ? (
-                    <a href={way.href} className={`${ROW} transition-[padding] duration-600 ease-gallery hover:pl-3 hover:text-primary`}>
+                    <a href={way.href} {...(way.external ? { target: '_blank', rel: 'noopener' } : {})} className={`${ROW} no-underline transition-[padding] duration-600 ease-gallery hover:pl-3 hover:text-primary`}>
                       {content}
                     </a>
                   ) : (
@@ -179,14 +179,14 @@ export default function ContactPage() {
           </ul>
         </div>
         <div className="col-[8/13] self-end max-lg:col-span-full max-lg:mt-12 max-lg:max-w-[460px]">
-          <div data-intro-img data-tilt data-cursor="view" className="relative overflow-hidden bg-wall shadow-float" style={{ aspectRatio: `${STUDIO.easel.w} / ${STUDIO.easel.h}` }}>
-            <img src={STUDIO.easel.img} alt={STUDIO.easel.alt} fetchpriority="high" className="block size-full object-cover" />
+          <div data-intro-img className="relative ml-auto aspect-[4/5] max-w-[460px] overflow-hidden rounded-ui bg-wall shadow-float">
+            <img src={PHOTOS.whiteTop.img} alt={PHOTOS.whiteTop.alt} fetchpriority="high" className="block size-full object-cover object-[50%_30%]" />
           </div>
-          <p data-intro className="meta mt-3.5">
-            On the desk · The Escape Key Exists for a Reason, 2026
+          <p data-intro className="meta mt-3.5 mb-0 text-right">
+            Hi, it’s me. Say hello any time.
           </p>
         </div>
-      </PageIntro>
+      </PageTop>
 
       {/* ============================== WRITE TO ME */}
       <section id="message" aria-labelledby="msg-h" className="pt-[clamp(48px,6vw,88px)] pb-[clamp(96px,11vw,160px)]">
@@ -203,7 +203,7 @@ export default function ContactPage() {
                   key={r.to}
                   to={r.to}
                   data-cursor={r.cursor}
-                  className="flex flex-col gap-2.5 border border-divider bg-page p-7 text-primary transition-[border-color,transform] duration-600 ease-gallery hover:-translate-y-1 hover:border-primary hover:text-primary"
+                  className="flex flex-col gap-2.5 rounded-ui border border-divider bg-page p-7 text-primary no-underline transition-[border-color,transform] duration-600 ease-gallery hover:-translate-y-1 hover:border-primary hover:text-primary"
                 >
                   <span className={`eyebrow ${r.tone ?? ''}`}>{r.label}</span>
                   <b className="font-display text-[28px]/8 font-normal">{r.title}</b>
