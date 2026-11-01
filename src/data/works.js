@@ -17,7 +17,6 @@ import escapeEaselImg from '@/assets/images/escape-key-easel.jpg';
 import bloomImg from '@/assets/images/just-bloom.jpg';
 import paintsImg from '@/assets/images/studio-paint-table.jpg';
 import lotusImg from '@/assets/images/studio-lotus-sketchbook.jpg';
-import artistPortraitImg from '@/assets/images/artist-portrait.png';
 import radhaBlueImg from '@/assets/images/radha-and-krishna-in-blue.jpg';
 import exhibitionImg from '@/assets/images/exhibition-wall.jpg';
 import buddhaImg from '@/assets/images/buddha-with-lotus.jpg';
@@ -44,32 +43,6 @@ import artistPotImg from '@/assets/images/artist-painted-pot.jpg';
 import artistCobaltImg from '@/assets/images/artist-cobalt-wall.jpg';
 import artistWhiteImg from '@/assets/images/artist-white-top.jpg';
 
-import chalkFilm from '@/assets/films/think-out-of-the-box.mp4';
-import chalkPoster from '@/assets/films/think-out-of-the-box-poster.jpg';
-import childFilm from '@/assets/films/child-portrait.mp4';
-import childPoster from '@/assets/films/child-portrait-poster.jpg';
-import escapeFilm from '@/assets/films/escape-key.mp4';
-import escapePoster from '@/assets/films/escape-key-poster.jpg';
-import ganeshaFilm from '@/assets/films/ganesha.mp4';
-import ganeshaPoster from '@/assets/films/ganesha-poster.jpg';
-import krishnaFilm from '@/assets/films/krishna-and-radha.mp4';
-import krishnaPoster from '@/assets/films/krishna-and-radha-poster.jpg';
-import krishnaChildFilm from '@/assets/films/krishna-and-a-child.mp4';
-import krishnaChildPoster from '@/assets/films/krishna-and-a-child-poster.jpg';
-import muralFilm from '@/assets/films/mandala-wall-mural.mp4';
-import muralPoster from '@/assets/films/mandala-wall-mural-poster.jpg';
-import omFilm from '@/assets/films/om-mandala.mp4';
-import omPoster from '@/assets/films/om-mandala-poster.jpg';
-import vitthalFilm from '@/assets/films/vitthal.mp4';
-import vitthalPoster from '@/assets/films/vitthal-poster.jpg';
-import studioFilm from '@/assets/films/studio.mp4';
-import studioPoster from '@/assets/films/studio-poster.jpg';
-import sketchFilm from '@/assets/films/sketchbook.mp4';
-import sketchPoster from '@/assets/films/sketchbook-poster.jpg';
-import dotsFilm from '@/assets/films/dot-rings.mp4';
-import dotsPoster from '@/assets/films/dot-rings-poster.jpg';
-import easelFilm from '@/assets/films/on-the-easel.mp4';
-import easelPoster from '@/assets/films/on-the-easel-poster.jpg';
 
 /* every status pairs a word with a shape, never colour alone (see StatusBadge) */
 export const STATUS = {
@@ -295,29 +268,11 @@ export const REELS = [
   { cover: buddhaImg, title: '[Reel title]', url: REEL_URL, alt: 'Green Buddha with a coral lotus' },
 ];
 
-/* motion studies: silent films made from the photographs above (not footage) */
-export const FILMS = {
-  chalk: { src: chalkFilm, poster: chalkPoster },
-  child: { src: childFilm, poster: childPoster },
-  escape: { src: escapeFilm, poster: escapePoster },
-  ganesha: { src: ganeshaFilm, poster: ganeshaPoster },
-  krishna: { src: krishnaFilm, poster: krishnaPoster },
-  krishnachild: { src: krishnaChildFilm, poster: krishnaChildPoster },
-  mural: { src: muralFilm, poster: muralPoster },
-  om: { src: omFilm, poster: omPoster },
-  vitthal: { src: vitthalFilm, poster: vitthalPoster },
-  studio: { src: studioFilm, poster: studioPoster },
-  sketch: { src: sketchFilm, poster: sketchPoster },
-  dots: { src: dotsFilm, poster: dotsPoster },
-  easel: { src: easelFilm, poster: easelPoster },
-};
-
 /* studio photographs (real, not artworks) */
 export const STUDIO = {
   paints: { img: paintsImg, w: 1280, h: 540, alt: 'Acrylic paint pots, two brushes and an unpainted terracotta pot on a green cloth' },
   lotus: { img: lotusImg, w: 720, h: 1280, alt: 'A sketchbook with two red lotus line drawings beside dot-painted terracotta pots' },
   easel: { img: escapeEaselImg, w: 1705, h: 1800, alt: 'The Escape Key painting on a small wooden easel beside two ceramic bells' },
-  portrait: { img: artistPortraitImg, w: 895, h: 1249, alt: 'The artist smiling, in glasses and a linen shirt, holding up a phone' },
 };
 
 /* ------------------------------------------------------------------ helpers */
