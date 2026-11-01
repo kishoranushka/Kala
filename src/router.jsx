@@ -50,6 +50,11 @@ export const router = createBrowserRouter(
           handle: { title: 'Archive', curtain: 'The uncollectable collection', nav: 'archive' },
         },
         {
+          path: 'walls',
+          lazy: page(() => import('@/pages/WallsPage')),
+          handle: { title: 'Wall murals', curtain: 'Wall murals', nav: 'walls' },
+        },
+        {
           path: 'artist',
           lazy: page(() => import('@/pages/ArtistPage')),
           handle: { title: 'The Artist', curtain: 'The artist', nav: 'artist' },

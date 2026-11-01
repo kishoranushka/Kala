@@ -28,7 +28,9 @@
 - Canvas was updated: all pages now use the beige "Homepage 2" look (canvas files `Home2.dc.html`, `home.css`, `home-beige.css`, `site.css`) + new `Walls.dc.html` page. `Main.dc.html` (indigo/Fraunces) is an unused alternate.
 - User decisions: Home2 (beige) is `/`; keep + restyle Collections/Collection/Archive; roll out page by page, commit each.
 - Done: theme tokens (role names: primary, secondary, page, surface, muted… in `src/styles/index.css` top block), header/footer/menu/progress, new data (10 new works, PHOTOS, REELS in `works.js`; real links in `site.js`), `CartButton`, gentle home opening. Commit `4ac1db2`.
-- Remaining order: Home → Walls (new route `/walls`) → Shop → Artwork → Collections → Collection → Archive → Artist → Commission → Contact → Order.
+- Home done (`1d030e3`): sections in `src/pages/home/sections/`, shared `SectionHead`/`ArrowLink`/`Chips`, `ShopCard`, `FlowerGlyph`, `HeroDome`.
+- Visual check: `vite preview --port 4173` + scratchpad `shot.ps1` (Edge headless, `?still` URL flag freezes motion; GSAP doesn't advance under headless virtual time). Phone: wrap page in a 390px iframe (Edge min window ≈500px).
+- Remaining order: Walls (new route `/walls`) → Shop → Artwork → Collections → Collection → Archive → Artist → Commission → Contact → Order.
 - New canvas has NO films/videos; old `FILMS` + `Film.jsx` still used by old pages — drop when those pages are ported (tell user).
 - Scratch copy of canvas files: re-download with Artifact read (`path` = `project/X.dc.html`; images: `path` = bare 32-hex blob id).
 
