@@ -1,4 +1,4 @@
-# KALA — Project Memory
+﻿# KALA — Project Memory
 
 > Running log of work done, current state, and what's next. Read at the start of every session (auto-loaded via `CLAUDE.md`); update at the end of every session. Keep it short — this is a handoff note, not documentation (structure/how-to lives in `README.md`).
 
@@ -18,7 +18,7 @@
 ### 2026-11-01 — Session continuity
 - `MEMORY.md`, `CLAUDE.md` (auto-loads memory), `/wrap-up` command. Pushed.
 
-### 2026-11-01 — Beige redesign port (`4ac1db2` … `85483e1`, not pushed yet)
+### 2026-11-01 — Beige redesign port (`4ac1db2` … `85483e1`, pushed)
 - **Theme:** role-named tokens at top of `src/styles/index.css` (primary, secondary, page, surface, mat, soft, muted, link…, `--radius-ui` 6px, fonts). Palette classes codemodded across src. Remaining hex only in illustration paint constants (HomeMandalas, FlowerGlyph tints) + shadows.
 - **Chrome:** header (wordmark + "by Anushka Kishor", nav Shop/Commission/Wall murals/The Artist/Contact, cart icon → /order), footer, menu (adds Wearables `/#wearables`), progress ring; gentle (curtain-free) home opening (`handle.gentle`).
 - **Data:** 10 new works, `PHOTOS`, `REELS` in `works.js`; real email/Instagram/YouTube in `site.js`. 25 new images in `src/assets/images/`.
@@ -29,7 +29,6 @@
 
 ## Open / Next up
 
-- Push the redesign commits (user hasn't asked yet).
 - Forms (commission, contact, order) validate but aren't wired to any backend.
 - Placeholder content (`[Medium]`, `[Size]`, `[Location]`, reel titles/links, bios) — needs real values from the artist.
 - Record the Vercel production URL.
@@ -48,6 +47,7 @@
 ## Session log
 
 <!-- Newest first. One entry per session: date — what changed — where things were left. -->
-- 2026-11-01 — Ported the whole beige redesign page by page, centralised theme tokens, removed films. All committed locally, not pushed.
+- 2026-11-01 — Ported the whole beige redesign page by page, centralised theme tokens, removed films. Pushed to origin/main (d08ddee).
 - 2026-11-01 — Set up MEMORY.md, CLAUDE.md and /wrap-up for session continuity.
 - 2026-10-29 — Built and committed the full React port.
+
