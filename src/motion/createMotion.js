@@ -8,7 +8,7 @@
    Links: "#id" scrolls behind the curtain, other routes travel behind the curtain. */
 import { gsap, ScrollTrigger, prefersReducedMotion } from './gsap';
 
-export function createMotion(root, { arriving, extra, navigate, closeMenu, isMenuOpen, setDest }) {
+export function createMotion(root, { arriving, gentle, extra, navigate, closeMenu, isMenuOpen, setDest }) {
   const html = document.documentElement;
   const one = (s) => root.querySelector(s);
   const all = (s) => gsap.utils.toArray(root.querySelectorAll(s));
@@ -98,7 +98,15 @@ export function createMotion(root, { arriving, extra, navigate, closeMenu, isMen
       const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
       let H = 0.3;
       api.busy = true;
-      if (curtain && inner) {
+      if (gentle && !arriving) {
+        /* quiet opening (home): no curtain, everything settles in softly */
+        if (curtain) gsap.set(curtain, { autoAlpha: 0, yPercent: 100 });
+        tl.from(one('[data-header]'), { autoAlpha: 0, duration: 1.2, ease: 'power2.out' }, 0.1)
+          .from(all('[data-intro-line] .li'), { yPercent: 40, autoAlpha: 0, duration: 1.3, stagger: 0.09, ease: 'power3.out' }, 0.2)
+          .from(all('[data-intro]'), { y: 18, autoAlpha: 0, duration: 1.2, stagger: 0.07, ease: 'power3.out' }, 0.45)
+          .add(() => { api.busy = false; }, 0.6);
+        H = -1;
+      } else if (curtain && inner) {
         gsap.set([inner, label], { clearProps: 'opacity,visibility,transform' });
         gsap.set(curtain, { autoAlpha: 1, yPercent: 0 });
         if (arriving) {
@@ -124,19 +132,21 @@ export function createMotion(root, { arriving, extra, navigate, closeMenu, isMen
       }
 
       /* 2 · page opening */
-      tl.from(one('[data-header]'), { yPercent: -100, duration: 1.1 }, H)
-        .from(all('[data-intro-line] .li'), { yPercent: 118, rotation: 5, transformOrigin: '0% 100%', duration: 1.5, stagger: 0.1 }, H + 0.1)
-        .from(all('[data-intro]'), { y: 30, autoAlpha: 0, duration: 1.2, stagger: 0.08 }, H + 0.4);
-      all('[data-intro-img]').forEach((el, i) => {
-        const at = H + i * 0.15;
-        tl.fromTo(el, { clipPath: 'circle(0% at 50% 50%)' }, { clipPath: 'circle(75% at 50% 50%)', duration: 1.7, ease: 'expo.inOut', clearProps: 'clipPath' }, at);
-        const im = el.querySelector('img');
-        if (im) tl.from(im, { scale: 1.4, duration: 2.2, clearProps: 'scale' }, at);
-      });
-      all('[data-intro-wipe]').forEach((el, i) => {
-        tl.fromTo(el, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.inOut', clearProps: 'clipPath' }, H + 0.2 + i * 0.12);
-      });
-      tl.add(() => { api.busy = false; }, H + 0.5);
+      if (H >= 0) {
+        tl.from(one('[data-header]'), { yPercent: -100, duration: 1.1 }, H)
+          .from(all('[data-intro-line] .li'), { yPercent: 118, rotation: 5, transformOrigin: '0% 100%', duration: 1.5, stagger: 0.1 }, H + 0.1)
+          .from(all('[data-intro]'), { y: 30, autoAlpha: 0, duration: 1.2, stagger: 0.08 }, H + 0.4);
+        all('[data-intro-img]').forEach((el, i) => {
+          const at = H + i * 0.15;
+          tl.fromTo(el, { clipPath: 'circle(0% at 50% 50%)' }, { clipPath: 'circle(75% at 50% 50%)', duration: 1.7, ease: 'expo.inOut', clearProps: 'clipPath' }, at);
+          const im = el.querySelector('img');
+          if (im) tl.from(im, { scale: 1.4, duration: 2.2, clearProps: 'scale' }, at);
+        });
+        all('[data-intro-wipe]').forEach((el, i) => {
+          tl.fromTo(el, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.inOut', clearProps: 'clipPath' }, H + 0.2 + i * 0.12);
+        });
+        tl.add(() => { api.busy = false; }, H + 0.5);
+      }
 
       /* 3 · living mandalas */
       all('[data-spin]').forEach((g) => {
@@ -232,7 +242,7 @@ export function createMotion(root, { arriving, extra, navigate, closeMenu, isMen
               headerShown = !hide;
               gsap.to(header, { yPercent: hide ? -100 : 0, duration: 0.7, ease: 'expo.out' });
             }
-            header.style.borderBottomColor = s.scroll() > 40 ? '#E5E0D8' : 'rgba(229,224,216,0)';
+            header.classList.toggle('is-scrolled', s.scroll() > 40);
           }
           if (mq) {
             const v = s.getVelocity();
@@ -321,6 +331,14 @@ function setupCursor(root, on, html) {
   const dot = root.querySelector('[data-cursor-dot]');
   if (!ring || !dot) return;
   html.classList.add('kala-cursor');
+  /* the cursor takes its colours from the theme (styles/index.css) */
+  const css = getComputedStyle(html);
+  const ink = css.getPropertyValue('--color-primary').trim() || '#22211F';
+  const paper = css.getPropertyValue('--color-on-primary').trim() || '#FFFEFA';
+  const tint = (hex, a) => {
+    const [r, g, b] = gsap.utils.splitColor(hex);
+    return `rgba(${r},${g},${b},${a})`;
+  };
   const labels = gsap.utils.toArray(root.querySelectorAll('[data-cl]'));
   gsap.set([ring, dot], { xPercent: -50, yPercent: -50, autoAlpha: 0 });
   const dX = gsap.quickTo(dot, 'x', { duration: 0.12, ease: 'power3' });
@@ -340,9 +358,9 @@ function setupCursor(root, on, html) {
     gsap.to(ring, {
       width: size,
       height: size,
-      backgroundColor: big ? (dark ? 'rgba(255,254,250,0.94)' : 'rgba(34,33,31,0.92)') : 'rgba(255,255,255,0)',
+      backgroundColor: big ? (dark ? tint(paper, 0.94) : tint(ink, 0.92)) : 'rgba(255,255,255,0)',
       borderColor: big ? 'rgba(255,255,255,0)' : '#FFFFFF',
-      color: dark ? '#22211F' : '#FFFEFA',
+      color: dark ? ink : paper,
       autoAlpha: s === 'hide' ? 0 : shown ? 1 : 0,
       duration: 0.55,
       ease: 'expo.out',

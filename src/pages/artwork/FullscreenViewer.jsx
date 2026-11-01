@@ -39,11 +39,11 @@ export default function FullscreenViewer({ work, onClose }) {
         ref={closeRef}
         type="button"
         onClick={close}
-        className="absolute top-4 right-4 inline-flex h-11 cursor-pointer items-center gap-2 border-0 bg-transparent px-2.5 font-sans text-sm font-semibold text-paper"
+        className="absolute top-4 right-4 inline-flex h-11 cursor-pointer items-center gap-2 border-0 bg-transparent px-2.5 font-sans text-sm font-semibold text-on-primary"
       >
         Close <Icon name="close" />
       </button>
-      <p className="meta absolute bottom-4 left-6 text-on-inverse-muted!">{work.title} · Colours may vary slightly on screen.</p>
+      <p className="meta absolute bottom-4 left-6 text-on-primary-muted!">{work.title} · Colours may vary slightly on screen.</p>
     </div>
   );
 }

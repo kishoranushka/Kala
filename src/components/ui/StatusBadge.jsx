@@ -11,9 +11,9 @@ const MARKERS = {
 
 const TONES = {
   available: 'text-success',
-  sold: 'text-stone-ink',
-  archived: 'text-stone-ink',
-  inquiry: 'text-cobalt',
+  sold: 'text-muted',
+  archived: 'text-muted',
+  inquiry: 'text-link',
 };
 
 /* `leading` — 20px by default; Home's captions let it inherit their 26px rhythm */

@@ -4,8 +4,8 @@ import Icon from '@/components/ui/Icon';
 import Notice from '@/components/ui/Notice';
 
 const INPUT =
-  'w-full min-h-12 rounded-[2px] border border-line bg-paper px-3.5 py-3 font-sans text-base/6 text-ink ' +
-  'transition-[border-color,box-shadow] duration-300 ease-gallery focus:border-cobalt focus:shadow-focus focus:outline-none aria-[invalid=true]:border-error';
+  'w-full min-h-12 rounded-[2px] border border-line bg-surface px-3.5 py-3 font-sans text-base/6 text-primary ' +
+  'transition-[border-color,box-shadow] duration-300 ease-gallery focus:border-link focus:shadow-focus focus:outline-none aria-[invalid=true]:border-error';
 
 export const Input = forwardRef(function Input({ className, ...props }, ref) {
   return <input ref={ref} className={cx(INPUT, className)} {...props} />;
@@ -20,7 +20,7 @@ export function Select({ tall = false, className, children, ...props }) {
   return (
     <select
       className={cx(
-        'select-chevron cursor-pointer rounded-[2px] border border-line bg-paper pr-9 pl-3.5 font-sans font-semibold text-ink',
+        'select-chevron cursor-pointer rounded-[2px] border border-line bg-surface pr-9 pl-3.5 font-sans font-semibold text-primary',
         tall ? 'min-h-12 text-[15px]' : 'min-h-10 text-[13px]',
         className
       )}
@@ -44,11 +44,11 @@ export function FieldError({ children, className, ...props }) {
 export function Field({ id, label, hint, error, className, children }) {
   return (
     <div className={cx('flex flex-col gap-2', className)}>
-      <label htmlFor={id} className="text-[13px]/5 font-semibold text-ink">
+      <label htmlFor={id} className="text-[13px]/5 font-semibold text-primary">
         {label}
       </label>
       {hint && (
-        <span id={`${id}-hint`} className="text-xs/[18px] text-stone-ink">
+        <span id={`${id}-hint`} className="text-xs/[18px] text-muted">
           {hint}
         </span>
       )}
@@ -68,10 +68,10 @@ export const describe = (id, { hint, error } = {}) => ({
 /* a large radio tile; tinted cobalt when chosen */
 export function ChoiceCard({ title, children, ...inputProps }) {
   return (
-    <label className="relative flex min-h-[88px] cursor-pointer flex-col gap-1 rounded-[2px] border border-line bg-paper py-4 pr-4 pl-12 transition-colors duration-300 ease-gallery hover:border-ink has-checked:border-cobalt has-checked:bg-cobalt-wash has-focus-visible:shadow-focus">
-      <input type="radio" className="absolute top-[18px] left-4 m-0 size-[18px] accent-cobalt" {...inputProps} />
+    <label className="relative flex min-h-[88px] cursor-pointer flex-col gap-1 rounded-[2px] border border-line bg-surface py-4 pr-4 pl-12 transition-colors duration-300 ease-gallery hover:border-primary has-checked:border-link has-checked:bg-link-wash has-focus-visible:shadow-focus">
+      <input type="radio" className="absolute top-[18px] left-4 m-0 size-[18px] accent-link" {...inputProps} />
       <b className="font-display text-[22px]/[26px] font-medium">{title}</b>
-      <span className="text-[13px]/5 text-stone-ink">{children}</span>
+      <span className="text-[13px]/5 text-muted">{children}</span>
     </label>
   );
 }
@@ -82,8 +82,8 @@ export function ChoiceGrid({ children }) {
 
 export function Checkbox({ children, ...inputProps }) {
   return (
-    <label className="flex cursor-pointer items-start gap-3 text-sm/[22px] text-ink-soft">
-      <input type="checkbox" className="mt-0.5 size-[18px] shrink-0 accent-cobalt" {...inputProps} />
+    <label className="flex cursor-pointer items-start gap-3 text-sm/[22px] text-soft">
+      <input type="checkbox" className="mt-0.5 size-[18px] shrink-0 accent-link" {...inputProps} />
       <span>{children}</span>
     </label>
   );

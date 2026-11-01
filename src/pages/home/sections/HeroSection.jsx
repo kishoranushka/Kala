@@ -32,7 +32,7 @@ export default function HeroSection() {
             </h1>
 
             <div className="mt-12 max-w-[560px] pl-[16%] max-lg:max-w-[620px] max-sm:mt-7 max-sm:pl-0">
-              <p data-h-fade className="max-w-[42ch] text-lg/[30px] text-ink-soft">
+              <p data-h-fade className="max-w-[42ch] text-lg/[30px] text-soft">
                 {CONTACT.artist} paints original canvases and mandalas, and makes personal pieces for the walls people live with every day.
               </p>
               <div data-h-fade className="mt-9 flex flex-wrap gap-x-4 gap-y-3">
@@ -46,7 +46,7 @@ export default function HeroSection() {
             </div>
 
             <div data-h-fade className="mt-24 flex items-center gap-3.5 max-lg:mt-14 max-sm:mt-10">
-              <span data-cue className="h-12 w-px bg-accent" />
+              <span data-cue className="h-12 w-px bg-secondary" />
               <span className="eyebrow">Scroll into the atlas</span>
             </div>
           </div>
@@ -56,7 +56,7 @@ export default function HeroSection() {
             <span
               data-h-vert
               aria-hidden="true"
-              className="absolute top-[120px] -right-7 text-[11px] font-semibold tracking-[.24em] text-stone-ink uppercase [writing-mode:vertical-rl] max-lg:hidden"
+              className="absolute top-[120px] -right-7 text-[11px] font-semibold tracking-[.24em] text-muted uppercase [writing-mode:vertical-rl] max-lg:hidden"
             >
               Plate I · The unfolding canvas
             </span>

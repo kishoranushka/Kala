@@ -131,13 +131,13 @@ export default function OrderPage() {
         <div data-intro className="relative col-span-full mt-14 mb-4">
           <span
             aria-hidden="true"
-            className="absolute top-0 left-0 h-0.5 w-full origin-left bg-accent transition-transform duration-900 ease-gallery"
+            className="absolute top-0 left-0 h-0.5 w-full origin-left bg-secondary transition-transform duration-900 ease-gallery"
             style={{ transform: `scaleX(${progress})` }}
           />
           <ol aria-label="Order steps" className="m-0 grid list-none grid-cols-3 gap-4 p-0">
             {STEPS.map((label, i) => {
               const n = i + 1;
-              const tone = step >= n ? 'text-ink' : 'text-stone-ink';
+              const tone = step >= n ? 'text-primary' : 'text-muted';
               return (
                 <li key={label} aria-current={step === n ? 'step' : undefined} className="relative flex flex-col gap-1.5 pt-[18px] before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-divider">
                   <span className={`font-display text-[28px] leading-none italic ${tone}`}>0{n}</span>

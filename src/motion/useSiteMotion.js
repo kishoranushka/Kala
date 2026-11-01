@@ -4,14 +4,14 @@ import { createMotion } from './createMotion';
 
 /* Mounts the motion system on the site root once per route.
    Pages travel behind the curtain: the outgoing page drops it, the incoming page lifts it. */
-export function useSiteMotion(rootRef, { closeMenu, isMenuOpen, setDest }) {
+export function useSiteMotion(rootRef, { gentle, closeMenu, isMenuOpen, setDest }) {
   const location = useLocation();
   const navigate = useNavigate();
   const apiRef = useRef(null);
   const extraRef = useRef(null);
   const arrivingAt = useRef(null);
   const handlers = useRef({});
-  handlers.current = { closeMenu, isMenuOpen, setDest };
+  handlers.current = { gentle, closeMenu, isMenuOpen, setDest };
 
   useLayoutEffect(() => {
     const target = location.hash ? document.getElementById(location.hash.slice(1)) : null;
@@ -19,6 +19,7 @@ export function useSiteMotion(rootRef, { closeMenu, isMenuOpen, setDest }) {
 
     const api = createMotion(rootRef.current, {
       arriving: arrivingAt.current === location.pathname,
+      gentle: !!handlers.current.gentle,
       extra: extraRef.current,
       navigate: (to) => {
         arrivingAt.current = to.split(/[?#]/)[0];

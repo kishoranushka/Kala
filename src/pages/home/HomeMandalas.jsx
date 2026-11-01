@@ -18,7 +18,7 @@ export function HeroMandala({ className }) {
         <circle r="330" />
       </g>
       <g data-spin="-120">
-        <circle r="300" strokeWidth="3" strokeLinecap="round" strokeDasharray="0 15.7" className="stroke-accent" opacity=".55" />
+        <circle r="300" strokeWidth="3" strokeLinecap="round" strokeDasharray="0 15.7" className="stroke-secondary" opacity=".55" />
         <circle r="268" />
         <Petals href={`#${id}b`} count={12} />
         <circle r="190" />
@@ -44,9 +44,9 @@ export function PatternMandala() {
       <defs>
         <path id={`${id}s`} d="M0,-322 C60,-272 64,-212 0,-172 C-64,-212 -60,-272 0,-322Z" />
         <g id={`${id}p`}>
-          <path d="M0,-322 C60,-272 64,-212 0,-172 C-64,-212 -60,-272 0,-322Z" className="fill-chapter" stroke="#C9B79C" strokeWidth="1.2" />
+          <path d="M0,-322 C60,-272 64,-212 0,-172 C-64,-212 -60,-272 0,-322Z" className="fill-primary" stroke="#C9B79C" strokeWidth="1.2" />
           <path d="M0,-300 C34,-268 36,-226 0,-196 C-36,-226 -34,-268 0,-300Z" fill="none" stroke="#C9B79C" strokeWidth=".6" opacity=".6" />
-          <circle cy="-290" r="5" className="fill-accent" />
+          <circle cy="-290" r="5" className="fill-secondary" />
         </g>
         <path id={`${id}r`} d="M0,-160 C34,-132 34,-102 0,-82 C-34,-102 -34,-132 0,-160Z" />
       </defs>
@@ -59,20 +59,20 @@ export function PatternMandala() {
         <Petals href={`#${id}p`} count={12} data-petal />
       </g>
       <g data-spin="-160">
-        <circle r="172" className="fill-chapter" stroke="#C9B79C" strokeWidth="1.2" />
+        <circle r="172" className="fill-primary" stroke="#C9B79C" strokeWidth="1.2" />
         <circle r="164" fill="none" stroke="#C9B79C" strokeWidth="1" strokeDasharray="1 6" />
         <g fill="#000000" opacity=".38" transform="translate(3 4)">
           <Petals href={inner} count={16} data-petal2 />
         </g>
-        <g className="fill-chapter" stroke="#C9B79C" strokeWidth="1">
+        <g className="fill-primary" stroke="#C9B79C" strokeWidth="1">
           <Petals href={inner} count={16} data-petal2 />
         </g>
       </g>
       <g data-spin="60">
-        <circle r="80" className="fill-accent" />
+        <circle r="80" className="fill-secondary" />
         <circle r="64" fill="none" stroke="#F1E6CF" strokeWidth="3" strokeDasharray="0 8.4" strokeLinecap="round" />
         <circle r="32" fill="#C9B79C" />
-        <circle r="11" className="fill-chapter" />
+        <circle r="11" className="fill-primary" />
       </g>
     </svg>
   );
@@ -101,7 +101,7 @@ export function QuietMandala() {
       <g data-spin="-70" fill="#F6F2EB" stroke="#C9B79C" strokeWidth=".8">
         <Petals href={`#${id}b`} count={8} start={22.5} />
       </g>
-      <circle r="10" className="fill-accent" />
+      <circle r="10" className="fill-secondary" />
     </svg>
   );
 }
@@ -109,7 +109,7 @@ export function QuietMandala() {
 /* the small six-spoked flower between marquee phrases */
 export function MarqueeGlyph() {
   return (
-    <svg width="22" height="22" viewBox="-12 -12 24 24" fill="none" strokeWidth="1.2" className="shrink-0 stroke-accent">
+    <svg width="22" height="22" viewBox="-12 -12 24 24" fill="none" strokeWidth="1.2" className="shrink-0 stroke-secondary">
       <circle r="10" />
       <circle r="3" />
       <path d="M0,-10 L0,10 M-8.7,-5 L8.7,5 M-8.7,5 L8.7,-5" />

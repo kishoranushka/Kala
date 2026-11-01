@@ -20,10 +20,10 @@ export default function PatternSection() {
                 key={label.text}
                 data-pat-label
                 aria-hidden="true"
-                className="absolute flex items-center gap-2.5 text-[11px]/4 font-semibold tracking-[.14em] text-paper uppercase max-sm:hidden"
+                className="absolute flex items-center gap-2.5 text-[11px]/4 font-semibold tracking-[.14em] text-on-primary uppercase max-sm:hidden"
                 style={{ left: label.left, top: label.top }}
               >
-                <span data-pat-rule className="h-px bg-paper" style={{ width: label.rule }} />
+                <span data-pat-rule className="h-px bg-surface" style={{ width: label.rule }} />
                 {label.text}
               </div>
             ))}
@@ -34,17 +34,17 @@ export default function PatternSection() {
               02 · Inside the pattern
             </p>
             <SplitWords id="pattern-h" text="A circle, drawn *slowly,* until it holds a world." className={cx(HOME_H2, 'font-light')} />
-            <p data-cap className="mt-7 max-w-[44ch] text-lg/[30px] text-on-inverse-muted">
+            <p data-cap className="mt-7 max-w-[44ch] text-lg/[30px] text-on-primary-muted">
               [In your own words: why you return to the mandala — the repetition, the patience, the way a piece builds outward. Two or three true sentences.]
             </p>
 
             <ol data-stagger className="mt-12 list-none border-t border-hairline p-0">
               {PATTERN_STEPS.map((step) => (
                 <li key={step.num} className="grid grid-cols-[48px_1fr] border-b border-hairline py-5">
-                  <span className="font-display text-2xl/[30px] text-on-inverse-muted italic">{step.num}</span>
+                  <span className="font-display text-2xl/[30px] text-on-primary-muted italic">{step.num}</span>
                   <span>
                     <span className="block font-display text-2xl/[30px] font-medium">{step.title}</span>
-                    <span className="mt-1 block text-sm/[22px] text-on-inverse-muted">{step.note}</span>
+                    <span className="mt-1 block text-sm/[22px] text-on-primary-muted">{step.note}</span>
                   </span>
                 </li>
               ))}
@@ -59,7 +59,7 @@ export default function PatternSection() {
                   className="absolute -top-[70%] -left-[70%] size-[240%] object-cover"
                 />
               </div>
-              <p className="max-w-[26ch] text-[13px]/5 font-medium text-on-inverse-muted">Detail · Om Mandala. The same geometry, painted by hand, one dot at a time.</p>
+              <p className="max-w-[26ch] text-[13px]/5 font-medium text-on-primary-muted">Detail · Om Mandala. The same geometry, painted by hand, one dot at a time.</p>
             </div>
           </div>
         </div>

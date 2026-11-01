@@ -36,7 +36,7 @@ function Chip({ pressed, onClick, children }) {
       type="button"
       aria-pressed={pressed}
       onClick={onClick}
-      className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-[2px] border border-line bg-transparent px-4 font-sans text-[13px] font-semibold tracking-[.02em] whitespace-nowrap text-ink transition-colors duration-400 ease-gallery hover:border-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper"
+      className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-[2px] border border-line bg-transparent px-4 font-sans text-[13px] font-semibold tracking-[.02em] whitespace-nowrap text-primary transition-colors duration-400 ease-gallery hover:border-primary aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-on-primary"
     >
       {children}
     </button>
@@ -101,7 +101,7 @@ export default function ShopPage() {
         </div>
       </PageIntro>
 
-      <div data-intro className="sticky top-0 z-40 border-y border-divider bg-ivory">
+      <div data-intro className="sticky top-0 z-40 border-y border-divider bg-page">
         <div className="wrap flex flex-wrap items-center justify-between gap-x-8 gap-y-4 py-3.5 max-sm:gap-3">
           <div role="group" aria-label="Filter by collection" className="flex gap-2 overflow-x-auto p-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {CHIPS.map((c) => (
@@ -111,7 +111,7 @@ export default function ShopPage() {
             ))}
           </div>
           <div className="flex flex-wrap items-center gap-3 max-sm:w-full">
-            <label htmlFor="f-avail" className="meta font-semibold text-ink!">
+            <label htmlFor="f-avail" className="meta font-semibold text-primary!">
               Show
             </label>
             <Select id="f-avail" value={filters.avail} onChange={(e) => set('avail')(e.target.value)}>
@@ -119,7 +119,7 @@ export default function ShopPage() {
               <option value="available">Available now</option>
               <option value="other">Sold, archived &amp; inquiry</option>
             </Select>
-            <label htmlFor="f-sort" className="meta font-semibold text-ink!">
+            <label htmlFor="f-sort" className="meta font-semibold text-primary!">
               Sort
             </label>
             <Select id="f-sort" value={filters.sort} onChange={(e) => set('sort')(e.target.value)}>
@@ -131,7 +131,7 @@ export default function ShopPage() {
               {cards.length} {cards.length === 1 ? 'work' : 'works'}
             </span>
             {filtered && (
-              <button type="button" onClick={reset} className="inline-flex h-11 cursor-pointer items-center border-0 bg-transparent px-1 font-sans text-sm font-semibold text-cobalt">
+              <button type="button" onClick={reset} className="inline-flex h-11 cursor-pointer items-center border-0 bg-transparent px-1 font-sans text-sm font-semibold text-link">
                 Reset
               </button>
             )}

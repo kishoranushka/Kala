@@ -48,16 +48,16 @@ export function ChooseStep({ selection, onToggle, onContinue, pickError }) {
               aria-pressed={on}
               onClick={() => onToggle(w.id)}
               aria-label={on ? `Remove ${w.title} from your order` : `Add ${w.title} to your order`}
-              className="group relative flex cursor-pointer flex-col gap-3 border-0 bg-transparent p-0 text-left font-sans text-ink"
+              className="group relative flex cursor-pointer flex-col gap-3 border-0 bg-transparent p-0 text-left font-sans text-primary"
             >
               <span
-                className="relative overflow-hidden bg-wall shadow-hang outline-2 outline-offset-4 outline-transparent transition-[outline-color] duration-400 ease-gallery group-aria-pressed:outline-cobalt"
+                className="relative overflow-hidden bg-wall shadow-hang outline-2 outline-offset-4 outline-transparent transition-[outline-color] duration-400 ease-gallery group-aria-pressed:outline-link"
                 style={{ aspectRatio: ratioOf(w) }}
               >
                 <img src={w.img} alt="" loading="lazy" className={imgClass(w, 'transition-transform duration-1200 ease-gallery group-hover:scale-[1.04]')} />
                 <span
                   aria-hidden="true"
-                  className="absolute top-2.5 right-2.5 flex size-9 items-center justify-center rounded-full border border-line bg-[rgba(255,254,250,.94)] text-ink transition-[background-color,color,transform] duration-400 ease-gallery group-aria-pressed:scale-[1.08] group-aria-pressed:border-cobalt group-aria-pressed:bg-cobalt group-aria-pressed:text-paper"
+                  className="absolute top-2.5 right-2.5 flex size-9 items-center justify-center rounded-full border border-line bg-[rgba(255,254,250,.94)] text-primary transition-[background-color,color,transform] duration-400 ease-gallery group-aria-pressed:scale-[1.08] group-aria-pressed:border-link group-aria-pressed:bg-link group-aria-pressed:text-on-primary"
                 >
                   <Icon name={on ? 'check' : 'plus'} size={18} strokeWidth={on ? 2 : 1.75} />
                 </span>
@@ -105,7 +105,7 @@ function UnavailableCard({ work }) {
       to="/commission"
       data-cursor="talk"
       aria-label={`${work.title}, ${STATUS[work.status].label}. Commission something similar`}
-      className="flex flex-col gap-2 text-ink underline opacity-[.82] hover:text-ink"
+      className="flex flex-col gap-2 text-primary underline opacity-[.82] hover:text-primary"
     >
       <span className="relative overflow-hidden bg-wall saturate-[.9]" style={{ aspectRatio: ratioOf(work) }}>
         <img src={work.img} alt="" loading="lazy" className={imgClass(work)} />
@@ -198,10 +198,10 @@ export function ReviewStep({ form, ack, ackError, sending, onAck, onEdit, onSubm
   return (
     <form noValidate onSubmit={onSubmit} aria-labelledby="rev-h" className="flex flex-col gap-6">
       <StepHeading step={3} id="rev-h" title="Review your order request" />
-      <div className="bg-paper p-6">
+      <div className="bg-surface p-6">
         <div className="flex items-baseline justify-between gap-4">
           <p className="eyebrow">Your details</p>
-          <button type="button" onClick={onEdit} className="h-8 cursor-pointer border-0 bg-transparent p-0 font-sans text-[13px] font-semibold text-cobalt">
+          <button type="button" onClick={onEdit} className="h-8 cursor-pointer border-0 bg-transparent p-0 font-sans text-[13px] font-semibold text-link">
             Edit
           </button>
         </div>
@@ -218,9 +218,9 @@ export function ReviewStep({ form, ack, ackError, sending, onAck, onEdit, onSubm
           <dd>{form.note || 'None'}</dd>
         </dl>
       </div>
-      <div className="bg-paper p-6">
+      <div className="bg-surface p-6">
         <p className="eyebrow">What happens next</p>
-        <ol className="mt-3 list-decimal pl-5 text-sm/6 text-ink-soft">
+        <ol className="mt-3 list-decimal pl-5 text-sm/6 text-soft">
           <li>I check each work is still available and confirm shipping.</li>
           <li>You receive a confirmation and a secure payment link by email.</li>
           <li>Once paid, your painting is packed and sent, or ready to collect.</li>

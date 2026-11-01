@@ -20,11 +20,29 @@ export function Petals({ href, count, start = 0, ...props }) {
   });
 }
 
-/* the double mandala behind page intros: twelve outer petals, eight inner, an accent dot ring */
-export function PageMandala({ className, style, stroke = '#C9B79C', outerSpin = 200, innerSpin = -130, accentRing = true }) {
+/* the line mandala used across the site: twelve outer petals, eight inner, an accent dot ring.
+   `stroke` takes any CSS colour (theme variables included); the dot ring uses `accentClass`. */
+export function PageMandala({
+  className,
+  style,
+  stroke = 'var(--color-oak)',
+  outerSpin = 200,
+  innerSpin = -130,
+  accentRing = true,
+  accentClass = 'stroke-secondary',
+  absolute = true,
+}) {
   const id = useSvgId();
   return (
-    <svg viewBox="-300 -300 600 600" aria-hidden="true" fill="none" stroke={stroke} strokeWidth="1" className={cx('pointer-events-none absolute', className)} style={style}>
+    <svg
+      viewBox="-300 -300 600 600"
+      aria-hidden="true"
+      focusable="false"
+      fill="none"
+      strokeWidth="1"
+      className={cx('pointer-events-none block overflow-visible', absolute && 'absolute', className)}
+      style={{ stroke, ...style }}
+    >
       <defs>
         <path id={`${id}a`} d={PETAL_LARGE} />
         <path id={`${id}b`} d={PETAL_SMALL} />
@@ -36,7 +54,7 @@ export function PageMandala({ className, style, stroke = '#C9B79C', outerSpin = 
         <circle r="186" />
       </g>
       <g data-spin={innerSpin}>
-        {accentRing && <circle r="160" strokeWidth="3" strokeLinecap="round" strokeDasharray="0 12.6" className="stroke-accent" opacity=".5" />}
+        {accentRing && <circle r="160" strokeWidth="3" strokeLinecap="round" strokeDasharray="0 12.6" className={accentClass} opacity=".5" />}
         <Petals href={`#${id}b`} count={8} />
         <circle r="80" />
         <circle r="30" />

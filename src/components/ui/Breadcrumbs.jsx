@@ -4,7 +4,7 @@ import cx from '@/utils/cx';
 
 /* items: [{ label, to }] — the last item is the current page */
 export default function Breadcrumbs({ items, inverse = false }) {
-  const muted = inverse ? 'text-on-inverse-muted' : 'text-stone-ink';
+  const muted = inverse ? 'text-on-primary-muted' : 'text-muted';
   return (
     <ol data-intro aria-label="Breadcrumb" className={cx('m-0 flex list-none flex-wrap items-center gap-2 p-0 text-[13px]/5', muted)}>
       {items.map((item, i) => {
@@ -16,7 +16,7 @@ export default function Breadcrumbs({ items, inverse = false }) {
               <li aria-current="page">{item.label}</li>
             ) : (
               <li>
-                <Link to={item.to} className={cx('inline-flex min-h-8 items-center', muted, inverse ? 'hover:text-on-inverse-muted' : 'hover:text-ink')}>
+                <Link to={item.to} className={cx('inline-flex min-h-8 items-center', muted, inverse ? 'hover:text-on-primary-muted' : 'hover:text-primary')}>
                   {item.label}
                 </Link>
               </li>

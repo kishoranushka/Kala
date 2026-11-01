@@ -11,7 +11,7 @@ export default function ArtLink({ work, reveal = true, priority = false, shadow 
       data-reveal={reveal || undefined}
       data-cursor="view"
       aria-label={`View ${work.title}`}
-      className={cx('group relative block overflow-hidden bg-wall', shadow, className)}
+      className={cx('group relative block overflow-hidden rounded-ui bg-wall', shadow, className)}
       style={{ aspectRatio: ratioOf(work), ...style }}
       {...props}
     >

@@ -64,7 +64,7 @@ function artistMotion({ gsap, one, d, canScroll }) {
 function Numbered({ num, size = 'text-[32px]', title }) {
   return (
     <span className="flex items-baseline gap-3.5">
-      <span className={cx('font-display text-accent italic', size)}>{num}</span>
+      <span className={cx('font-display text-secondary italic', size)}>{num}</span>
       <span className="art-title">{title}</span>
     </span>
   );
@@ -96,7 +96,7 @@ function LandscapeItem({ item, index }) {
         </div>
       )}
       <figcaption className="meta mt-3.5">
-        <span className="font-bold text-accent">0{index + 1}</span> · {item.caption}
+        <span className="font-bold text-secondary">0{index + 1}</span> · {item.caption}
       </figcaption>
     </figure>
   );
@@ -195,7 +195,7 @@ export default function ArtistPage() {
                   </div>
                   <figcaption className="mt-5">
                     <Numbered num={m.num} title={m.title} />
-                    <p className="meta mt-2.5 text-sm/[22px] text-ink-soft!">{m.note}</p>
+                    <p className="meta mt-2.5 text-sm/[22px] text-soft!">{m.note}</p>
                   </figcaption>
                 </figure>
               );
@@ -224,7 +224,7 @@ export default function ArtistPage() {
                 <Film {...FILMS[reel.film]} portrait label={reel.label} className="max-h-[78vh] max-sm:mx-auto max-sm:max-h-none max-sm:w-[min(100%,360px)]" />
                 <figcaption className="mt-[18px]">
                   <Numbered num={reel.num} size="text-[28px]" title={reel.title} />
-                  <p className="meta mt-2 text-sm/[22px] text-ink-soft!">{reel.note}</p>
+                  <p className="meta mt-2 text-sm/[22px] text-soft!">{reel.note}</p>
                 </figcaption>
               </figure>
             ))}
@@ -264,7 +264,7 @@ export default function ArtistPage() {
                   className="block size-full object-cover"
                 />
               </Link>
-              <p className="meta mt-4 text-on-inverse-muted!">{escape.title} · 2026. Both practices, on one small canvas.</p>
+              <p className="meta mt-4 text-on-primary-muted!">{escape.title} · 2026. Both practices, on one small canvas.</p>
             </div>
           </div>
         </div>
@@ -286,7 +286,7 @@ export default function ArtistPage() {
             <ol data-stagger className="col-[6/13] m-0 list-none p-0">
               {MILESTONES.map((m, i) => (
                 <li key={i} className="grid grid-cols-[160px_1fr] items-baseline gap-8 border-b border-divider py-7 max-sm:grid-cols-1 max-sm:gap-2">
-                  <span className="font-display text-[40px] leading-none font-light text-accent">{m.year}</span>
+                  <span className="font-display text-[40px] leading-none font-light text-secondary">{m.year}</span>
                   <span>
                     <span className="art-title block">{m.title}</span>
                     <span className="meta">{m.note}</span>
@@ -309,7 +309,7 @@ export default function ArtistPage() {
             text="[A few warm lines to whoever is reading: why you *paint.]*"
             className="mt-6 font-display text-[clamp(30px,3.6vw,52px)] leading-[1.2] font-light"
           />
-          <p data-cap className="mt-8 font-display text-[28px] text-accent italic">
+          <p data-cap className="mt-8 font-display text-[28px] text-secondary italic">
             — {CONTACT.artist}
           </p>
           <div data-cap className="mt-12 flex flex-wrap gap-4">

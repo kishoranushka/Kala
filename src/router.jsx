@@ -14,7 +14,7 @@ export const router = createBrowserRouter(
         {
           index: true,
           lazy: page(() => import('@/pages/home/HomePage')),
-          handle: { title: 'Home', curtain: 'Original paintings · Mandalas · Commissions', bag: 'order-link', isHome: true },
+          handle: { title: 'Home', curtain: 'Home', isHome: true, gentle: true },
         },
         {
           path: 'shop',
@@ -25,7 +25,7 @@ export const router = createBrowserRouter(
         {
           path: 'artwork/:id',
           lazy: page(() => import('@/pages/artwork/ArtworkPage')),
-          handle: { title: 'Artwork', curtain: 'The viewing room', nav: 'shop', bag: 'drawer', raisedProgress: true },
+          handle: { title: 'Artwork', curtain: 'The viewing room', raisedProgress: true },
         },
         {
           path: 'collections',
@@ -67,7 +67,7 @@ export const router = createBrowserRouter(
         {
           path: 'order',
           lazy: page(() => import('@/pages/order/OrderPage')),
-          handle: { title: 'Order', curtain: 'Order an original', nav: 'shop', bag: 'anchor' },
+          handle: { title: 'Order', curtain: 'Order an original' },
         },
         { path: '*', element: <Navigate to="/" replace /> },
       ],

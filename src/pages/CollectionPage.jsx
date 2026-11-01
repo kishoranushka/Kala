@@ -20,7 +20,7 @@ function AdjacentChapter({ chapter, direction }) {
       to={`/collections/${chapter.id}`}
       data-cursor="explore"
       className={cx(
-        'group flex flex-col gap-2 py-12 text-ink hover:text-ink max-sm:py-8',
+        'group flex flex-col gap-2 py-12 text-primary hover:text-primary max-sm:py-8',
         next && 'items-end border-l border-divider text-right max-sm:border-t max-sm:border-l-0'
       )}
     >
@@ -57,7 +57,7 @@ export default function CollectionPage() {
           <span
             aria-hidden="true"
             data-intro
-            className="text-outline-accent block font-display text-[clamp(140px,18vw,280px)] leading-[.8] font-light italic"
+            className="text-outline-secondary block font-display text-[clamp(140px,18vw,280px)] leading-[.8] font-light italic"
           >
             {chapter.num}
           </span>
@@ -119,7 +119,7 @@ export default function CollectionPage() {
             Something in this spirit
           </p>
           <h2 id="ch-cta-h" data-cap className="heading-2 mt-5 max-w-[18ch] font-light">
-            Want a piece for your own walls from the <span className="text-accent italic">{chapter.title}</span> chapter?
+            Want a piece for your own walls from the <span className="text-secondary italic">{chapter.title}</span> chapter?
           </h2>
           <Button variant="light" to="/commission" arrow data-magnetic data-cursor="talk" data-cap>
             Start a Commission

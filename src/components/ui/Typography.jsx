@@ -12,7 +12,7 @@ export function Line({ className, children }) {
 
 /* The italic accent word used across headlines. */
 export function Accent({ children }) {
-  return <span className="font-normal text-accent italic">{children}</span>;
+  return <span className="font-normal text-secondary italic">{children}</span>;
 }
 
 /* Word-by-word masked text for [data-words] reveals.
@@ -23,7 +23,7 @@ function renderWord(word) {
   return word.split(TOKEN).map((part, i) => {
     if (!part) return null;
     if (part.startsWith('*')) return <span key={i} className="italic">{part.slice(1, -1)}</span>;
-    if (part.startsWith('~')) return <span key={i} className="text-accent italic">{part.slice(1, -1)}</span>;
+    if (part.startsWith('~')) return <span key={i} className="text-secondary italic">{part.slice(1, -1)}</span>;
     return <Fragment key={i}>{part}</Fragment>;
   });
 }

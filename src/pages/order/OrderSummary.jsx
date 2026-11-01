@@ -1,7 +1,7 @@
 import { getWork } from '@/data/works';
 import Notice from '@/components/ui/Notice';
 
-const DL = 'm-0 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 text-sm/[22px] [&_dd]:m-0 [&_dd]:font-semibold [&_dt]:text-stone-ink';
+const DL = 'm-0 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 text-sm/[22px] [&_dd]:m-0 [&_dd]:font-semibold [&_dt]:text-muted';
 
 /* the sticky "Your order" card beside every step */
 export default function OrderSummary({ selection, canEdit, onRemove, collect }) {
@@ -9,7 +9,7 @@ export default function OrderSummary({ selection, canEdit, onRemove, collect }) 
   return (
     <aside
       aria-labelledby="sum-h"
-      className="sticky top-24 col-[9/13] bg-paper p-7 shadow-[0_1px_0_#E5E0D8] max-lg:static max-lg:col-span-full max-lg:mt-12"
+      className="sticky top-24 col-[9/13] bg-surface p-7 shadow-[0_1px_0_#E5E0D8] max-lg:static max-lg:col-span-full max-lg:mt-12"
     >
       <div className="flex items-baseline justify-between gap-3">
         <h2 id="sum-h" className="art-title">
@@ -37,7 +37,7 @@ export default function OrderSummary({ selection, canEdit, onRemove, collect }) 
                   type="button"
                   onClick={() => onRemove(w.id)}
                   aria-label={`Remove ${w.title}`}
-                  className="h-7 cursor-pointer border-0 bg-transparent p-0 font-sans text-xs font-semibold text-cobalt"
+                  className="h-7 cursor-pointer border-0 bg-transparent p-0 font-sans text-xs font-semibold text-link"
                 >
                   Remove
                 </button>

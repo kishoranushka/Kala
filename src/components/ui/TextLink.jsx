@@ -8,8 +8,8 @@ const BASE =
   '[&_svg]:transition-transform [&_svg]:duration-500 [&_svg]:ease-gallery hover:[&_svg]:translate-x-[5px]';
 
 const TONES = {
-  ink: 'border-ink text-ink hover:border-cobalt hover:text-cobalt',
-  inverse: 'border-paper text-paper hover:border-paper hover:text-paper',
+  ink: 'border-primary text-primary hover:border-link hover:text-link',
+  inverse: 'border-on-primary text-on-primary hover:border-on-primary hover:text-on-primary',
 };
 
 /* underlined text link with an optional arrow; renders a button when given onClick and no `to` */

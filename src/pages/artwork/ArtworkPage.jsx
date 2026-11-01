@@ -63,7 +63,7 @@ function StatusActions({ work, inBag, adding, onAdd, onOpenBag }) {
             </Button>
             <span
               aria-hidden="true"
-              className="-mt-0.5 block h-0.5 origin-left bg-cobalt transition-transform duration-700 ease-gallery"
+              className="-mt-0.5 block h-0.5 origin-left bg-link transition-transform duration-700 ease-gallery"
               style={{ transform: `scaleX(${adding ? 1 : 0})` }}
             />
           </div>
@@ -192,7 +192,7 @@ function ArtworkView({ work }) {
                       type="button"
                       aria-pressed={i === viewIndex}
                       onClick={() => setViewIndex(i)}
-                      className="group flex cursor-pointer flex-col items-start gap-2 border-0 bg-transparent p-0 font-sans text-xs/4 font-semibold text-stone-ink aria-pressed:text-ink"
+                      className="group flex cursor-pointer flex-col items-start gap-2 border-0 bg-transparent p-0 font-sans text-xs/4 font-semibold text-muted aria-pressed:text-primary"
                     >
                       <span className="relative size-[72px] overflow-hidden shadow-[0_0_0_1px_#E5E0D8] transition-shadow duration-400 ease-gallery group-aria-pressed:shadow-[0_0_0_2px_#F6F2EB,0_0_0_3px_#22211F] max-sm:size-[60px]">
                         <img
@@ -210,7 +210,7 @@ function ArtworkView({ work }) {
                   ref={viewerButton}
                   type="button"
                   onClick={() => setViewer(true)}
-                  className="inline-flex h-11 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 font-sans text-sm font-semibold text-ink"
+                  className="inline-flex h-11 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 font-sans text-sm font-semibold text-primary"
                 >
                   <Icon name="expand" />
                   View full screen
@@ -231,7 +231,7 @@ function ArtworkView({ work }) {
               <p data-intro className="meta mt-3">
                 by {CONTACT.artist}
               </p>
-              <dl data-intro className="my-7 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 border-y border-divider py-5 text-sm/[22px] [&_dd]:m-0 [&_dd]:font-semibold [&_dt]:font-medium [&_dt]:text-stone-ink">
+              <dl data-intro className="my-7 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 border-y border-divider py-5 text-sm/[22px] [&_dd]:m-0 [&_dd]:font-semibold [&_dt]:font-medium [&_dt]:text-muted">
                 <dt>Medium</dt>
                 <dd>{work.medium}</dd>
                 <dt>Dimensions</dt>
@@ -274,7 +274,7 @@ function ArtworkView({ work }) {
               <p data-cap className="mt-7 max-w-[30ch] font-display text-[clamp(24px,2.4vw,32px)] leading-[1.35] italic">
                 {work.note}
               </p>
-              <div data-line className="mt-8 h-px w-16 bg-accent" />
+              <div data-line className="mt-8 h-px w-16 bg-secondary" />
             </div>
             <div className="col-[7/13] max-lg:col-span-full max-lg:mt-12">
               <div data-reveal data-noinner data-cursor="view" className="relative aspect-[4/5] overflow-hidden bg-wall shadow-hang">
@@ -343,7 +343,7 @@ function ArtworkView({ work }) {
                 data-cursor="view"
                 aria-label={`View ${r.title}`}
                 className={cx(
-                  'group flex flex-col gap-3.5 text-left text-paper',
+                  'group flex flex-col gap-3.5 text-left text-on-primary',
                   i === 1 && 'mt-[72px] max-lg:mt-12 max-sm:mt-0',
                   i === 2 && 'max-lg:hidden'
                 )}
@@ -358,7 +358,7 @@ function ArtworkView({ work }) {
                 </span>
                 <span className="flex items-baseline justify-between gap-3">
                   <span className="eyebrow">{plateLabel(r)}</span>
-                  <StatusBadge status={r.status} marker={false} tone="text-paper" />
+                  <StatusBadge status={r.status} marker={false} tone="text-on-primary" />
                 </span>
                 <span className="art-title">{r.title}</span>
               </Link>
@@ -369,7 +369,7 @@ function ArtworkView({ work }) {
 
       {/* ============================== MOBILE BUY BAR */}
       {available && !inBag && (
-        <div className="fixed right-0 bottom-0 left-0 z-55 hidden items-center justify-between gap-4 bg-paper px-5 py-3 shadow-[0_-12px_32px_-16px_rgba(34,33,31,.3)] max-lg:flex">
+        <div className="fixed right-0 bottom-0 left-0 z-55 hidden items-center justify-between gap-4 bg-surface px-5 py-3 shadow-[0_-12px_32px_-16px_rgba(34,33,31,.3)] max-lg:flex">
           <span className="flex min-w-0 flex-col">
             <span className="truncate font-display text-xl/6 font-medium">{work.title}</span>
             <span className="price">{work.price}</span>

@@ -24,7 +24,7 @@ export default function CommissionInviteSection() {
                 className="block size-full object-cover"
               />
             </div>
-            <p data-cap className="mt-4 text-[13px]/5 font-medium text-on-inverse-muted">
+            <p data-cap className="mt-4 text-[13px]/5 font-medium text-on-primary-muted">
               Child Portrait · personal pieces start with a conversation
             </p>
           </div>
@@ -38,15 +38,15 @@ export default function CommissionInviteSection() {
               text="A painting begins with a *conversation*."
               className="mt-5 max-w-[12ch] font-display text-[clamp(42px,5.2vw,76px)] leading-[1.02] font-light tracking-[-.015em]"
             />
-            <p data-cap className="mt-7 max-w-[46ch] text-lg/[30px] text-on-inverse-muted">
+            <p data-cap className="mt-7 max-w-[46ch] text-lg/[30px] text-on-primary-muted">
               A custom piece can start with almost anything. Share what you have and we’ll shape it together. I read every message personally.
             </p>
             <ol data-stagger className="mt-12 grid list-none grid-cols-2 gap-x-8 border-t border-hairline p-0 max-sm:grid-cols-1">
               {COMMISSION_WAYS.map((way, i) => (
                 <li key={way.title} className="border-b border-hairline py-[22px]">
-                  <span className="block text-xs font-semibold tracking-[.06em] text-on-inverse-muted tabular-nums">{pad2(i + 1)}</span>
+                  <span className="block text-xs font-semibold tracking-[.06em] text-on-primary-muted tabular-nums">{pad2(i + 1)}</span>
                   <span className="mt-1.5 block font-display text-[26px]/8 font-medium">{way.title}</span>
-                  <span className="mt-1 block text-sm/[22px] text-on-inverse-muted">{way.note}</span>
+                  <span className="mt-1 block text-sm/[22px] text-on-primary-muted">{way.note}</span>
                 </li>
               ))}
             </ol>
@@ -54,14 +54,14 @@ export default function CommissionInviteSection() {
               <Button variant="light" to="/commission" arrow data-magnetic data-cursor="talk">
                 Start a Commission
               </Button>
-              <span className="text-sm/[22px] text-on-inverse-muted">
+              <span className="text-sm/[22px] text-on-primary-muted">
                 or write to{' '}
                 <a href="#commission" data-cursor="talk" className="font-semibold underline">
                   {CONTACT.email}
                 </a>
               </span>
             </div>
-            <p data-cap className="mt-6 max-w-[52ch] text-xs/[18px] text-on-inverse-muted">
+            <p data-cap className="mt-6 max-w-[52ch] text-xs/[18px] text-on-primary-muted">
               Every commission is shaped in conversation. Pricing and timelines are agreed per project, and sending an idea doesn’t commit either of us.
             </p>
           </div>

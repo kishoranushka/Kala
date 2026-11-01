@@ -18,6 +18,31 @@ import bloomImg from '@/assets/images/just-bloom.jpg';
 import paintsImg from '@/assets/images/studio-paint-table.jpg';
 import lotusImg from '@/assets/images/studio-lotus-sketchbook.jpg';
 import artistPortraitImg from '@/assets/images/artist-portrait.png';
+import radhaBlueImg from '@/assets/images/radha-and-krishna-in-blue.jpg';
+import exhibitionImg from '@/assets/images/exhibition-wall.jpg';
+import buddhaImg from '@/assets/images/buddha-with-lotus.jpg';
+import sunflowerImg from '@/assets/images/sunflower.jpg';
+import butterflyImg from '@/assets/images/blue-butterfly.jpg';
+import elephantImg from '@/assets/images/little-elephant.jpg';
+import peacockImg from '@/assets/images/peacock.jpg';
+import artistPeacockImg from '@/assets/images/artist-with-peacock.jpg';
+import littleBuddhaImg from '@/assets/images/little-buddha.jpg';
+import littleBuddhaOutdoorsImg from '@/assets/images/little-buddha-outdoors.jpg';
+import catImg from '@/assets/images/happy-cat.jpg';
+import lightningImg from '@/assets/images/lightning.jpg';
+import bicycleImg from '@/assets/images/bicycle-with-flowers.jpg';
+import childSketchImg from '@/assets/images/child-sketch.jpg';
+import faceCloseImg from '@/assets/images/face-paint-closeup.jpg';
+import faceRoseImg from '@/assets/images/face-paint-blue-rose.jpg';
+import gownImg from '@/assets/images/costume-rose-gown.jpg';
+import jacketBackImg from '@/assets/images/jacket-butterfly-back.jpg';
+import jacketWornImg from '@/assets/images/jacket-worn.jpg';
+import jacketBenchImg from '@/assets/images/jacket-park-bench.jpg';
+import paintingMuralImg from '@/assets/images/painting-mural.jpg';
+import artistParkImg from '@/assets/images/artist-park.jpg';
+import artistPotImg from '@/assets/images/artist-painted-pot.jpg';
+import artistCobaltImg from '@/assets/images/artist-cobalt-wall.jpg';
+import artistWhiteImg from '@/assets/images/artist-white-top.jpg';
 
 import chalkFilm from '@/assets/films/think-out-of-the-box.mp4';
 import chalkPoster from '@/assets/films/think-out-of-the-box-poster.jpg';
@@ -55,11 +80,11 @@ export const STATUS = {
 };
 
 export const COLLECTIONS = [
-  { id: 'devotional', num: 'I', title: 'Devotional', lead: 'krishna', intro: '[Two or three lines in your words about the devotional paintings: what draws you to these figures and how you paint them.]' },
+  { id: 'devotional', num: 'I', title: 'Devotional', lead: 'radhakrishna', intro: '[Two or three lines in your words about the devotional paintings: what draws you to these figures and how you paint them.]' },
   { id: 'mandala', num: 'II', title: 'Mandala Studies', lead: 'om', intro: '[Two or three lines in your words about the mandala and dot-work pieces.]' },
   { id: 'portraits', num: 'III', title: 'Portraits', lead: 'child', intro: '[Two or three lines in your words about portraits and personal pieces.]' },
   { id: 'murals', num: 'IV', title: 'Murals', lead: 'mural', intro: '[Two or three lines in your words about painting walls: homes, schools, studios.]' },
-  { id: 'small', num: 'V', title: 'Small Works', lead: 'escape', intro: '[Two or three lines in your words about little canvases and sketchbook pages: quick, personal, often funny.]' },
+  { id: 'small', num: 'V', title: 'Small Works', lead: 'cat', intro: '[Two or three lines in your words about little canvases and sketchbook pages: quick, personal, often funny.]' },
 ];
 
 export const WORKS = [
@@ -153,6 +178,121 @@ export const WORKS = [
     note: '[A few lines in your words about the sketchbook and the lettering.]',
     details: [{ label: 'Detail I', origin: '52% 48%', scale: 2.2 }, { label: 'Detail II', origin: '30% 70%', scale: 2.4 }],
   },
+  {
+    id: 'radhakrishna', plate: '12', title: 'Radha and Krishna in Blue', collection: 'devotional', status: 'inquiry',
+    price: '₹ 00,000', medium: '[Medium]', size: '[Size]', year: '[Year]', framing: 'Framed, black frame with white mount',
+    img: radhaBlueImg, w: 1120, h: 1579,
+    room: { img: exhibitionImg, w: 900, h: 1600, label: 'At the exhibition' },
+    alt: 'Radha with closed eyes, a red tilak and a crown of golden dots, a sweep of cream and gold behind her, and a small blue Krishna playing the flute in the corner, on a bright blue ground',
+    note: '[A few lines in your words: what this painting is about, and where it was shown.]',
+    details: [{ label: 'Detail I', origin: '56% 44%', scale: 2.2 }, { label: 'Detail II', origin: '18% 22%', scale: 2.6 }],
+  },
+  {
+    id: 'buddha', plate: '13', title: 'Buddha with Lotus', collection: 'devotional', status: 'available',
+    price: '₹ 00,000', medium: 'Acrylic on canvas', size: '[Size]', year: '2022', framing: '[Framing]',
+    img: buddhaImg, w: 1148, h: 1400,
+    alt: 'Half of a serene green Buddha face with closed eyes and a long blue earlobe, a coral lotus below, on a dark green shimmering ground, signed Anushka 28/06/22',
+    note: '[A few lines in your words about this painting.]',
+    details: [{ label: 'Detail I', origin: '30% 30%', scale: 2.2 }, { label: 'Signature', origin: '88% 92%', scale: 3 }],
+  },
+  {
+    id: 'sunflower', plate: '14', title: 'Sunflower', collection: 'small', status: 'available',
+    price: '₹ 00,000', medium: '[Medium]', size: '[Size]', year: '[Year]', framing: '[Framing]',
+    img: sunflowerImg, w: 1290, h: 1800,
+    alt: 'A close-up sunflower: long saffron and lemon petals around a dark seed head flecked with green, on deep navy',
+    note: '[A few lines in your words about this painting.]',
+    details: [{ label: 'Detail I', origin: '30% 64%', scale: 2.2 }, { label: 'Detail II', origin: '66% 40%', scale: 2.2 }],
+  },
+  {
+    id: 'butterfly', plate: '15', title: 'Blue Butterfly', collection: 'small', status: 'available',
+    price: '₹ 00,000', medium: '[Medium]', size: '[Size]', year: '[Year]', framing: '[Framing]',
+    img: butterflyImg, w: 1209, h: 1800,
+    alt: 'A large black butterfly with blue-and-white wing panels and dotted edges, resting by blue tulips on bands of green',
+    note: '[A few lines in your words about this painting.]',
+    details: [{ label: 'Detail I', origin: '50% 40%', scale: 2.2 }, { label: 'Detail II', origin: '76% 84%', scale: 2.4 }],
+  },
+  {
+    id: 'elephant', plate: '16', title: 'Little Elephant', collection: 'small', status: 'available',
+    price: '₹ 00,000', medium: 'Watercolour on paper', size: '[Size]', year: '[Year]', framing: '[Framing]',
+    img: elephantImg, w: 1077, h: 1400,
+    alt: 'A watercolour baby elephant in blue with a yellow ear, curled up with its trunk raised, blowing three red hearts, over a blue sky melting into orange and pink',
+    note: '[A few lines in your words about this painting.]',
+    details: [{ label: 'Detail I', origin: '50% 40%', scale: 2.2 }, { label: 'Detail II', origin: '58% 26%', scale: 2.6 }],
+  },
+  {
+    id: 'peacock', plate: '17', title: 'Peacock', collection: 'small', status: 'available',
+    price: '₹ 00,000', medium: '[Medium]', size: '[Size]', year: '[Year]', framing: '[Framing]',
+    img: peacockImg, w: 644, h: 744,
+    room: { img: artistPeacockImg, w: 1139, h: 1600, label: 'In the artist’s hands' },
+    alt: 'A royal-blue peacock with a golden beak against a yellow ground and swirling green tail feathers with blue-and-orange eyes',
+    note: '[A few lines in your words about this painting.]',
+    details: [{ label: 'Detail I', origin: '62% 56%', scale: 2 }, { label: 'Detail II', origin: '80% 24%', scale: 2.2 }],
+  },
+  {
+    id: 'babybuddha', plate: '18', title: 'Little Buddha', collection: 'small', status: 'available',
+    price: '₹ 00,000', medium: '[Medium]', size: '[Size]', year: '[Year]', framing: '[Framing]',
+    img: littleBuddhaImg, w: 1264, h: 1400,
+    room: { img: littleBuddhaOutdoorsImg, w: 1125, h: 1500, label: 'Painted outdoors' },
+    alt: 'A smiling little monk in blue robes sitting on a pink lotus, white rays around him on a sky-blue ground, signed Anushka',
+    note: '[A few lines in your words about this painting.]',
+    details: [{ label: 'Detail I', origin: '50% 34%', scale: 2.2 }, { label: 'Signature', origin: '86% 94%', scale: 3 }],
+  },
+  {
+    id: 'cat', plate: '19', title: 'Happy Cat', collection: 'small', status: 'available',
+    price: '₹ 00,000', medium: '[Medium] on wood', size: '[Size]', year: '2024', framing: '[Framing]',
+    img: catImg, w: 1222, h: 1400,
+    alt: 'A grinning ginger cat with closed eyes, a red heart nose and long white whiskers, sitting tall against a speckled cobalt-blue ground, signed Anushka',
+    note: '[A few lines in your words about this painting.]',
+    details: [{ label: 'Detail I', origin: '50% 34%', scale: 2.2 }, { label: 'Signature', origin: '88% 90%', scale: 3 }],
+  },
+  {
+    id: 'lightning', plate: '20', title: 'Lightning', collection: 'small', status: 'available',
+    price: '₹ 00,000', medium: 'Watercolour in a sketchbook', size: '[Size]', year: '2021', framing: 'Unframed',
+    img: lightningImg, w: 1080, h: 1080,
+    alt: 'A sketchbook page of branching yellow-white lightning over a smoky orange and red sky, with paint tubes and brushes beside it',
+    note: '[A few lines in your words about this painting.]',
+    details: [{ label: 'Detail I', origin: '50% 46%', scale: 2 }, { label: 'Signature', origin: '72% 86%', scale: 2.6 }],
+  },
+  {
+    id: 'bicycle', plate: '21', title: 'Bicycle with Flowers', collection: 'small', status: 'available',
+    price: '₹ 00,000', medium: '[Medium]', size: '[Size]', year: '2021', framing: 'Unframed',
+    img: bicycleImg, w: 1080, h: 607,
+    alt: 'A rust-orange bicycle with a basket of white and blue flowers against a deep blue wash, styled with foam roses and brushes',
+    note: '[A few lines in your words about this painting.]',
+    details: [{ label: 'Detail I', origin: '50% 30%', scale: 2.2 }, { label: 'Detail II', origin: '62% 72%', scale: 2.2 }],
+  },
+];
+
+/* photographs of the artist and her work off the canvas (real, not artworks) */
+export const PHOTOS = {
+  exhibition: { img: exhibitionImg, w: 900, h: 1600, alt: 'Two of Anushka’s framed paintings, Radha and Krishna above an orange-and-blue Ganesha, hung at an exhibition beside her artist card' },
+  withPeacock: { img: artistPeacockImg, w: 1139, h: 1600, alt: 'Anushka Kishor smiling, holding up her peacock painting, with more of her paintings spread on the table in front of her' },
+  outdoors: { img: littleBuddhaOutdoorsImg, w: 1125, h: 1500, alt: 'Anushka sitting on a rock outdoors, holding up a small painting of a smiling monk on a lotus' },
+  childSketch: { img: childSketchImg, alt: 'A red line sketch of a child with hands on cheeks on a white canvas board, brushes and paints on the desk behind' },
+  faceClose: { img: faceCloseImg, alt: 'Close-up of Anushka in face paint: blue glitter across one cheek, bold black eyeliner and lips, painted stitches at the corner of the mouth' },
+  faceRose: { img: faceRoseImg, alt: 'Anushka in the same face paint and black gloves, holding a blue rose' },
+  gown: { img: gownImg, alt: 'Anushka in a corridor, looking back over her shoulder, wearing a black gown with a long sheer train covered in black roses' },
+  jacketBack: { img: jacketBackImg, alt: 'The back of an olive jacket hand-painted with a large monarch butterfly in orange, yellow and teal' },
+  jacketWorn: { img: jacketWornImg, alt: 'Anushka wearing the olive jacket off one shoulder, a painted butterfly on the sleeve and a painted leaf collar' },
+  jacketBench: { img: jacketBenchImg, alt: 'Anushka sitting on a park bench with the painted butterfly jacket draped beside her' },
+  paintingMural: { img: paintingMuralImg, alt: 'Anushka in a red jacket painting a colourful mandala mural high on a white wall' },
+  park: { img: artistParkImg, alt: 'Anushka sitting on a stone post in a park, in a black top and wide blue jeans, smiling, with an ivy-covered slope behind her' },
+  pot: { img: artistPotImg, alt: 'Anushka holding a hand-painted pot in red, yellow and black, in front of a geometric wall painted in pink, sky blue, grey and black' },
+  cobalt: { img: artistCobaltImg, alt: 'Anushka smiling in front of a cobalt-blue wall, a marigold tucked behind her ear, wearing her hand-painted olive jacket' },
+  whiteTop: { img: artistWhiteImg, alt: 'Anushka smiling at the camera in a white top, owl earrings, against a pale wall' },
+};
+
+/* Instagram reels — swap each url for the reel's own link (instagram.com/reel/…) */
+const REEL_URL = 'https://www.instagram.com/chaotic_kishor/reels/';
+export const REELS = [
+  { cover: littleBuddhaOutdoorsImg, title: '[Reel title]', url: REEL_URL, alt: 'Anushka outdoors holding a small painting of a smiling monk on a lotus' },
+  { cover: childSketchImg, title: '[Reel title]', url: REEL_URL, alt: 'A red line sketch of a child with hands on cheeks on a white canvas, brushes and paints on the desk' },
+  { cover: faceCloseImg, title: '[Reel title]', url: REEL_URL, alt: 'Close-up of Anushka in face paint: blue glitter on one cheek, bold black liner and lips' },
+  { cover: elephantImg, title: '[Reel title]', url: REEL_URL, alt: 'Watercolour of a little blue elephant blowing hearts' },
+  { cover: paintingMuralImg, title: '[Reel title]', url: REEL_URL, alt: 'Anushka in a red jacket painting a colourful mandala mural high on a white wall' },
+  { cover: gownImg, title: '[Reel title]', url: REEL_URL, alt: 'Anushka in a corridor in a black gown with a long sheer train covered in black roses' },
+  { cover: jacketWornImg, title: '[Reel title]', url: REEL_URL, alt: 'Anushka wearing an olive jacket with a hand-painted monarch butterfly on the sleeve' },
+  { cover: buddhaImg, title: '[Reel title]', url: REEL_URL, alt: 'Green Buddha with a coral lotus' },
 ];
 
 /* motion studies: silent films made from the photographs above (not footage) */

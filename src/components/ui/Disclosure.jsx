@@ -8,7 +8,7 @@ export default function Disclosure({ title, children }) {
         {title}
         <Icon name="plus" size={18} className="transition-transform duration-500 ease-gallery group-open:rotate-45" />
       </summary>
-      <p className="mb-5 max-w-[52ch] text-sm/[22px] text-ink-soft">{children}</p>
+      <p className="mb-5 max-w-[52ch] text-sm/[22px] text-soft">{children}</p>
     </details>
   );
 }

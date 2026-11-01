@@ -86,7 +86,7 @@ export default function AtlasSection() {
               01 · The Art Atlas
             </p>
             <SplitWords id="atlas-h" text="A personal atlas of *paintings*." className={cx(HOME_H2, 'max-w-[13ch] font-normal')} />
-            <p data-cap className="mt-7 max-w-[44ch] text-lg/[30px] text-ink-soft">
+            <p data-cap className="mt-7 max-w-[44ch] text-lg/[30px] text-soft">
               Wander by collection. Every work shows its status, so you always know what can come home with you.
             </p>
           </div>
@@ -109,13 +109,13 @@ export default function AtlasSection() {
                       aria-pressed={on}
                       className={cx(
                         'flex min-h-14 w-full cursor-pointer items-center gap-5 border-0 bg-transparent p-0 text-left font-display text-[26px]/8 transition-colors duration-400 ease-gallery',
-                        on ? 'font-medium text-cobalt' : 'font-normal text-ink'
+                        on ? 'font-medium text-link' : 'font-normal text-primary'
                       )}
                     >
-                      <span className="w-7 font-sans text-xs font-semibold tracking-[.06em] text-stone-ink tabular-nums">{pad2(i + 1)}</span>
+                      <span className="w-7 font-sans text-xs font-semibold tracking-[.06em] text-muted tabular-nums">{pad2(i + 1)}</span>
                       <span className={cx('flex-1', on && 'italic')}>{f.label}</span>
-                      <span className="font-sans text-[13px] font-medium text-stone-ink tabular-nums">{pad2(countFor(f.id))}</span>
-                      <span aria-hidden="true" className={cx('h-px bg-cobalt transition-[width] duration-600 ease-gallery', on ? 'w-7' : 'w-0')} />
+                      <span className="font-sans text-[13px] font-medium text-muted tabular-nums">{pad2(countFor(f.id))}</span>
+                      <span aria-hidden="true" className={cx('h-px bg-link transition-[width] duration-600 ease-gallery', on ? 'w-7' : 'w-0')} />
                     </button>
                   </li>
                 );
@@ -133,7 +133,7 @@ export default function AtlasSection() {
           ))}
 
           <div data-speed="0.6" data-stagger className="col-[8/13] flex flex-col gap-7 self-center pl-[10%] max-lg:col-span-full max-lg:pl-0">
-            <p className="max-w-[20ch] font-display text-[30px]/10 text-ink italic">Every artwork begins with curiosity.</p>
+            <p className="max-w-[20ch] font-display text-[30px]/10 text-primary italic">Every artwork begins with curiosity.</p>
             <div className="flex flex-wrap gap-8">
               <TextLink to="/shop" arrow data-cursor="explore">
                 Browse all works

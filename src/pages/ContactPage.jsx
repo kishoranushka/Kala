@@ -18,7 +18,7 @@ const WAYS = [
 ];
 
 const ROUTES = [
-  { to: '/commission', cursor: 'talk', label: 'Commission', tone: 'text-clay-ink!', title: 'A painting or wall, made for you', note: 'The commission form asks the right questions: space, size, timeline.' },
+  { to: '/commission', cursor: 'talk', label: 'Commission', tone: 'text-secondary!', title: 'A painting or wall, made for you', note: 'The commission form asks the right questions: space, size, timeline.' },
   { to: '/order', cursor: 'explore', label: 'Order', tone: 'text-success!', title: 'Buy an available original', note: 'Choose works, add your details, send an order request.' },
   { to: '/shop', cursor: 'explore', label: 'Shop', title: 'Browse every work', note: 'Available, sold and archived, all marked clearly.' },
 ];
@@ -30,7 +30,7 @@ const FAQ = [
   { q: 'Do you paint walls outside your city?', a: '[Your answer about travelling for murals.]' },
 ];
 
-const ROW = 'grid min-h-[72px] grid-cols-[40px_120px_1fr_auto] items-center gap-4 text-ink max-sm:grid-cols-[28px_1fr] max-sm:gap-y-0.5 max-sm:py-3';
+const ROW = 'grid min-h-[72px] grid-cols-[40px_120px_1fr_auto] items-center gap-4 text-primary max-sm:grid-cols-[28px_1fr] max-sm:gap-y-0.5 max-sm:py-3';
 
 function validate({ name = '', email = '', message = '' }) {
   const errors = {};
@@ -54,13 +54,13 @@ function MandalaO() {
     >
       <g data-spin="24">
         <circle r="56" stroke="#22211F" />
-        <circle r="44" strokeWidth="5" strokeDasharray="0 11.5" strokeLinecap="round" className="stroke-accent" />
+        <circle r="44" strokeWidth="5" strokeDasharray="0 11.5" strokeLinecap="round" className="stroke-secondary" />
         <path
           d="M0,-40 C10,-30 10,-20 0,-12 C-10,-20 -10,-30 0,-40Z M0,40 C10,30 10,20 0,12 C-10,20 -10,30 0,40Z M-40,0 C-30,10 -20,10 -12,0 C-20,-10 -30,-10 -40,0Z M40,0 C30,10 20,10 12,0 C20,-10 30,-10 40,0Z"
           stroke="#22211F"
         />
       </g>
-      <circle r="7" className="fill-accent" stroke="none" />
+      <circle r="7" className="fill-secondary" stroke="none" />
     </svg>
   );
 }
@@ -159,7 +159,7 @@ export default function ContactPage() {
               const content = (
                 <>
                   <Icon name={way.icon} />
-                  <span className="text-xs font-semibold tracking-[.12em] text-stone-ink uppercase max-sm:col-start-2">{way.label}</span>
+                  <span className="text-xs font-semibold tracking-[.12em] text-muted uppercase max-sm:col-start-2">{way.label}</span>
                   <span className="font-display text-[clamp(22px,2.4vw,32px)] leading-[1.1] max-sm:col-start-2">{way.value}</span>
                   {way.href ? <Icon name="arrow" size={18} className="max-sm:hidden" /> : <span />}
                 </>
@@ -167,7 +167,7 @@ export default function ContactPage() {
               return (
                 <li key={way.label} className="border-b border-divider">
                   {way.href ? (
-                    <a href={way.href} className={`${ROW} transition-[padding] duration-600 ease-gallery hover:pl-3 hover:text-ink`}>
+                    <a href={way.href} className={`${ROW} transition-[padding] duration-600 ease-gallery hover:pl-3 hover:text-primary`}>
                       {content}
                     </a>
                   ) : (
@@ -192,7 +192,7 @@ export default function ContactPage() {
       <section id="message" aria-labelledby="msg-h" className="pt-[clamp(48px,6vw,88px)] pb-[clamp(96px,11vw,160px)]">
         <div className="wrap">
           <div className="grid-12 items-start">
-            <div data-cap className="col-[1/8] bg-paper p-[clamp(28px,4vw,56px)] max-lg:col-span-full max-sm:-mx-5">
+            <div data-cap className="col-[1/8] bg-surface p-[clamp(28px,4vw,56px)] max-lg:col-span-full max-sm:-mx-5">
               <MessageForm />
             </div>
 
@@ -203,7 +203,7 @@ export default function ContactPage() {
                   key={r.to}
                   to={r.to}
                   data-cursor={r.cursor}
-                  className="flex flex-col gap-2.5 border border-divider bg-ivory p-7 text-ink transition-[border-color,transform] duration-600 ease-gallery hover:-translate-y-1 hover:border-ink hover:text-ink"
+                  className="flex flex-col gap-2.5 border border-divider bg-page p-7 text-primary transition-[border-color,transform] duration-600 ease-gallery hover:-translate-y-1 hover:border-primary hover:text-primary"
                 >
                   <span className={`eyebrow ${r.tone ?? ''}`}>{r.label}</span>
                   <b className="font-display text-[28px]/8 font-normal">{r.title}</b>

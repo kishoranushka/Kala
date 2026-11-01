@@ -6,6 +6,31 @@ const STROKED = {
       <path d="M14 6l6 6-6 6" />
     </>
   ),
+  arrowLeft: (
+    <>
+      <path d="M20 12H4" />
+      <path d="M10 6l-6 6 6 6" />
+    </>
+  ),
+  cart: (
+    <>
+      <path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.76L21 8H6.2" />
+      <circle cx="9.5" cy="20" r="1.3" />
+      <circle cx="17" cy="20" r="1.3" />
+    </>
+  ),
+  home: (
+    <>
+      <path d="M4 20V8l8-4 8 4v12" />
+      <path d="M9 20v-6h6v6" />
+    </>
+  ),
+  reel: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+    </>
+  ),
   arrowDown: (
     <>
       <path d="M12 4v16" />
@@ -67,8 +92,8 @@ const STROKED = {
   ),
   youtube: (
     <>
-      <rect x="2" y="5" width="20" height="14" rx="4" />
-      <path d="M10 9l5 3-5 3V9Z" />
+      <rect x="2.5" y="5" width="19" height="14" rx="4" />
+      <path d="M10 9.5v5l4.5-2.5z" fill="currentColor" stroke="none" />
     </>
   ),
   pin: (

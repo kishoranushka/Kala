@@ -6,7 +6,7 @@ import TextLink from '@/components/ui/TextLink';
 import { SplitWords } from '@/components/ui/Typography';
 import { HOME_H2, LEDGER_WORKS } from '../homeContent';
 
-const TH = 'border-b border-line pr-3 pb-3.5 text-left text-[11px]/4 font-semibold tracking-[.14em] text-stone-ink uppercase';
+const TH = 'border-b border-line pr-3 pb-3.5 text-left text-[11px]/4 font-semibold tracking-[.14em] text-muted uppercase';
 const TD = 'border-b border-divider py-4 pr-3 align-middle max-sm:py-3.5 max-sm:pr-2.5';
 
 /* 04 · The archive — a featured mural and the ledger of works that have found their walls */
@@ -23,7 +23,7 @@ export default function ArchivePreviewSection() {
               04 · The archive
             </p>
             <SplitWords id="archive-h" text="The *uncollectable* collection." className={cx(HOME_H2, 'max-w-[12ch] font-normal')} />
-            <p data-cap className="mt-6 max-w-[40ch] text-lg/[30px] text-ink-soft">
+            <p data-cap className="mt-6 max-w-[40ch] text-lg/[30px] text-soft">
               Some paintings have already found their walls. They stay here as part of the story, kept and numbered.
             </p>
             <figure className="mt-14">
@@ -54,9 +54,9 @@ export default function ArchivePreviewSection() {
                 <tbody data-stagger>
                   {ledger.map((work) => (
                     <tr key={work.id} className="group transition-colors duration-500 ease-gallery hover:bg-[#EFEAE2]">
-                      <td className={cx(TD, 'text-xs font-semibold tracking-[.06em] text-stone-ink tabular-nums')}>{work.archiveNo}</td>
+                      <td className={cx(TD, 'text-xs font-semibold tracking-[.06em] text-muted tabular-nums')}>{work.archiveNo}</td>
                       <td className={TD}>
-                        <a href="#archive" className="flex items-center gap-4 text-ink hover:text-cobalt">
+                        <a href="#archive" className="flex items-center gap-4 text-primary hover:text-link">
                           <img
                             src={work.img}
                             alt=""
@@ -68,8 +68,8 @@ export default function ArchivePreviewSection() {
                           <span className="font-display text-xl/6 font-medium">{work.title}</span>
                         </a>
                       </td>
-                      <td className={cx(TD, 'text-ink-soft max-sm:hidden')}>{getCollection(work.collection).title}</td>
-                      <td className={cx(TD, 'text-stone-ink max-sm:hidden')}>[Year]</td>
+                      <td className={cx(TD, 'text-soft max-sm:hidden')}>{getCollection(work.collection).title}</td>
+                      <td className={cx(TD, 'text-muted max-sm:hidden')}>[Year]</td>
                       <td className={TD}>
                         <StatusBadge status={work.status} leading="leading-[inherit]" />
                       </td>
@@ -78,14 +78,14 @@ export default function ArchivePreviewSection() {
                 </tbody>
               </table>
             </div>
-            <p data-cap className="mt-5 text-xs/[18px] text-stone-ink">
+            <p data-cap className="mt-5 text-xs/[18px] text-muted">
               Archive numbers and years are working placeholders.
             </p>
             <div data-cap className="mt-10 flex flex-wrap items-center gap-8">
               <TextLink to="/archive" arrow>
                 Enter the archive
               </TextLink>
-              <span className="text-sm/[22px] text-ink-soft">
+              <span className="text-sm/[22px] text-soft">
                 Love a sold piece?{' '}
                 <a href="#commission" data-cursor="talk" className="font-semibold">
                   Commission something similar

@@ -128,7 +128,7 @@ function EnquiryForm() {
           aria-expanded={more}
           aria-controls="more-fields"
           onClick={() => setMore((m) => !m)}
-          className="group inline-flex min-h-11 cursor-pointer items-center gap-2.5 border-0 border-b border-ink bg-transparent p-0 font-sans text-sm font-semibold text-ink"
+          className="group inline-flex min-h-11 cursor-pointer items-center gap-2.5 border-0 border-b border-primary bg-transparent p-0 font-sans text-sm font-semibold text-primary"
         >
           Add project details (optional)
           <Icon name="plus" size={16} strokeWidth={1.75} className="transition-transform duration-500 ease-gallery group-aria-expanded:rotate-45" />
@@ -168,11 +168,11 @@ function EnquiryForm() {
             <Input id="f-space" name="space" type="text" placeholder="Living room, café wall…" />
           </Field>
         </FieldRow>
-        <div className="flex flex-col items-start gap-2 rounded-[2px] border border-dashed border-line bg-ivory p-5">
+        <div className="flex flex-col items-start gap-2 rounded-[2px] border border-dashed border-line bg-page p-5">
           <label htmlFor="f-files" className="text-[13px]/5 font-semibold">
             Reference images
           </label>
-          <span className="text-xs/[18px] text-stone-ink">Photos of the space, sketches, paintings you love. JPG or PNG.</span>
+          <span className="text-xs/[18px] text-muted">Photos of the space, sketches, paintings you love. JPG or PNG.</span>
           <input
             id="f-files"
             name="files"
@@ -214,7 +214,7 @@ export default function CommissionPage() {
         mandala={<PageMandala className="-bottom-[380px] -left-[300px] w-[760px] opacity-55" />}
       >
         <div className="col-[1/7] self-center max-lg:col-span-full">
-          <p data-intro className="eyebrow text-clay-ink!">
+          <p data-intro className="eyebrow text-secondary!">
             Commissions · Begin here
           </p>
           <h1 id="ct-h" data-intro-line className="heading-1 mt-5">
@@ -261,9 +261,9 @@ export default function CommissionPage() {
           <ol data-stagger className="mt-[clamp(48px,6vw,80px)] grid list-none grid-cols-4 gap-8 p-0 max-lg:grid-cols-2 max-lg:gap-y-10 max-sm:grid-cols-1">
             {STEPS.map((step, i) => (
               <li key={step.title} className="relative pt-7 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-line">
-                <span className="font-display text-[44px] leading-none text-accent italic">0{i + 1}</span>
+                <span className="font-display text-[44px] leading-none text-secondary italic">0{i + 1}</span>
                 <p className="art-title mt-4">{step.title}</p>
-                <p className="meta mt-2 text-sm/[22px] text-ink-soft!">{step.note}</p>
+                <p className="meta mt-2 text-sm/[22px] text-soft!">{step.note}</p>
               </li>
             ))}
           </ol>
@@ -281,8 +281,8 @@ export default function CommissionPage() {
               <p className="eyebrow">Prefer to write directly?</p>
               <ul className="mt-5 list-none border-t border-divider p-0">
                 {[
-                  ['Email', <a key="e" href="#enquiry" className="font-display text-2xl/[30px] text-ink hover:text-cobalt">{CONTACT.email}</a>],
-                  ['Instagram', <a key="i" href="#enquiry" className="font-display text-2xl/[30px] text-ink hover:text-cobalt">{CONTACT.instagram}</a>],
+                  ['Email', <a key="e" href="#enquiry" className="font-display text-2xl/[30px] text-primary hover:text-link">{CONTACT.email}</a>],
+                  ['Instagram', <a key="i" href="#enquiry" className="font-display text-2xl/[30px] text-primary hover:text-link">{CONTACT.instagram}</a>],
                   ['Studio', <span key="s" className="font-display text-2xl/[30px]">{CONTACT.location}</span>],
                 ].map(([label, value]) => (
                   <li key={label} className="flex flex-col gap-0.5 border-b border-divider py-4">
@@ -294,7 +294,7 @@ export default function CommissionPage() {
               <p className="mt-8 max-w-[20ch] font-display text-[26px]/[34px] italic">I read every message personally.</p>
             </aside>
 
-            <div data-cap className="col-[6/13] bg-paper p-[clamp(28px,4vw,56px)] shadow-[0_1px_0_#E5E0D8] max-lg:col-span-full max-lg:mt-12 max-sm:-mx-5">
+            <div data-cap className="col-[6/13] bg-surface p-[clamp(28px,4vw,56px)] shadow-[0_1px_0_#E5E0D8] max-lg:col-span-full max-lg:mt-12 max-sm:-mx-5">
               <EnquiryForm />
             </div>
           </div>

@@ -1,7 +1,73 @@
 @import "tailwindcss";
 
-/* ------------------------------------------------------------------ KALA design tokens */
+/* ==================================================================================
+   KALA THEME — change the brand here and it updates everywhere.
+
+   Every colour is a role, not a paint name, and each one becomes Tailwind classes:
+   --color-primary  ->  bg-primary, text-primary, border-primary, fill-primary, ...
+
+   primary            main ink: headlines, body text, dark buttons, dark sections, footer
+   primary-hover      a primary fill being hovered
+   on-primary         text and icons sitting on a primary fill
+   on-primary-muted   quieter text on a primary fill (footer meta, captions)
+   secondary          brand accent: section labels, italic accent words, button hover fill
+   secondary-on-dark  the accent where it sits on a primary fill
+   page               page background
+   surface            raised panels: cards, forms, drawers, dialogs
+   surface-alt        sunken sections (the wall-murals band)
+   mat                behind artwork on cards
+   soft / muted       secondary body copy / captions, labels and metadata
+   link               inline links, focus rings, selected states
+   ================================================================================== */
 @theme {
+  /* ---------- brand colours ---------- */
+  --color-primary: #22211f;
+  --color-primary-hover: #34322e;
+  --color-on-primary: #fffefa;
+  --color-on-primary-muted: #b9b2a6;
+  --color-secondary: #c9531f;
+  --color-secondary-on-dark: #e8936a;
+
+  /* ---------- surfaces ---------- */
+  --color-page: #f6f2eb;
+  --color-surface: #fffefa;
+  --color-surface-alt: #ede5d8;
+  --color-mat: #ece5d9;
+  --color-mat-hover: #e6ded0;
+  --color-wall: #eae4da;
+
+  /* ---------- text + lines ---------- */
+  --color-soft: #4a4741;
+  --color-muted: #6b645a;
+  --color-divider: #e5e0d8;
+  --color-line: #8f887d;
+  --color-hairline: rgb(255 254 250 / 0.18);
+
+  /* ---------- interaction ---------- */
+  --color-link: #294dce;
+  --color-link-hover: #1f3ba6;
+  --color-link-wash: #e8ecfa;
+
+  /* ---------- status (always paired with a word) ---------- */
+  --color-success: #2f6b4a;
+  --color-success-wash: #e3efe6;
+  --color-warning: #8a5a12;
+  --color-warning-wash: #f6ebd6;
+  --color-error: #b3261e;
+  --color-error-wash: #f8e4e1;
+
+  /* ---------- decorative ---------- */
+  --color-oak: #c9b79c; /* line-mandala strokes, frame edges */
+  --color-sand: #bfae93; /* line mandala on sand sections */
+  --color-film: #1b1a18;
+
+  /* ---------- fonts ---------- */
+  --font-display: "Cormorant Garamond", "Cormorant", Garamond, "Times New Roman", serif;
+  --font-sans: Manrope, "Helvetica Neue", Arial, sans-serif;
+
+  /* ---------- corners: rounded-ui on controls, cards and artwork ---------- */
+  --radius-ui: 6px;
+
   /* desktop-first breakpoints, used as max-* variants (max-lg: = under 1024px) */
   --breakpoint-*: initial;
   --breakpoint-xs: 421px;
@@ -10,34 +76,6 @@
   --breakpoint-lg: 1024px;
   --breakpoint-wide: 1181px;
   --breakpoint-xl: 1200px;
-
-  --color-ivory: #f6f2eb;
-  --color-paper: #fffefa;
-  --color-ink: #22211f;
-  --color-ink-soft: #4a4741;
-  --color-stone-ink: #6b645a;
-  --color-divider: #e5e0d8;
-  --color-line: #8f887d;
-  --color-cobalt: #294dce;
-  --color-cobalt-press: #1f3ba6;
-  --color-cobalt-wash: #e8ecfa;
-  --color-clay-ink: #9a5434;
-  --color-on-inverse-muted: #b9b2a6;
-  --color-success: #2f6b4a;
-  --color-success-wash: #e3efe6;
-  --color-warning: #8a5a12;
-  --color-warning-wash: #f6ebd6;
-  --color-error: #b3261e;
-  --color-error-wash: #f8e4e1;
-  --color-wall: #eae4da;
-  --color-oak: #c9b79c;
-  --color-chapter: #22211f;
-  --color-accent: #c9531f;
-  --color-film: #1b1a18;
-  --color-hairline: rgb(255 254 250 / 0.18);
-
-  --font-display: "Cormorant Garamond", "Cormorant", Garamond, "Times New Roman", serif;
-  --font-sans: Manrope, "Helvetica Neue", Arial, sans-serif;
 
   /* named sizes set only the size; line height is inherited unless given (text-sm/[22px]) */
   --text-xs: 12px;
@@ -58,7 +96,9 @@
   --shadow-hang: 0 1px 2px rgba(34, 33, 31, 0.08), 0 22px 40px -18px rgba(34, 33, 31, 0.38);
   --shadow-float: 0 2px 4px rgba(34, 33, 31, 0.06), 0 60px 90px -40px rgba(34, 33, 31, 0.55);
   --shadow-pop: 0 12px 32px -10px rgba(34, 33, 31, 0.22);
-  --shadow-focus: 0 0 0 2px #f6f2eb, 0 0 0 4px #294dce;
+  --shadow-lift: 0 14px 30px -16px rgba(34, 33, 31, 0.6);
+  --shadow-wall: 0 40px 70px -40px rgba(34, 33, 31, 0.55);
+  --shadow-focus: 0 0 0 2px var(--color-page), 0 0 0 4px var(--color-link);
 
   --ease-gallery: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-glide: cubic-bezier(0.65, 0, 0.35, 1);
@@ -67,8 +107,8 @@
 /* ------------------------------------------------------------------ base */
 @layer base {
   body {
-    background: var(--color-ivory);
-    color: var(--color-ink);
+    background: var(--color-page);
+    color: var(--color-primary);
     font-family: var(--font-sans);
     font-size: 16px;
     line-height: 26px;
@@ -80,25 +120,29 @@
     max-width: none;
   }
   a {
-    color: var(--color-cobalt);
+    color: var(--color-link);
   }
   a:hover {
-    color: var(--color-cobalt-press);
+    color: var(--color-link-hover);
   }
   :focus-visible {
-    outline: 2px solid var(--color-cobalt);
+    outline: 2px solid var(--color-link);
     outline-offset: 3px;
+  }
+  ::selection {
+    background: #f2c6bf;
+    color: var(--color-primary);
   }
 
   /* dark chapters: footer, menu, and the inverse sections */
   .inverse :focus-visible {
-    outline-color: var(--color-paper);
+    outline-color: var(--color-on-primary);
   }
   .inverse a {
-    color: var(--color-paper);
+    color: var(--color-on-primary);
   }
   .inverse a:hover {
-    color: var(--color-on-inverse-muted);
+    color: var(--color-on-primary-muted);
   }
 
   html.kala-cursor,
@@ -144,32 +188,71 @@
   }
 }
 
+/* section label: small caps in the secondary colour */
 @utility eyebrow {
   font-size: 11px;
   line-height: 16px;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-stone-ink);
+  color: var(--color-secondary);
   .inverse & {
-    color: var(--color-on-inverse-muted);
+    color: var(--color-secondary-on-dark);
   }
+}
+
+/* the larger label used over home-page sections */
+@utility eyebrow-lg {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+  .inverse & {
+    color: var(--color-secondary-on-dark);
+  }
+}
+
+/* quiet column labels (footer) */
+@utility eyebrow-quiet {
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-on-primary-muted);
 }
 
 @utility meta {
   font-size: 13px;
   line-height: 20px;
   font-weight: 500;
-  color: var(--color-stone-ink);
+  color: var(--color-muted);
 }
 
 @utility lead {
   font-size: 18px;
   line-height: 30px;
-  color: var(--color-ink-soft);
+  color: var(--color-soft);
   max-width: 46ch;
   .inverse & {
-    color: var(--color-on-inverse-muted);
+    color: var(--color-on-primary-muted);
+  }
+}
+
+/* the roomier lead under home-page section titles */
+@utility lead-lg {
+  font-size: 18px;
+  line-height: 29px;
+  color: var(--color-soft);
+  max-width: 38ch;
+  @media (width < 720px) {
+    font-size: 17px;
+    line-height: 27px;
+  }
+  .inverse & {
+    color: #d9d3c8;
   }
 }
 
@@ -200,6 +283,34 @@
   font-size: clamp(36px, 4.4vw, 64px);
   line-height: 1.06;
   letter-spacing: -0.01em;
+}
+
+/* home hero headline */
+@utility heading-hero {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(60px, 7.4vw, 120px);
+  line-height: 0.94;
+  letter-spacing: -0.015em;
+  @media (width < 720px) {
+    font-size: clamp(52px, 14vw, 72px);
+  }
+  & em {
+    font-weight: 300;
+    color: var(--color-secondary);
+  }
+}
+
+/* big light section titles (home sections, bands) */
+@utility heading-section {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(46px, 5.6vw, 88px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  & em {
+    font-weight: 300;
+  }
 }
 
 /* outline-only numerals (chapter and archive numbers): text-outline-accent, text-outline-oak… */

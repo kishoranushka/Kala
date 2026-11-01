@@ -14,9 +14,9 @@ function Step({ index, word, note, children }) {
     <figure data-hs className={cx('relative m-0', SLOTS[index])}>
       {children}
       <figcaption className="mt-4 flex items-baseline gap-3">
-        <span className="font-display text-2xl text-accent italic">0{index + 1}</span>
+        <span className="font-display text-2xl text-secondary italic">0{index + 1}</span>
         <span className="text-sm/[22px]">
-          <b className="font-semibold">{word}</b> <span className="text-ink-soft">{note}</span>
+          <b className="font-semibold">{word}</b> <span className="text-soft">{note}</span>
         </span>
       </figcaption>
     </figure>
@@ -45,7 +45,7 @@ export default function HandSection() {
             </p>
             <SplitWords id="hand-h" text="From the first line to the *last* *layer*." className={cx(HOME_H2, 'max-w-[15ch] font-normal')} />
           </div>
-          <p data-cap className="col-[9/13] self-end text-ink-soft max-lg:col-span-full">
+          <p data-cap className="col-[9/13] self-end text-soft max-lg:col-span-full">
             [Two or three true sentences: where you paint, what you reach for first, what a day in the studio feels like.]
           </p>
         </div>

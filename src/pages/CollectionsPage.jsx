@@ -32,7 +32,7 @@ function ChapterBand({ chapter, flip }) {
   return (
     <section
       aria-label={`Chapter ${chapter.num}: ${chapter.title}`}
-      className={cx('relative overflow-hidden py-[clamp(88px,10vw,144px)]', flip && 'inverse bg-chapter text-paper')}
+      className={cx('relative overflow-hidden py-[clamp(88px,10vw,144px)]', flip && 'inverse bg-primary text-on-primary')}
     >
       <div className="wrap">
         <div className="grid grid-cols-12 items-center gap-x-8">
@@ -41,7 +41,7 @@ function ChapterBand({ chapter, flip }) {
               aria-hidden="true"
               data-parallax="60"
               className={cx(
-                'text-outline-accent pointer-events-none absolute -top-[.42em] font-display text-[clamp(120px,16vw,240px)] leading-none font-light italic max-lg:text-[120px]',
+                'text-outline-secondary pointer-events-none absolute -top-[.42em] font-display text-[clamp(120px,16vw,240px)] leading-none font-light italic max-lg:text-[120px]',
                 flip ? '-left-[.1em]' : '-right-[.1em]'
               )}
             >
@@ -133,13 +133,13 @@ export default function CollectionsPage() {
                       data-cursor="explore"
                       onMouseEnter={hover}
                       onFocus={hover}
-                      className="grid grid-cols-[72px_1fr_auto] items-center gap-6 border-b border-divider py-7 text-ink transition-[padding] duration-600 ease-gallery hover:pl-4 hover:text-ink max-lg:grid-cols-[56px_1fr_88px] max-sm:grid-cols-[40px_1fr_64px] max-sm:gap-4 max-sm:py-5"
+                      className="grid grid-cols-[72px_1fr_auto] items-center gap-6 border-b border-divider py-7 text-primary transition-[padding] duration-600 ease-gallery hover:pl-4 hover:text-primary max-lg:grid-cols-[56px_1fr_88px] max-sm:grid-cols-[40px_1fr_64px] max-sm:gap-4 max-sm:py-5"
                     >
-                      <span className="font-display text-[32px] leading-none text-accent italic max-sm:text-2xl">{c.num}</span>
+                      <span className="font-display text-[32px] leading-none text-secondary italic max-sm:text-2xl">{c.num}</span>
                       <span
                         className={cx(
                           'font-display text-[clamp(44px,6.4vw,96px)] leading-none font-light tracking-[-.015em] transition-colors duration-400 ease-gallery',
-                          on ? 'text-accent italic' : 'text-ink'
+                          on ? 'text-secondary italic' : 'text-primary'
                         )}
                       >
                         {c.title}

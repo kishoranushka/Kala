@@ -59,7 +59,7 @@ export default function Film({ src, poster, label, portrait = false, tag = false
         onClick={toggle}
         aria-pressed={playing}
         aria-label={`${playing ? 'Pause' : 'Play'} film`}
-        className="absolute bottom-4 left-4 z-[2] inline-flex h-10 cursor-pointer items-center gap-2.5 rounded-[2px] border-0 bg-[rgba(27,26,24,.62)] pr-3.5 pl-2.5 font-sans text-xs font-semibold tracking-[.08em] text-paper uppercase backdrop-blur-[8px] transition-colors duration-400 ease-gallery hover:bg-[rgba(27,26,24,.85)] focus-visible:outline-paper focus-visible:outline-offset-2 max-sm:bottom-3 max-sm:left-3"
+        className="absolute bottom-4 left-4 z-[2] inline-flex h-10 cursor-pointer items-center gap-2.5 rounded-[2px] border-0 bg-[rgba(27,26,24,.62)] pr-3.5 pl-2.5 font-sans text-xs font-semibold tracking-[.08em] text-on-primary uppercase backdrop-blur-[8px] transition-colors duration-400 ease-gallery hover:bg-[rgba(27,26,24,.85)] focus-visible:outline-on-primary focus-visible:outline-offset-2 max-sm:bottom-3 max-sm:left-3"
       >
         <Icon name={playing ? 'pause' : 'play'} size={14} />
         {playing ? 'Pause' : 'Play'}
@@ -71,7 +71,7 @@ export default function Film({ src, poster, label, portrait = false, tag = false
 /* caption under a film: a bold lead-in on the left, a note on the right */
 export function FilmCaption({ children, note }) {
   return (
-    <figcaption className="mt-3.5 flex justify-between gap-4 text-[13px]/5 text-stone-ink in-[.inverse]:text-on-inverse-muted [&_b]:font-semibold [&_b]:text-ink in-[.inverse]:[&_b]:text-paper">
+    <figcaption className="mt-3.5 flex justify-between gap-4 text-[13px]/5 text-muted in-[.inverse]:text-on-primary-muted [&_b]:font-semibold [&_b]:text-primary in-[.inverse]:[&_b]:text-on-primary">
       <span>{children}</span>
       {note && <span>{note}</span>}
     </figcaption>

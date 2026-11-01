@@ -30,7 +30,7 @@ function PlateLabel({ work, id, numberClass, inverse = false, status, children }
         <h2 id={id} className="mt-2.5 font-display text-4xl/10 font-normal">
           {work.title}
         </h2>
-        <p className={cx('meta mt-2', inverse && 'text-on-inverse-muted!')}>
+        <p className={cx('meta mt-2', inverse && 'text-on-primary-muted!')}>
           {metaLine(work)} · {work.year}
         </p>
         <p className={NOTE}>{work.note}</p>
@@ -128,9 +128,9 @@ export default function ArchivePage() {
                       href={`#n${w.archiveNo}`}
                       className="grid grid-cols-[56px_1fr_auto] items-baseline gap-3 border-b border-[rgba(255,254,250,.14)] py-4 text-sm/[22px] transition-[padding] duration-600 ease-gallery hover:pl-2.5"
                     >
-                      <span className="text-on-inverse-muted tabular-nums">Nº {w.archiveNo}</span>
+                      <span className="text-on-primary-muted tabular-nums">Nº {w.archiveNo}</span>
                       <span className="font-display text-xl">{w.title}</span>
-                      <span className="text-on-inverse-muted">{STATUS[w.status].label}</span>
+                      <span className="text-on-primary-muted">{STATUS[w.status].label}</span>
                     </a>
                   </li>
                 ))}
@@ -152,7 +152,7 @@ export default function ArchivePage() {
               id="t014"
               inverse
               numberClass="text-outline-oak"
-              status={<StatusBadge status="archived" tone="text-paper" suffix=" · stays on its wall" />}
+              status={<StatusBadge status="archived" tone="text-on-primary" suffix=" · stays on its wall" />}
             >
               <Button variant="light" to="/commission" data-magnetic data-cursor="talk">
                 Commission a Wall
@@ -171,7 +171,7 @@ export default function ArchivePage() {
           <img src={mural.img} alt={mural.alt} loading="lazy" className="block size-full object-cover" />
         </div>
         <div className="wrap">
-          <PlateLabel work={mural} id="t011" numberClass="text-outline-accent" status={<StatusBadge status="archived" suffix=" · painted on site" />}>
+          <PlateLabel work={mural} id="t011" numberClass="text-outline-secondary" status={<StatusBadge status="archived" suffix=" · painted on site" />}>
             <Button to="/commission" data-magnetic data-cursor="talk">
               Commission a Wall
             </Button>
@@ -184,7 +184,7 @@ export default function ArchivePage() {
       <ArchiveSplit
         work={ganesha}
         id="t009"
-        numberClass="text-outline-accent"
+        numberClass="text-outline-secondary"
         className="pb-[clamp(88px,10vw,144px)]"
         status={<StatusBadge status="sold" />}
         action={
@@ -199,7 +199,7 @@ export default function ArchivePage() {
         work={child}
         id="t006"
         reverse
-        numberClass="text-outline-cobalt"
+        numberClass="text-outline-link"
         className="bg-wall py-[clamp(88px,10vw,144px)]"
         status={<StatusBadge status="inquiry" suffix=" · an example of personal work" />}
         action={

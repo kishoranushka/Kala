@@ -16,7 +16,7 @@ export default function QuietSection() {
               text="Art is something to *experience*, collect and live with."
               className="font-display text-[clamp(32px,3.6vw,52px)] leading-[1.15] font-light"
             />
-            <div data-line className="mt-8 h-px w-16 bg-accent" />
+            <div data-line className="mt-8 h-px w-16 bg-secondary" />
           </div>
         </div>
       </div>

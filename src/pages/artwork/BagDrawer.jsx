@@ -54,7 +54,7 @@ export default function BagDrawer() {
         aria-modal="true"
         aria-labelledby="bag-h"
         onKeyDown={onKeyDown}
-        className="fixed top-0 right-0 bottom-0 z-70 flex w-[min(440px,100%)] flex-col overflow-y-auto bg-paper shadow-pop"
+        className="fixed top-0 right-0 bottom-0 z-70 flex w-[min(440px,100%)] flex-col overflow-y-auto bg-surface shadow-pop"
       >
         <div className="flex items-center justify-between border-b border-divider px-6 py-5">
           <h2 id="bag-h" className="art-title">
@@ -65,7 +65,7 @@ export default function BagDrawer() {
             type="button"
             onClick={close}
             aria-label="Close bag"
-            className="inline-flex h-11 min-w-11 cursor-pointer items-center justify-center border-0 bg-transparent px-2.5 text-ink"
+            className="inline-flex h-11 min-w-11 cursor-pointer items-center justify-center border-0 bg-transparent px-2.5 text-primary"
           >
             <Icon name="close" />
           </button>
@@ -95,7 +95,7 @@ export default function BagDrawer() {
                 </span>
                 <span className="flex flex-col items-end gap-2">
                   <span className="price">{w.price}</span>
-                  <button type="button" onClick={() => remove(w.id)} className="h-8 cursor-pointer border-0 bg-transparent p-0 font-sans text-[13px] font-semibold text-cobalt">
+                  <button type="button" onClick={() => remove(w.id)} className="h-8 cursor-pointer border-0 bg-transparent p-0 font-sans text-[13px] font-semibold text-link">
                     Remove
                   </button>
                 </span>

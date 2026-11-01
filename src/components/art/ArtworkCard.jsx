@@ -18,7 +18,7 @@ export default function ArtworkCard({ work, eyebrow = plateLabel(work), titleCla
         {isAvailable(work) ? (
           <span className="price">{work.price}</span>
         ) : (
-          <span className="text-sm/6 font-semibold text-cobalt">{priceLine(work)}</span>
+          <span className="text-sm/6 font-semibold text-link">{priceLine(work)}</span>
         )}
       </figcaption>
     </figure>

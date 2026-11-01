@@ -10,7 +10,7 @@ import Cursor from './Cursor';
 import ProgressMandala from './ProgressMandala';
 
 /* Persistent page chrome. Each route's `handle` describes how the chrome behaves on that page:
-   { title, curtain (string | params => string), nav, bag: 'link'|'order-link'|'drawer'|'anchor', isHome, raisedProgress } */
+   { title, curtain (string | params => string), nav, isHome, gentle (no curtain on first load), raisedProgress } */
 export default function SiteLayout() {
   const rootRef = useRef(null);
   const menuButtonRef = useRef(null);
@@ -31,6 +31,7 @@ export default function SiteLayout() {
   }, []);
 
   const { apiRef, extraRef } = useSiteMotion(rootRef, {
+    gentle: page.gentle,
     closeMenu,
     isMenuOpen: () => menuOpenRef.current,
     setDest: (label) => curtainRef.current?.setDest(label),
@@ -38,16 +39,15 @@ export default function SiteLayout() {
   const motion = useMemo(() => ({ apiRef, extraRef }), [apiRef, extraRef]);
 
   useEffect(() => {
-    document.title = page.title ? `KALA — ${page.title}` : 'KALA';
+    document.title = page.title ? `KALA by Anushka Kishor — ${page.title}` : 'KALA by Anushka Kishor';
   }, [page.title]);
 
   return (
     <MotionProvider value={motion}>
-      <div ref={rootRef} data-kala className="overflow-x-clip bg-ivory font-sans text-base/[26px] text-ink antialiased">
+      <div ref={rootRef} data-kala className="overflow-x-clip bg-page font-sans text-base/[26px] text-primary antialiased">
         <Header
           ref={menuButtonRef}
           current={page.nav}
-          bagMode={page.bag}
           isHome={page.isHome}
           menuOpen={menuOpen}
           onMenu={() => setMenuOpen(true)}

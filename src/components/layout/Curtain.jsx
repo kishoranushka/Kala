@@ -11,16 +11,16 @@ const Curtain = forwardRef(function Curtain({ label }, ref) {
   useEffect(() => setDest(null), [label]);
 
   return (
-    <div data-curtain aria-hidden="true" className="inverse pointer-events-none invisible fixed inset-0 z-95 flex items-center justify-center bg-chapter text-paper">
+    <div data-curtain aria-hidden="true" className="inverse pointer-events-none invisible fixed inset-0 z-95 flex items-center justify-center bg-primary text-on-primary">
       <div data-curtain-inner className="flex flex-col items-center gap-7">
-        <svg viewBox="-60 -60 120 120" width="120" height="120" fill="none" stroke="#C9B79C" strokeWidth="1">
+        <svg viewBox="-60 -60 120 120" width="120" height="120" fill="none" strokeWidth="1" className="stroke-oak">
           <circle data-draw r="56" />
           <circle data-draw r="42" strokeDasharray="1 5" />
           {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
             <path key={a} data-draw d={PETAL} transform={a ? `rotate(${a})` : undefined} />
           ))}
           <circle data-draw r="20" />
-          <circle r="6" className="fill-accent" stroke="none" />
+          <circle r="6" className="fill-secondary" stroke="none" />
         </svg>
         <div className="mr-[-.34em] flex overflow-hidden pb-[.1em] font-display text-[56px]/[1.1] font-medium tracking-[.34em]">
           {LETTERS.map((l, i) => (
@@ -29,7 +29,7 @@ const Curtain = forwardRef(function Curtain({ label }, ref) {
             </span>
           ))}
         </div>
-        <p data-curtain-label className="eyebrow">
+        <p data-curtain-label className="eyebrow-quiet">
           {dest ?? label}
         </p>
       </div>
