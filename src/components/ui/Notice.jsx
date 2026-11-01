@@ -11,7 +11,7 @@ const TONES = {
 export default function Notice({ tone = 'info', className, children, ...props }) {
   const t = TONES[tone];
   return (
-    <div className={cx('flex items-start gap-3 rounded-[2px] px-[18px] py-4 text-sm/[22px] text-primary', t.bg, className)} {...props}>
+    <div className={cx('flex items-start gap-3 rounded-ui px-[18px] py-4 text-sm/[22px] text-primary', t.bg, className)} {...props}>
       <Icon name={t.icon} size={20} strokeWidth={1.75} className={cx('shrink-0', t.color)} />
       <span>{children}</span>
     </div>

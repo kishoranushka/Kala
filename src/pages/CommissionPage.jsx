@@ -1,19 +1,28 @@
 import { useState } from 'react';
 import { CONTACT, EMAIL_PATTERN } from '@/data/site';
-import { getWork } from '@/data/works';
+import cx from '@/utils/cx';
+import { PHOTOS, getWork } from '@/data/works';
 import { useFormFlow } from '@/hooks/useFormFlow';
 import FormSuccess from '@/components/form/FormSuccess';
 import { Checkbox, ChoiceCard, ChoiceGrid, ErrorIcon, ErrorSummary, Field, FieldError, FieldRow, Input, Select, Textarea, describe } from '@/components/form/Fields';
-import PageIntro from '@/components/sections/PageIntro';
-import { PageMandala } from '@/components/mandala/Mandala';
+import PageTop from '@/components/sections/PageTop';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
 import { Accent, Line, SplitWords } from '@/components/ui/Typography';
+
+const CHILD = getWork('child');
+const MURAL = getWork('mural');
+const TILES = [
+  { img: PHOTOS.jacketBack.img, alt: 'The back of an olive jacket hand-painted with a large monarch butterfly', label: 'Painted wearables' },
+  { img: CHILD.img, alt: 'A painted portrait of a sleeping child resting their chin in both hands, in rose and violet', label: 'Portraits & paintings', position: '50% 35%' },
+  { img: MURAL.img, alt: 'A half-mandala wall mural in crimson, saffron, lilac and turquoise', label: 'Wall murals' },
+];
 
 const KINDS = [
   { value: 'painting', title: 'A painting', note: 'For a room, a person or a moment' },
   { value: 'mural', title: 'A wall mural', note: 'Homes, cafés, schools, studios' },
   { value: 'portrait', title: 'A portrait', note: 'Someone you love, painted' },
+  { value: 'wearable', title: 'Painted wearable', note: 'Your design on a t-shirt, jacket, shoes and more' },
   { value: 'available', title: 'A work in the shop', note: 'A question about an original' },
 ];
 
@@ -168,7 +177,7 @@ function EnquiryForm() {
             <Input id="f-space" name="space" type="text" placeholder="Living room, café wall…" />
           </Field>
         </FieldRow>
-        <div className="flex flex-col items-start gap-2 rounded-[2px] border border-dashed border-line bg-page p-5">
+        <div className="flex flex-col items-start gap-2 rounded-ui border border-dashed border-line bg-page p-5">
           <label htmlFor="f-files" className="text-[13px]/5 font-semibold">
             Reference images
           </label>
@@ -203,18 +212,13 @@ function EnquiryForm() {
 }
 
 export default function CommissionPage() {
-  const detail = getWork('krishna');
 
   return (
     <>
       {/* ============================== BEGIN WITH AN IDEA */}
-      <PageIntro
-        labelledBy="ct-h"
-        crumbs={[{ label: 'Commission' }]}
-        mandala={<PageMandala className="-bottom-[380px] -left-[300px] w-[760px] opacity-55" />}
-      >
+      <PageTop labelledBy="ct-h" crumbs={[{ label: 'Commission' }]} bodyClassName="mt-8 grid-12">
         <div className="col-[1/7] self-center max-lg:col-span-full">
-          <p data-intro className="eyebrow text-secondary!">
+          <p data-intro className="eyebrow">
             Commissions · Begin here
           </p>
           <h1 id="ct-h" data-intro-line className="heading-1 mt-5">
@@ -235,21 +239,21 @@ export default function CommissionPage() {
             </Button>
           </div>
         </div>
-        <div className="col-[8/13] max-lg:col-span-full max-lg:mt-12 max-lg:max-w-[460px]">
-          <div data-intro-img data-tilt data-cursor="view" className="relative aspect-[4/5] overflow-hidden bg-wall shadow-float">
-            <img
-              src={detail.img}
-              alt="Detail of Krishna and Radha: Radha’s face, a pink flower in her hair"
-              fetchpriority="high"
-              className="absolute top-0 right-0 h-[108%] w-[108%] object-cover"
-              style={{ transform: 'scale(1.5)', transformOrigin: '72% 62%' }}
-            />
-          </div>
-          <p data-intro className="meta mt-3.5">
-            Detail · Krishna and Radha
-          </p>
+        <div aria-label="Things I can make for you" className="col-[8/13] grid h-[clamp(460px,44vw,620px)] grid-cols-2 grid-rows-2 gap-4 max-lg:col-span-full max-lg:mt-12 max-lg:max-w-[560px]">
+          {TILES.map((tile, i) => (
+            <figure key={tile.label} data-intro className={cx('group relative m-0 overflow-hidden rounded-ui bg-wall shadow-hang', i === 0 && 'row-span-2')}>
+              <img
+                src={tile.img}
+                alt={tile.alt}
+                fetchpriority={i === 0 ? 'high' : undefined}
+                className="block size-full object-cover transition-transform duration-1400 ease-gallery group-hover:scale-105"
+                style={tile.position ? { objectPosition: tile.position } : undefined}
+              />
+              <figcaption className="absolute bottom-3 left-3 rounded-full bg-surface/92 px-3 py-1.5 text-xs/4 font-semibold text-primary">{tile.label}</figcaption>
+            </figure>
+          ))}
         </div>
-      </PageIntro>
+      </PageTop>
 
       {/* ============================== HOW A COMMISSION WORKS */}
       <section id="how" aria-labelledby="how-h" className="pt-[clamp(48px,6vw,88px)] pb-[clamp(96px,11vw,160px)]">
@@ -281,8 +285,8 @@ export default function CommissionPage() {
               <p className="eyebrow">Prefer to write directly?</p>
               <ul className="mt-5 list-none border-t border-divider p-0">
                 {[
-                  ['Email', <a key="e" href="#enquiry" className="font-display text-2xl/[30px] text-primary hover:text-link">{CONTACT.email}</a>],
-                  ['Instagram', <a key="i" href="#enquiry" className="font-display text-2xl/[30px] text-primary hover:text-link">{CONTACT.instagram}</a>],
+                  ['Email', <a key="e" href={`mailto:${CONTACT.email}`} className="font-display text-2xl/[30px] break-words text-primary no-underline hover:text-link">{CONTACT.email}</a>],
+                  ['Instagram', <a key="i" href={CONTACT.instagram} target="_blank" rel="noopener" className="font-display text-2xl/[30px] text-primary no-underline hover:text-link">{CONTACT.instagramHandle}</a>],
                   ['Studio', <span key="s" className="font-display text-2xl/[30px]">{CONTACT.location}</span>],
                 ].map(([label, value]) => (
                   <li key={label} className="flex flex-col gap-0.5 border-b border-divider py-4">
