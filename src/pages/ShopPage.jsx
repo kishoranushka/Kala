@@ -108,11 +108,11 @@ export default function ShopPage() {
             <div data-intro aria-label="Newest paintings" className="col-[8/13] grid grid-cols-3 items-end gap-3.5 max-lg:col-span-full max-lg:mt-10 max-lg:max-w-[560px] max-sm:gap-2.5">
               {FEATURED.map((w, i) => (
                 <Link key={w.id} to={`/artwork/${w.id}`} data-cursor="view" className={cx('group block text-primary no-underline hover:text-primary', i === 1 && '-translate-y-7')}>
-                  <div className="flex aspect-[4/5] items-center justify-center rounded-ui bg-mat p-3.5">
+                  <div className="flex aspect-[4/5] min-h-0 items-center justify-center overflow-hidden rounded-ui bg-mat p-3.5">
                     <img
                       src={w.img}
                       alt={w.alt}
-                      className="block max-h-full max-w-full shadow-[0_2px_4px_rgba(34,33,31,.12),0_18px_30px_-16px_rgba(34,33,31,.5)] transition-transform duration-900 ease-gallery group-hover:-translate-y-1.5"
+                      className="block h-auto max-h-full w-auto max-w-full min-h-0 shadow-[0_2px_4px_rgba(34,33,31,.12),0_18px_30px_-16px_rgba(34,33,31,.5)] transition-transform duration-900 ease-gallery group-hover:-translate-y-1.5"
                     />
                   </div>
                   <span className="mt-2.5 block text-xs/4 text-muted">{w.title}</span>

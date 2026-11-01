@@ -1,191 +1,98 @@
-import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import cx from '@/utils/cx';
-import { COLLECTIONS, getWork, pad2, ratioOf, worksIn } from '@/data/works';
-import { gsap, canAnimate } from '@/motion/gsap';
-import ArtLink from '@/components/art/ArtLink';
-import PageIntro from '@/components/sections/PageIntro';
-import { PageMandala } from '@/components/mandala/Mandala';
-import Button from '@/components/ui/Button';
-import StatusBadge from '@/components/ui/StatusBadge';
-import TextLink from '@/components/ui/TextLink';
-import { Accent, Line, SplitWords } from '@/components/ui/Typography';
+import { COLLECTIONS, getWork, worksIn } from '@/data/works';
+import CtaBand from '@/components/sections/CtaBand';
+import PageTop from '@/components/sections/PageTop';
+import Icon from '@/components/ui/Icon';
+import { Line } from '@/components/ui/Typography';
 
-const chapters = COLLECTIONS.map((c) => {
-  const works = worksIn(c.id);
+const NUMBER_WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven'];
+
+function ChapterCard({ collection, wide }) {
+  const works = worksIn(collection.id);
+  const lead = getWork(collection.lead);
   const available = works.filter((w) => w.status === 'available').length;
-  return {
-    ...c,
-    works,
-    lead: getWork(c.lead),
-    countLabel: `${pad2(works.length)} ${works.length === 1 ? 'work' : 'works'}`,
-    availLabel: available ? `${pad2(available)} available` : 'None available now',
-  };
-});
+  const thumbs = works.filter((w) => w.id !== collection.lead).slice(0, 4);
 
-function ImageFill({ work }) {
-  return <img src={work.img} alt="" loading="lazy" className={cx('block size-full object-cover', work.crop && 'crop-ig')} />;
-}
-
-/* one chapter band; odd chapters turn dark and mirror */
-function ChapterBand({ chapter, flip }) {
   return (
-    <section
-      aria-label={`Chapter ${chapter.num}: ${chapter.title}`}
-      className={cx('relative overflow-hidden py-[clamp(88px,10vw,144px)]', flip && 'inverse bg-primary text-on-primary')}
+    <Link
+      to={`/collections/${collection.id}`}
+      data-cursor="explore"
+      className={cx('group flex flex-col text-primary no-underline hover:text-primary max-lg:col-span-1', wide ? 'col-span-3' : 'col-span-2')}
     >
-      <div className="wrap">
-        <div className="grid grid-cols-12 items-center gap-x-8">
-          <div className={cx('relative max-lg:col-span-full max-lg:row-auto', flip ? 'col-[7/13] row-1' : 'col-[1/7]')}>
-            <span
-              aria-hidden="true"
-              data-parallax="60"
-              className={cx(
-                'text-outline-secondary pointer-events-none absolute -top-[.42em] font-display text-[clamp(120px,16vw,240px)] leading-none font-light italic max-lg:text-[120px]',
-                flip ? '-left-[.1em]' : '-right-[.1em]'
-              )}
-            >
-              {chapter.num}
-            </span>
-            <ArtLink work={chapter.lead} />
-          </div>
-          <div data-cap className={cx('max-lg:col-span-full max-lg:row-auto max-lg:mt-12', flip ? 'col-[1/6] row-1' : 'col-[8/13]')}>
-            <p className="eyebrow">
-              Chapter {chapter.num} · {chapter.countLabel}
-            </p>
-            <h2 className="heading-2 mt-5 font-light">{chapter.title}</h2>
-            <p className="lead mt-6">{chapter.intro}</p>
-            <ul className="mt-7 list-none border-t border-[rgba(143,136,125,.5)] p-0">
-              {chapter.works.map((w) => (
-                <li key={w.id} className="flex justify-between gap-4 border-b border-[rgba(143,136,125,.35)] py-3.5 text-sm/[22px]">
-                  <span className="font-display text-xl/6 font-medium">{w.title}</span>
-                  <StatusBadge status={w.status} marker={false} tone="text-inherit" />
-                </li>
-              ))}
-            </ul>
-            <div className="mt-8">
-              <TextLink to={`/collections/${chapter.id}`} tone={flip ? 'inverse' : 'ink'} arrow data-cursor="explore">
-                Enter the chapter
-              </TextLink>
-            </div>
-          </div>
-        </div>
+      <div className="flex aspect-[4/3] min-h-0 items-center justify-center overflow-hidden rounded-ui bg-mat p-[22px] transition-colors duration-500 ease-gallery group-hover:bg-mat-hover">
+        <img
+          src={lead.img}
+          alt={lead.alt}
+          loading="lazy"
+          className="block h-auto max-h-full w-auto max-w-full min-h-0 shadow-[0_2px_4px_rgba(34,33,31,.12),0_24px_36px_-18px_rgba(34,33,31,.5)] transition-transform duration-900 ease-gallery group-hover:-translate-y-1.5"
+        />
       </div>
-    </section>
+      {thumbs.length > 0 && (
+        <div aria-hidden="true" className="mt-2 grid grid-cols-4 gap-2">
+          {thumbs.map((t) => (
+            <span key={t.id} className="aspect-square overflow-hidden rounded-ui bg-mat">
+              <img src={t.img} alt="" loading="lazy" className="block size-full object-cover" />
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="mt-5 flex items-baseline gap-3.5">
+        <span className="font-display text-[30px] leading-none text-secondary italic">{collection.num}</span>
+        <span className="font-display text-[clamp(30px,2.6vw,40px)] leading-[1.05] font-normal">{collection.title}</span>
+      </div>
+      <div className="mt-2.5 flex gap-4 text-[13px]/5 text-muted">
+        <span>
+          {works.length} {works.length === 1 ? 'work' : 'works'}
+        </span>
+        <b className="font-semibold text-success">{available ? `${available} available` : 'None available now'}</b>
+      </div>
+      <p className="mt-3 mb-0 text-[15px]/6 text-soft">{collection.intro}</p>
+      <span className="mt-4 inline-flex items-center gap-2 self-start border-b border-primary pb-1 text-sm font-semibold">
+        Open chapter <Icon name="arrow" size={16} />
+      </span>
+    </Link>
   );
 }
 
 export default function CollectionsPage() {
-  const [activeId, setActiveId] = useState(chapters[0].id);
-  const active = chapters.find((c) => c.id === activeId);
-  const frameRef = useRef(null);
-  const firstRender = useRef(true);
-
-  /* the preview opens from the top whenever a new chapter is hovered */
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    if (!canAnimate()) return;
-    const frame = frameRef.current;
-    gsap.fromTo(frame, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.9, ease: 'expo.out', clearProps: 'clipPath' });
-    gsap.fromTo(frame.querySelector('img'), { scale: 1.2 }, { scale: 1, duration: 1.2, ease: 'expo.out', clearProps: 'scale' });
-  }, [activeId]);
-
   return (
     <>
-      <PageIntro
-        labelledBy="col-h"
-        crumbs={[{ label: 'Collections' }]}
-        mandala={<PageMandala className="-top-[180px] -left-[320px] w-[700px] opacity-55" />}
-      >
-        <div className="col-[1/8] pl-[8%] max-lg:col-span-full">
-          <p data-intro className="eyebrow">
-            Collections · The Collector’s Index
+      <PageTop labelledBy="cl-h" crumbs={[{ label: 'Collections' }]}>
+        <div className="col-[1/8] max-lg:col-span-full">
+          <p data-intro className="eyebrow m-0">
+            Collections
           </p>
-          <h1 id="col-h" data-intro-line className="heading-1 mt-5">
-            <Line>Four chapters</Line>
+          <h1 id="cl-h" data-intro-line className="heading-1 mt-5 mb-0">
+            <Line>{NUMBER_WORDS[COLLECTIONS.length] ?? COLLECTIONS.length} chapters of</Line>{' '}
             <Line>
-              of one <Accent>practice.</Accent>
+              one <span className="text-secondary italic">practice.</span>
             </Line>
           </h1>
         </div>
-        <div className="col-[9/13] self-end max-lg:col-span-full max-lg:mt-8">
-          <p data-intro className="lead">
-            Each collection is a chapter: a subject I keep returning to, in paint or on a wall. Open one to see every work inside it.
-          </p>
-        </div>
-      </PageIntro>
+        <p data-intro className="lead col-[9/13] m-0 max-lg:col-span-full max-lg:mt-6">
+          Devotional figures, mandalas, portraits, walls and small joyful pieces. Open a chapter to see every work in it, available or not.
+        </p>
+      </PageTop>
 
-      {/* ============================== THE COLLECTOR'S INDEX */}
-      <section aria-label="Index of collections" className="pb-[clamp(96px,11vw,160px)]">
+      <section aria-label="All collections">
         <div className="wrap">
-          <div className="grid-12">
-            <ol data-stagger className="col-[1/9] m-0 list-none border-t border-line p-0 max-lg:col-span-full">
-              {chapters.map((c) => {
-                const on = c.id === activeId;
-                const hover = () => setActiveId(c.id);
-                return (
-                  <li key={c.id}>
-                    <Link
-                      to={`/collections/${c.id}`}
-                      data-cursor="explore"
-                      onMouseEnter={hover}
-                      onFocus={hover}
-                      className="grid grid-cols-[72px_1fr_auto] items-center gap-6 border-b border-divider py-7 text-primary transition-[padding] duration-600 ease-gallery hover:pl-4 hover:text-primary max-lg:grid-cols-[56px_1fr_88px] max-sm:grid-cols-[40px_1fr_64px] max-sm:gap-4 max-sm:py-5"
-                    >
-                      <span className="font-display text-[32px] leading-none text-secondary italic max-sm:text-2xl">{c.num}</span>
-                      <span
-                        className={cx(
-                          'font-display text-[clamp(44px,6.4vw,96px)] leading-none font-light tracking-[-.015em] transition-colors duration-400 ease-gallery',
-                          on ? 'text-secondary italic' : 'text-primary'
-                        )}
-                      >
-                        {c.title}
-                      </span>
-                      <span className="flex flex-col items-end gap-1 text-right max-lg:hidden">
-                        <span className="meta tabular-nums">{c.countLabel}</span>
-                        <span className="meta text-success! tabular-nums">{c.availLabel}</span>
-                      </span>
-                      <span className="relative hidden size-[88px] overflow-hidden max-lg:block max-sm:size-16">
-                        <ImageFill work={c.lead} />
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ol>
-
-            <div aria-hidden="true" className="sticky top-[120px] col-[10/13] self-start max-lg:hidden">
-              <div ref={frameRef} className="relative overflow-hidden bg-wall shadow-float" style={{ aspectRatio: ratioOf(active.lead) }}>
-                <ImageFill work={active.lead} />
-              </div>
-              <p className="eyebrow mt-[18px]">
-                Chapter {active.num} · {active.title}
-              </p>
-              <p className="art-title mt-1.5">{active.lead.title}</p>
-            </div>
+          <div data-stagger className="grid grid-cols-6 gap-x-7 gap-y-12 pt-10 pb-[clamp(96px,11vw,150px)] max-lg:grid-cols-2 max-sm:grid-cols-1 max-sm:gap-14">
+            {COLLECTIONS.map((c, i) => (
+              <ChapterCard key={c.id} collection={c} wide={i < 2} />
+            ))}
           </div>
         </div>
       </section>
 
-      {chapters.map((c, i) => (
-        <ChapterBand key={c.id} chapter={c} flip={i % 2 === 1} />
-      ))}
-
-      {/* ============================== QUIET CLOSE */}
-      <section aria-label="Commission" className="border-t border-divider py-[clamp(96px,11vw,160px)]">
-        <div className="wrap flex flex-col items-start gap-7 pl-[16%]">
-          <p data-eyebrow className="eyebrow">
-            A fifth chapter
-          </p>
-          <SplitWords as="p" text="The next collection could start with *your* idea." className="heading-2 mt-5 max-w-[16ch] font-light" />
-          <Button to="/commission" arrow data-magnetic data-cursor="talk" data-cap>
-            Commission a Piece
-          </Button>
-        </div>
-      </section>
+      <CtaBand
+        id="cb-h"
+        eyebrow="Every work, one place"
+        title="See everything that’s available *now.*"
+        lead="Browse the whole shop, or filter by the chapter you love most."
+        to="/shop"
+        label="Visit the Shop"
+      />
     </>
   );
 }
