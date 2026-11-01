@@ -51,7 +51,7 @@ export function ChooseStep({ selection, onToggle, onContinue, pickError }) {
               className="group relative flex cursor-pointer flex-col gap-3 border-0 bg-transparent p-0 text-left font-sans text-primary"
             >
               <span
-                className="relative overflow-hidden bg-wall shadow-hang outline-2 outline-offset-4 outline-transparent transition-[outline-color] duration-400 ease-gallery group-aria-pressed:outline-link"
+                className="relative overflow-hidden rounded-ui bg-wall shadow-hang outline-2 outline-offset-4 outline-transparent transition-[outline-color] duration-400 ease-gallery group-aria-pressed:outline-link"
                 style={{ aspectRatio: ratioOf(w) }}
               >
                 <img src={w.img} alt="" loading="lazy" className={imgClass(w, 'transition-transform duration-1200 ease-gallery group-hover:scale-[1.04]')} />
@@ -107,7 +107,7 @@ function UnavailableCard({ work }) {
       aria-label={`${work.title}, ${STATUS[work.status].label}. Commission something similar`}
       className="flex flex-col gap-2 text-primary underline opacity-[.82] hover:text-primary"
     >
-      <span className="relative overflow-hidden bg-wall saturate-[.9]" style={{ aspectRatio: ratioOf(work) }}>
+      <span className="relative overflow-hidden rounded-ui bg-wall saturate-[.9]" style={{ aspectRatio: ratioOf(work) }}>
         <img src={work.img} alt="" loading="lazy" className={imgClass(work)} />
       </span>
       <span className="font-display text-[17px]/[21px] font-medium">{work.title}</span>

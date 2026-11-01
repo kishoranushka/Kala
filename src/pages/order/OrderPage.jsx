@@ -5,7 +5,7 @@ import { availableWorks } from '@/data/works';
 import { useBag } from '@/context/BagContext';
 import { gsap, canAnimate } from '@/motion/gsap';
 import { useMotionApi } from '@/motion/MotionContext';
-import PageIntro from '@/components/sections/PageIntro';
+import PageTop from '@/components/sections/PageTop';
 import { Accent, Line } from '@/components/ui/Typography';
 import OrderSummary from './OrderSummary';
 import { ChooseStep, DetailsStep, OrderDone, ReviewStep } from './steps';
@@ -110,7 +110,7 @@ export default function OrderPage() {
   return (
     <>
       {/* ============================== INTRO + STEPS */}
-      <PageIntro labelledBy="or-h" crumbs={[{ label: 'Shop', to: '/shop' }, { label: 'Order' }]} paddingBottom="pb-[clamp(32px,4vw,56px)]">
+      <PageTop labelledBy="or-h" crumbs={[{ label: 'Shop', to: '/shop' }, { label: 'Order' }]} paddingBottom="pb-[clamp(32px,4vw,56px)]" bodyClassName="mt-8 grid-12">
         <div className="col-[1/8] max-lg:col-span-full">
           <p data-intro className="eyebrow">
             Order an original
@@ -147,7 +147,7 @@ export default function OrderPage() {
             })}
           </ol>
         </div>
-      </PageIntro>
+      </PageTop>
 
       {/* ============================== THE ORDER */}
       <section id="choose" aria-label="Your order" className="pb-[clamp(96px,11vw,160px)]">
