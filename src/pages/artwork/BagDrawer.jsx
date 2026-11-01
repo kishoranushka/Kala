@@ -9,7 +9,7 @@ import Icon from '@/components/ui/Icon';
 import Notice from '@/components/ui/Notice';
 import TextLink from '@/components/ui/TextLink';
 
-/* the bag slides in from the right; the originals inside settle one after another */
+/* the cart slides in from the right; the originals inside settle one after another */
 export default function BagDrawer() {
   const { bag, remove, drawerOpen, closeDrawer } = useBag();
   const drawerRef = useRef(null);
@@ -54,11 +54,11 @@ export default function BagDrawer() {
         aria-modal="true"
         aria-labelledby="bag-h"
         onKeyDown={onKeyDown}
-        className="fixed top-0 right-0 bottom-0 z-70 flex w-[min(440px,100%)] flex-col overflow-y-auto bg-surface shadow-pop"
+        className="fixed top-0 right-0 bottom-0 z-70 flex w-[min(440px,100%)] flex-col overflow-y-auto rounded-l-ui bg-surface shadow-pop"
       >
         <div className="flex items-center justify-between border-b border-divider px-6 py-5">
           <h2 id="bag-h" className="art-title">
-            Your bag <span className="meta font-sans">· {items.length}</span>
+            Your cart <span className="meta font-sans">· {items.length}</span>
           </h2>
           <button
             ref={closeRef}
@@ -74,7 +74,7 @@ export default function BagDrawer() {
         {items.length === 0 ? (
           <div className="flex flex-col items-start gap-4 px-6 py-12">
             <p className="font-display text-[30px]/9 font-light">
-              Your bag is <span className="italic">empty.</span>
+              Your cart is <span className="italic">empty.</span>
             </p>
             <p className="meta">Originals you add will wait here.</p>
             <Button variant="secondary" to="/shop">
@@ -85,7 +85,7 @@ export default function BagDrawer() {
           <>
             {items.map((w) => (
               <div key={w.id} data-bag-item className="grid grid-cols-[72px_1fr_auto] items-start gap-4 border-b border-divider px-6 py-5">
-                <span className="relative h-[90px] w-[72px] overflow-hidden bg-wall">
+                <span className="relative h-[90px] w-[72px] overflow-hidden rounded-ui bg-wall">
                   <img src={w.img} alt="" className={w.crop ? 'crop-ig object-cover' : 'block size-full object-cover'} />
                 </span>
                 <span className="flex flex-col gap-1">

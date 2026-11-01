@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import cx from '@/utils/cx';
 import { CONTACT } from '@/data/site';
-import { FILMS, WORKS, getWork, isAvailable, plateLabel, ratioOf } from '@/data/works';
+import { WORKS, getWork, isAvailable, plateLabel, ratioOf } from '@/data/works';
 import { useBag } from '@/context/BagContext';
-import Film, { FilmCaption } from '@/components/art/Film';
+import { cartOffLabel } from '@/components/art/CartButton';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Button from '@/components/ui/Button';
 import Disclosure from '@/components/ui/Disclosure';
@@ -43,6 +43,15 @@ const relatedTo = (work) =>
 
 const ITALIC_NOTE = 'font-display text-2xl/[30px] italic';
 
+/* works that can't be bought still show the cart button, disabled, with the reason */
+function CartOff({ work }) {
+  return (
+    <Button block disabled aria-label={`Add to cart is unavailable: this work is ${cartOffLabel(work)}`} className="cursor-not-allowed opacity-42 before:hidden">
+      Add to Cart · {cartOffLabel(work)}
+    </Button>
+  );
+}
+
 function StatusActions({ work, inBag, adding, onAdd, onOpenBag }) {
   if (work.status === 'available') {
     return (
@@ -50,16 +59,16 @@ function StatusActions({ work, inBag, adding, onAdd, onOpenBag }) {
         {inBag ? (
           <>
             <Notice tone="ok" role="status">
-              This original is in your bag.
+              This original is in your cart.
             </Notice>
             <Button block onClick={onOpenBag}>
-              View Bag
+              View Cart
             </Button>
           </>
         ) : (
           <div>
             <Button block data-magnetic onClick={onAdd} aria-busy={adding}>
-              {adding ? 'Adding…' : 'Add to Bag'}
+              {adding ? 'Adding…' : 'Add to Cart'}
             </Button>
             <span
               aria-hidden="true"
@@ -81,6 +90,7 @@ function StatusActions({ work, inBag, adding, onAdd, onOpenBag }) {
   if (work.status === 'sold') {
     return (
       <>
+        <CartOff work={work} />
         <p className={ITALIC_NOTE}>This painting has found its home.</p>
         <Button block to="/commission" data-magnetic data-cursor="talk">
           Commission Something Similar
@@ -94,6 +104,7 @@ function StatusActions({ work, inBag, adding, onAdd, onOpenBag }) {
   if (work.status === 'inquiry') {
     return (
       <>
+        <CartOff work={work} />
         <p className={ITALIC_NOTE}>Shown as an example of personal work.</p>
         <p className="meta">Pieces like this are made for someone. Tell me what you have in mind.</p>
         <Button block to="/commission" data-magnetic data-cursor="talk">
@@ -104,6 +115,7 @@ function StatusActions({ work, inBag, adding, onAdd, onOpenBag }) {
   }
   return (
     <>
+      <CartOff work={work} />
       <p className={ITALIC_NOTE}>Murals stay where they were painted.</p>
       <Button block to="/commission" data-magnetic data-cursor="talk">
         Commission a Wall
@@ -132,7 +144,6 @@ function ArtworkView({ work }) {
   const views = viewsOf(work);
   const current = views[viewIndex] ?? views[0];
   const story = work.details[0] ?? { origin: '50% 50%', scale: 1.6 };
-  const film = FILMS[work.id];
   const available = isAvailable(work);
   const inBag = available && bag.includes(work.id);
 
@@ -277,7 +288,7 @@ function ArtworkView({ work }) {
               <div data-line className="mt-8 h-px w-16 bg-secondary" />
             </div>
             <div className="col-[7/13] max-lg:col-span-full max-lg:mt-12">
-              <div data-reveal data-noinner data-cursor="view" className="relative aspect-[4/5] overflow-hidden bg-wall shadow-hang">
+              <div data-reveal data-noinner data-cursor="view" className="relative aspect-[4/5] overflow-hidden rounded-ui bg-wall shadow-hang">
                 <img
                   src={work.img}
                   alt={`Detail of ${work.title}`}
@@ -293,33 +304,6 @@ function ArtworkView({ work }) {
           </div>
         </div>
       </section>
-
-      {/* ============================== UP CLOSE (film) */}
-      {film && (
-        <section aria-labelledby="film-h" className="pb-[clamp(96px,11vw,160px)]">
-          <div className="wrap">
-            <div className="grid grid-cols-12 items-start gap-6">
-              <div className="col-[1/5] max-lg:col-span-full">
-                <p data-eyebrow className="eyebrow">
-                  Up close · 9 seconds
-                </p>
-                <h2 id="film-h" data-cap className="heading-2 mt-5 font-light">
-                  From one detail <span className="italic">to the whole</span>.
-                </h2>
-                <p data-cap className="lead mt-6 max-w-[34ch]">
-                  The film starts on a single passage of {work.title} and steps back until the painting hangs whole on the wall.
-                </p>
-              </div>
-              <figure data-reveal data-noinner className="col-[5/13] m-0 max-lg:col-span-full">
-                <Film {...film} tag label={`A silent film moving from a detail of ${work.title} out to the whole painting`} />
-                <FilmCaption note="Wall and framing shown for scale only.">
-                  <b>Motion study</b> made from a photograph of the painting.
-                </FilmCaption>
-              </figure>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ============================== RELATED */}
       <InverseSection aria-labelledby="rel-h" className="py-[clamp(88px,10vw,144px)]">
@@ -348,7 +332,7 @@ function ArtworkView({ work }) {
                   i === 2 && 'max-lg:hidden'
                 )}
               >
-                <span className="relative overflow-hidden bg-wall shadow-hang" style={{ aspectRatio: ratioOf(r) }}>
+                <span className="relative overflow-hidden rounded-ui bg-wall shadow-hang" style={{ aspectRatio: ratioOf(r) }}>
                   <img
                     src={r.img}
                     alt=""
@@ -375,14 +359,14 @@ function ArtworkView({ work }) {
             <span className="price">{work.price}</span>
           </span>
           <Button onClick={addToBag} aria-busy={adding}>
-            {adding ? 'Adding…' : 'Add to Bag'}
+            {adding ? 'Adding…' : 'Add to Cart'}
           </Button>
         </div>
       )}
 
       {toast && (
-        <Toast action="View bag" onAction={viewBag}>
-          Added to your bag
+        <Toast action="View cart" onAction={viewBag}>
+          Added to your cart
         </Toast>
       )}
       <BagDrawer />
