@@ -9,7 +9,7 @@ export default function OrderSummary({ selection, canEdit, onRemove, collect }) 
   return (
     <aside
       aria-labelledby="sum-h"
-      className="sticky top-24 col-[9/13] bg-surface p-7 shadow-[0_1px_0_#E5E0D8] max-lg:static max-lg:col-span-full max-lg:mt-12"
+      className="sticky top-24 col-[9/13] bg-surface p-7 shadow-[0_1px_0_var(--color-divider)] max-lg:static max-lg:col-span-full max-lg:mt-12"
     >
       <div className="flex items-baseline justify-between gap-3">
         <h2 id="sum-h" className="art-title">

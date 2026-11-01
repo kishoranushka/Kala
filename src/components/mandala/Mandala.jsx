@@ -89,10 +89,10 @@ export function FlowerGlyph({ tint = 'peach', className }) {
 }
 
 /* a single turning ring of twelve petals — the watermark on dark chapters, menus and the viewing room */
-export function RingMandala({ className, stroke = '#FFFEFA', spin = 200, rings = [186, 120, 60], ...props }) {
+export function RingMandala({ className, stroke = 'var(--color-on-primary)', spin = 200, rings = [186, 120, 60], style, ...props }) {
   const id = useSvgId();
   return (
-    <svg viewBox="-300 -300 600 600" aria-hidden="true" fill="none" stroke={stroke} strokeWidth="1" className={cx('pointer-events-none', className)} {...props}>
+    <svg viewBox="-300 -300 600 600" aria-hidden="true" fill="none" strokeWidth="1" className={cx('pointer-events-none', className)} style={{ stroke, ...style }} {...props}>
       <defs>
         <path id={id} d={PETAL_LARGE} />
       </defs>

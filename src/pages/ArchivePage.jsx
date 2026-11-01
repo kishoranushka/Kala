@@ -105,7 +105,7 @@ export default function ArchivePage() {
             {HOMES.map((w) => (
               <Link key={w.id} to={`/artwork/${w.id}`} data-cursor="view" className="group block text-on-primary no-underline hover:text-on-primary">
                 <Mat work={w} ratio="aspect-square" padding="p-4" tone="bg-primary-hover" />
-                <span className="mt-2.5 block text-[13px] text-[#D9D3C8]">
+                <span className="mt-2.5 block text-[13px] text-on-primary-soft">
                   {w.title} · {w.price}
                 </span>
               </Link>

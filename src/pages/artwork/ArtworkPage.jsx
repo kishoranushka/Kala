@@ -173,7 +173,7 @@ function ArtworkView({ work }) {
             <div className="col-[1/8] max-lg:col-span-full">
               <div data-intro-wipe className="relative flex justify-center overflow-hidden bg-wall p-[clamp(28px,5vw,72px)]">
                 <RingMandala
-                  stroke="#C9B79C"
+                  stroke="var(--color-oak)"
                   spin={240}
                   rings={[186]}
                   className="absolute top-1/2 left-1/2 w-[140%] -translate-x-1/2 -translate-y-1/2 opacity-50"
@@ -205,7 +205,7 @@ function ArtworkView({ work }) {
                       onClick={() => setViewIndex(i)}
                       className="group flex cursor-pointer flex-col items-start gap-2 border-0 bg-transparent p-0 font-sans text-xs/4 font-semibold text-muted aria-pressed:text-primary"
                     >
-                      <span className="relative size-[72px] overflow-hidden shadow-[0_0_0_1px_#E5E0D8] transition-shadow duration-400 ease-gallery group-aria-pressed:shadow-[0_0_0_2px_#F6F2EB,0_0_0_3px_#22211F] max-sm:size-[60px]">
+                      <span className="relative size-[72px] overflow-hidden shadow-[0_0_0_1px_var(--color-divider)] transition-shadow duration-400 ease-gallery group-aria-pressed:shadow-[0_0_0_2px_var(--color-page),0_0_0_3px_var(--color-primary)] max-sm:size-[60px]">
                         <img
                           src={v.img}
                           alt=""

@@ -45,7 +45,7 @@ export default function WallsPage() {
               </p>
               <ul data-intro aria-label="Spaces I paint" className="m-0 mt-7 flex list-none flex-wrap gap-2 p-0">
                 {SPACES.map((s) => (
-                  <li key={s} className="rounded-full border border-[#CFC6B8] bg-surface/60 px-3.5 py-1.5 text-[13px]/5 font-medium text-soft">
+                  <li key={s} className="rounded-full border border-chip bg-surface/60 px-3.5 py-1.5 text-[13px]/5 font-medium text-soft">
                     {s}
                   </li>
                 ))}

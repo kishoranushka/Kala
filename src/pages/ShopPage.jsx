@@ -44,7 +44,7 @@ function Toggle({ pressed, onClick, children }) {
     >
       <i
         aria-hidden="true"
-        className="relative h-[22px] w-[38px] rounded-full bg-[#D9D1C4] transition-colors duration-300 group-aria-pressed:bg-success after:absolute after:top-[3px] after:left-[3px] after:size-4 after:rounded-full after:bg-surface after:transition-transform after:duration-300 after:ease-gallery group-aria-pressed:after:translate-x-4"
+        className="relative h-[22px] w-[38px] rounded-full bg-track transition-colors duration-300 group-aria-pressed:bg-success after:absolute after:top-[3px] after:left-[3px] after:size-4 after:rounded-full after:bg-surface after:transition-transform after:duration-300 after:ease-gallery group-aria-pressed:after:translate-x-4"
       />
       {children}
     </button>

@@ -25,6 +25,7 @@
   --color-primary-hover: #34322e;
   --color-on-primary: #fffefa;
   --color-on-primary-muted: #b9b2a6;
+  --color-on-primary-soft: #d9d3c8; /* body copy on a primary fill */
   --color-secondary: #c9531f;
   --color-secondary-on-dark: #e8936a;
 
@@ -42,6 +43,10 @@
   --color-divider: #e5e0d8;
   --color-line: #8f887d;
   --color-hairline: rgb(255 254 250 / 0.18);
+  --color-chip: #cfc6b8; /* outline of small tag pills */
+  --color-track: #d9d1c4; /* switch track when off */
+  --color-progress-track: #e9dcc4; /* back-to-top ring */
+  --color-viewer: #0e0d0c; /* full-screen artwork viewer */
 
   /* ---------- interaction ---------- */
   --color-link: #294dce;
@@ -50,6 +55,7 @@
 
   /* ---------- status (always paired with a word) ---------- */
   --color-success: #2f6b4a;
+  --color-success-on-dark: #7fc59b;
   --color-success-wash: #e3efe6;
   --color-warning: #8a5a12;
   --color-warning-wash: #f6ebd6;
@@ -263,7 +269,7 @@
     line-height: 27px;
   }
   .inverse & {
-    color: #d9d3c8;
+    color: var(--color-on-primary-soft);
   }
 }
 

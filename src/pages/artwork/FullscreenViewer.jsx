@@ -32,7 +32,7 @@ export default function FullscreenViewer({ work, onClose }) {
       aria-modal="true"
       aria-label={`${work.title}, full screen`}
       onKeyDown={onKeyDown}
-      className="inverse fixed inset-0 z-80 flex items-center justify-center bg-[#0E0D0C] px-6 pt-[72px] pb-14"
+      className="inverse fixed inset-0 z-80 flex items-center justify-center bg-viewer px-6 pt-[72px] pb-14"
     >
       <img src={work.img} alt={work.alt} className="max-h-full max-w-full object-contain" />
       <button

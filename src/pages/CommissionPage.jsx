@@ -298,7 +298,7 @@ export default function CommissionPage() {
               <p className="mt-8 max-w-[20ch] font-display text-[26px]/[34px] italic">I read every message personally.</p>
             </aside>
 
-            <div data-cap className="col-[6/13] bg-surface p-[clamp(28px,4vw,56px)] shadow-[0_1px_0_#E5E0D8] max-lg:col-span-full max-lg:mt-12 max-sm:-mx-5">
+            <div data-cap className="col-[6/13] bg-surface p-[clamp(28px,4vw,56px)] shadow-[0_1px_0_var(--color-divider)] max-lg:col-span-full max-lg:mt-12 max-sm:-mx-5">
               <EnquiryForm />
             </div>
           </div>

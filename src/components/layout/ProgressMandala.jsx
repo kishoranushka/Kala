@@ -16,7 +16,7 @@ export default function ProgressMandala({ raised = false }) {
       )}
     >
       <svg viewBox="-24 -24 48 48" width="44" height="44" fill="none" aria-hidden="true" className="max-sm:size-[38px]">
-        <circle r="20" stroke="#E9DCC4" strokeWidth="1.5" />
+        <circle r="20" strokeWidth="1.5" className="stroke-progress-track" />
         <circle data-prog-ring r="20" strokeWidth="2" transform="rotate(-90)" className="stroke-secondary" />
         <g data-prog-petals strokeWidth="1" className="stroke-line">
           {[0, 60, 120, 180, 240, 300].map((a) => (

@@ -53,11 +53,11 @@ function MandalaO() {
       className="mx-[.02em] inline-block size-[.62em] translate-y-[.06em] self-center"
     >
       <g data-spin="24">
-        <circle r="56" stroke="#22211F" />
+        <circle r="56" className="stroke-primary" />
         <circle r="44" strokeWidth="5" strokeDasharray="0 11.5" strokeLinecap="round" className="stroke-secondary" />
         <path
           d="M0,-40 C10,-30 10,-20 0,-12 C-10,-20 -10,-30 0,-40Z M0,40 C10,30 10,20 0,12 C-10,20 -10,30 0,40Z M-40,0 C-30,10 -20,10 -12,0 C-20,-10 -30,-10 -40,0Z M40,0 C30,10 20,10 12,0 C20,-10 30,-10 40,0Z"
-          stroke="#22211F"
+          className="stroke-primary"
         />
       </g>
       <circle r="7" className="fill-secondary" stroke="none" />

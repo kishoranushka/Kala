@@ -22,7 +22,7 @@ export default function CtaBand({ id, eyebrow, title, lead, to = '/commission', 
           <SplitWords id={id} text={title} className="heading-2 mt-5 mb-0 font-light" />
         </div>
         <div data-cap className="col-[9/13] max-lg:col-span-full max-lg:mt-7">
-          <p className="lead mt-0 mb-7 text-[#D9D3C8]!">{lead}</p>
+          <p className="lead mt-0 mb-7 text-on-primary-soft!">{lead}</p>
           <Button variant="light" to={to} arrow data-magnetic data-cursor="talk">
             {label}
           </Button>

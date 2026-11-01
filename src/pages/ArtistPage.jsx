@@ -120,7 +120,7 @@ export default function ArtistPage() {
           </p>
           <ul data-intro aria-label="What I make" className="m-0 mt-7 flex list-none flex-wrap gap-2 p-0">
             {MAKES.map((m) => (
-              <li key={m} className="rounded-full border border-[#CFC6B8] bg-surface/60 px-3.5 py-1.5 text-[13px]/5 font-medium text-soft">
+              <li key={m} className="rounded-full border border-chip bg-surface/60 px-3.5 py-1.5 text-[13px]/5 font-medium text-soft">
                 {m}
               </li>
             ))}
