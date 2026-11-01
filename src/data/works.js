@@ -107,7 +107,7 @@ export const WORKS = [
   {
     id: 'child', plate: '03', title: 'Child Portrait', collection: 'portraits', status: 'inquiry',
     price: '', medium: '[Medium]', size: '[Size]', year: '[Year]', framing: '[Framing]',
-    img: childImg, w: 928, h: 1206, archiveNo: '006',
+    img: childImg, w: 928, h: 1206,
     alt: 'A sleeping child resting their chin in both hands, painted in rose, vermilion and magenta over a violet ground, with small sculpted roses at the edges',
     note: '[A few lines in your words about this portrait and the kind of personal pieces you make.]',
     details: [{ label: 'Detail I', origin: '50% 36%', scale: 2.1 }, { label: 'Detail II', origin: '50% 80%', scale: 2.2 }],

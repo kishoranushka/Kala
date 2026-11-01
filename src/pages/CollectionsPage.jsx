@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import cx from '@/utils/cx';
 import { COLLECTIONS, getWork, worksIn } from '@/data/works';
+import Mat from '@/components/art/Mat';
 import CtaBand from '@/components/sections/CtaBand';
 import PageTop from '@/components/sections/PageTop';
 import Icon from '@/components/ui/Icon';
@@ -20,14 +21,7 @@ function ChapterCard({ collection, wide }) {
       data-cursor="explore"
       className={cx('group flex flex-col text-primary no-underline hover:text-primary max-lg:col-span-1', wide ? 'col-span-3' : 'col-span-2')}
     >
-      <div className="flex aspect-[4/3] min-h-0 items-center justify-center overflow-hidden rounded-ui bg-mat p-[22px] transition-colors duration-500 ease-gallery group-hover:bg-mat-hover">
-        <img
-          src={lead.img}
-          alt={lead.alt}
-          loading="lazy"
-          className="block h-auto max-h-full w-auto max-w-full min-h-0 shadow-[0_2px_4px_rgba(34,33,31,.12),0_24px_36px_-18px_rgba(34,33,31,.5)] transition-transform duration-900 ease-gallery group-hover:-translate-y-1.5"
-        />
-      </div>
+      <Mat work={lead} />
       {thumbs.length > 0 && (
         <div aria-hidden="true" className="mt-2 grid grid-cols-4 gap-2">
           {thumbs.map((t) => (
