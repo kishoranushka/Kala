@@ -32,11 +32,11 @@
 - Push the redesign commits (user hasn't asked yet).
 - Forms (commission, contact, order) validate but aren't wired to any backend.
 - Placeholder content (`[Medium]`, `[Size]`, `[Location]`, reel titles/links, bios) — needs real values from the artist.
-- Flute and Veena image looks very like Radha and Krishna in Blue (canvas data, blob `19edfede…`) — confirm with user.
 - Record the Vercel production URL.
 
 ## Decisions & gotchas
 
+- "Flute and Veena" and "Radha and Krishna in Blue" look alike but are different paintings (confirmed by user) — keep both.
 - Faithful to the canvas; keep motion data attributes (`data-reveal`, `data-words`, `data-spin`…). Page choreography via `usePageMotion(fn)`.
 - Colours/fonts: change only in the THEME block of `src/styles/index.css`; use role classes (`bg-primary`, `text-secondary`…), never raw hex in JSX.
 - Box with `aspect-ratio` + flex-centred img needs `min-h-0 overflow-hidden` (else it grows) — use `Mat`.
