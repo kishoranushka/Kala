@@ -1,14 +1,13 @@
 import { Link } from 'react-router-dom';
 import cx from '@/utils/cx';
 import { CONTACT } from '@/data/site';
-import { FILMS, STUDIO, getWork, ratioOf } from '@/data/works';
+import { PHOTOS, STUDIO, getWork, ratioOf } from '@/data/works';
 import { usePageMotion } from '@/motion/MotionContext';
-import Film from '@/components/art/Film';
 import InverseSection from '@/components/sections/InverseSection';
-import PageIntro from '@/components/sections/PageIntro';
-import { PageMandala } from '@/components/mandala/Mandala';
+import PageTop from '@/components/sections/PageTop';
 import Button from '@/components/ui/Button';
-import { Accent, Line, SplitWords } from '@/components/ui/Typography';
+import TextLink from '@/components/ui/TextLink';
+import { Line, SplitWords } from '@/components/ui/Typography';
 
 /* the studio row: works and photographs at varied sizes, dropping to different heights */
 const LANDSCAPE = [
@@ -28,11 +27,7 @@ const METHOD = [
   { num: 'III', title: 'Resolve', work: 'om', scale: 2.6, origin: '50% 48%', alt: 'Close-up of the dot work around the Om', note: '[How you know a piece is finished.]', className: 'mt-10 max-lg:mt-0 max-sm:mr-[12%]' },
 ];
 
-const REELS = [
-  { film: 'sketch', num: 'i', title: 'The sketchbook', note: 'Lotus line drawings, then the paint table.', label: 'A silent vertical film over the lotus sketchbook and dot-painted pots, then the paint pots and brushes' },
-  { film: 'dots', num: 'ii', title: 'The dot rings', note: 'Om Mandala, turning slowly out from the centre.', label: 'A silent vertical film turning slowly out from the centre of the Om Mandala' },
-  { film: 'easel', num: 'iii', title: 'On the easel', note: 'The Escape Key, from the room to the brushwork.', label: 'A silent vertical film of The Escape Key on its easel, moving in to the painted surface' },
-];
+const MAKES = ['Paintings', 'Mandalas', 'Wall murals', 'Painted wearables', 'Face paint'];
 
 const MILESTONES = [
   { year: '[Year]', title: '[Milestone]', note: '[A line about it]' },
@@ -73,7 +68,7 @@ function Numbered({ num, size = 'text-[32px]', title }) {
 function LandscapeItem({ item, index }) {
   const work = item.work && getWork(item.work);
   const photo = item.photo && STUDIO[item.photo];
-  const frame = 'relative block overflow-hidden bg-wall shadow-hang';
+  const frame = 'relative block overflow-hidden rounded-ui bg-wall shadow-hang';
   const image = (
     <img
       src={(work ?? photo).img}
@@ -104,44 +99,59 @@ function LandscapeItem({ item, index }) {
 
 export default function ArtistPage() {
   usePageMotion(artistMotion);
-  const mural = getWork('mural');
   const escape = getWork('escape');
 
   return (
     <>
-      {/* ============================== THE ORIGIN OF A PATTERN */}
-      <PageIntro
-        labelledBy="ar-h"
-        crumbs={[{ label: 'The Artist' }]}
-        bodyClassName="mt-6"
-        mandala={<PageMandala outerSpin={220} innerSpin={-140} className="-top-[300px] left-[30%] w-[900px] opacity-55" />}
-      >
-        <div className="relative z-[2] col-[1/6] self-center max-lg:col-span-full">
-          <p data-intro className="eyebrow">
-            The artist · The origin of a pattern
+      {/* ============================== HELLO */}
+      <PageTop labelledBy="ar-h" crumbs={[{ label: 'The Artist' }]} bodyClassName="mt-6 grid-12">
+        <div className="relative z-2 col-[1/6] self-center max-lg:col-span-full">
+          <p data-intro className="eyebrow m-0">
+            The artist
           </p>
-          <h1 id="ar-h" data-intro-line className="heading-1 mt-5">
+          <h1 id="ar-h" data-intro-line className="heading-1 mt-5 mb-0">
             <Line>Hello, I’m</Line>
             <Line>
-              <Accent>{CONTACT.artist}.</Accent>
+              <span className="font-normal text-secondary italic">{CONTACT.artist}.</span>
             </Line>
           </h1>
-          <p data-intro className="lead mt-7">
+          <p data-intro className="lead mt-7 mb-0">
             [One or two sentences in your own words: who you are, what you paint, and where you paint it.]
           </p>
-          <p data-intro className="mt-8 font-display text-[28px]/[34px] italic">
+          <ul data-intro aria-label="What I make" className="m-0 mt-7 flex list-none flex-wrap gap-2 p-0">
+            {MAKES.map((m) => (
+              <li key={m} className="rounded-full border border-[#CFC6B8] bg-surface/60 px-3.5 py-1.5 text-[13px]/5 font-medium text-soft">
+                {m}
+              </li>
+            ))}
+          </ul>
+          <div data-intro className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
+            <Button to="/commission" data-magnetic data-cursor="talk">
+              Commission Me
+            </Button>
+            <TextLink to={CONTACT.instagram} arrow>
+              Follow {CONTACT.instagramHandle}
+            </TextLink>
+          </div>
+          <p data-intro className="mt-9 mb-0 font-display text-[28px]/[34px] italic">
             Think beyond the frame.
           </p>
         </div>
-        <div className="relative col-[6/13] pt-[clamp(80px,12vw,180px)] max-lg:col-span-full max-lg:mt-6">
-          <div data-intro-img data-cursor="view" className="relative w-[88%] overflow-hidden shadow-hang" style={{ aspectRatio: ratioOf(mural) }}>
-            <img src={mural.img} alt="The half-mandala wall mural in crimson, saffron, lilac and teal" fetchpriority="high" className="block size-full object-cover" />
-          </div>
-          <div data-intro data-portrait className="absolute right-0 bottom-0 w-[44%] max-w-[340px] drop-shadow-[0_30px_40px_rgba(34,33,31,.25)] max-sm:w-1/2">
-            <img src={STUDIO.portrait.img} alt={STUDIO.portrait.alt} width={STUDIO.portrait.w} height={STUDIO.portrait.h} className="block h-auto w-full" />
-          </div>
+        <div className="relative col-[6/13] pt-6 pb-[72px] max-lg:col-span-full max-lg:mt-10 max-lg:max-w-[640px] max-sm:pb-12">
+          <figure data-intro className="relative z-1 m-0 ml-[24%] aspect-[3/4] w-[58%] overflow-hidden rounded-ui bg-wall shadow-float max-sm:ml-[18%] max-sm:w-[70%]">
+            <img src={PHOTOS.park.img} alt={PHOTOS.park.alt} fetchpriority="high" className="block size-full object-cover object-[50%_45%]" />
+          </figure>
+          <figure data-intro className="absolute top-0 right-0 z-2 m-0 aspect-[3/4] w-[28%] rotate-4 overflow-hidden rounded-ui border-6 border-surface bg-wall shadow-float max-sm:w-[34%]">
+            <img src={PHOTOS.pot.img} alt={PHOTOS.pot.alt} loading="lazy" className="block size-full object-cover" />
+          </figure>
+          <figure data-intro data-portrait className="absolute bottom-0 left-0 z-2 m-0 aspect-[3/4] w-[36%] -rotate-4 overflow-hidden rounded-ui border-6 border-surface bg-wall shadow-float max-sm:bottom-6 max-sm:w-[42%]">
+            <img src={PHOTOS.cobalt.img} alt={PHOTOS.cobalt.alt} loading="lazy" className="block size-full object-cover object-[50%_30%]" />
+          </figure>
+          <span data-intro aria-hidden="true" className="absolute right-[4%] bottom-4 font-display text-[22px]/7 text-muted italic max-sm:hidden">
+            Painter · Muralist · Maker
+          </span>
         </div>
-      </PageIntro>
+      </PageTop>
 
       {/* ============================== THE STUDIO AS A LANDSCAPE */}
       <section aria-labelledby="land-h" className="pt-[clamp(64px,8vw,120px)] pb-[clamp(96px,11vw,160px)]">
@@ -184,7 +194,7 @@ export default function ArtistPage() {
               const work = getWork(m.work);
               return (
                 <figure key={m.num} data-cap className={cx('m-0', m.className)}>
-                  <div data-reveal data-noinner className="relative aspect-[4/5] overflow-hidden bg-wall shadow-hang">
+                  <div data-reveal data-noinner className="relative aspect-[4/5] overflow-hidden rounded-ui bg-wall shadow-hang">
                     <img
                       src={work.img}
                       alt={m.alt}
@@ -200,34 +210,6 @@ export default function ArtistPage() {
                 </figure>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* ============================== FROM THE EASEL (films) */}
-      <section aria-labelledby="easel-h" className="pb-[clamp(96px,11vw,160px)]">
-        <div className="wrap">
-          <div className="grid-12 mb-[clamp(48px,6vw,80px)] items-end">
-            <div className="col-[1/span_7]">
-              <p data-eyebrow className="eyebrow">
-                From the easel · three short films
-              </p>
-              <SplitWords id="easel-h" text="Sketch, dot, *finish.*" className="heading-2 mt-5 font-light" />
-            </div>
-            <p data-cap className="meta col-[9/span_4] text-sm/[22px]">
-              Motion studies made from photographs of the studio and the work. [Replace with your own process clips or reels whenever you film them.]
-            </p>
-          </div>
-          <div className="grid grid-cols-3 gap-6 max-lg:gap-4 max-sm:grid-cols-1 max-sm:gap-10">
-            {REELS.map((reel) => (
-              <figure key={reel.film} data-reveal data-noinner className={cx('m-0', reel.className)}>
-                <Film {...FILMS[reel.film]} portrait label={reel.label} className="max-h-[78vh] max-sm:mx-auto max-sm:max-h-none max-sm:w-[min(100%,360px)]" />
-                <figcaption className="mt-[18px]">
-                  <Numbered num={reel.num} size="text-[28px]" title={reel.title} />
-                  <p className="meta mt-2 text-sm/[22px] text-soft!">{reel.note}</p>
-                </figcaption>
-              </figure>
-            ))}
           </div>
         </div>
       </section>
@@ -254,7 +236,7 @@ export default function ArtistPage() {
                 data-cursor="view"
                 data-reveal
                 aria-label={`View ${escape.title}`}
-                className="relative block overflow-hidden bg-wall shadow-[0_40px_80px_-40px_rgba(0,0,0,.6)]"
+                className="relative block overflow-hidden rounded-ui bg-wall shadow-[0_40px_80px_-40px_rgba(0,0,0,.6)]"
                 style={{ aspectRatio: ratioOf(STUDIO.easel) }}
               >
                 <img

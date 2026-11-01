@@ -30,7 +30,9 @@
 - Done: theme tokens (role names: primary, secondary, page, surface, muted… in `src/styles/index.css` top block), header/footer/menu/progress, new data (10 new works, PHOTOS, REELS in `works.js`; real links in `site.js`), `CartButton`, gentle home opening. Commit `4ac1db2`.
 - Home done (`1d030e3`): sections in `src/pages/home/sections/`, shared `SectionHead`/`ArrowLink`/`Chips`, `ShopCard`, `FlowerGlyph`, `HeroDome`.
 - Visual check: `vite preview --port 4173` + scratchpad `shot.ps1` (Edge headless, `?still` URL flag freezes motion; GSAP doesn't advance under headless virtual time). Phone: wrap page in a 390px iframe (Edge min window ≈500px).
-- Remaining order: Walls (new route `/walls`) → Shop → Artwork → Collections → Collection → Archive → Artist → Commission → Contact → Order.
+- Done since: Walls `00dbe75`, Shop `a0fabd1`, Artwork `c2a9524`, Collections `a0ef3c2`, Collection `09170f5`, Archive `d2510fb`. Shared: `PageTop`, `CtaBand`, `Mat`, `ArtworkCard cart` prop.
+- Remaining: Artist → Commission → Contact → Order; then delete unused (PageIntro, InverseSection?, Film/FILMS + films assets if unused).
+- Old order note: Walls (new route `/walls`) → Shop → Artwork → Collections → Collection → Archive → Artist → Commission → Contact → Order.
 - New canvas has NO films/videos; old `FILMS` + `Film.jsx` still used by old pages — drop when those pages are ported (tell user).
 - Scratch copy of canvas files: re-download with Artifact read (`path` = `project/X.dc.html`; images: `path` = bare 32-hex blob id).
 
