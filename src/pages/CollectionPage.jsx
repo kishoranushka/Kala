@@ -3,7 +3,7 @@ import cx from '@/utils/cx';
 import { COLLECTIONS, getWork, pad2, ratioOf, worksIn } from '@/data/works';
 import ArtworkCard from '@/components/art/ArtworkCard';
 import InverseSection from '@/components/sections/InverseSection';
-import PageIntro from '@/components/sections/PageIntro';
+import PageTop from '@/components/sections/PageTop';
 import { RingMandala } from '@/components/mandala/Mandala';
 import Button from '@/components/ui/Button';
 import TextLink from '@/components/ui/TextLink';
@@ -11,7 +11,8 @@ import { SplitWords } from '@/components/ui/Typography';
 
 /* works pair up across the wall in fours; on tablet every second work drops lower */
 const SLOTS = ['col-[1/7]', 'col-[8/12]', 'col-[2/6]', 'col-[7/13]'];
-const slotFor = (i) => cx(SLOTS[i % 4], 'max-lg:col-auto', i % 2 && 'max-lg:mt-[72px] max-sm:mt-0');
+const DROPS = ['', 'mt-40', '', 'mt-20'];
+const slotFor = (i) => cx(SLOTS[i % 4], DROPS[i % 4], 'max-lg:col-auto', i % 2 ? 'max-lg:mt-[72px] max-sm:mt-0 max-sm:ml-[12%]' : 'max-lg:mt-0');
 
 function AdjacentChapter({ chapter, direction }) {
   const next = direction === 'next';
@@ -52,7 +53,7 @@ export default function CollectionPage() {
   return (
     <>
       {/* ============================== CHAPTER OPENING */}
-      <PageIntro labelledBy="ch-h" crumbs={[{ label: 'Collections', to: '/collections' }, { label: chapter.title }]} bodyClassName="mt-10">
+      <PageTop labelledBy="ch-h" crumbs={[{ label: 'Collections', to: '/collections' }, { label: chapter.title }]} bodyClassName="mt-10 grid-12">
         <div className="relative col-[1/6] self-center max-lg:col-span-full">
           <span
             aria-hidden="true"
@@ -82,14 +83,14 @@ export default function CollectionPage() {
           </div>
         </div>
         <div className="relative col-[7/13] max-lg:col-span-full max-lg:mt-12">
-          <div data-intro-img data-tilt data-cursor="view" className="relative overflow-hidden bg-wall shadow-float" style={{ aspectRatio: ratioOf(lead) }}>
+          <div data-intro-img data-tilt data-cursor="view" className="relative overflow-hidden rounded-ui bg-wall shadow-float" style={{ aspectRatio: ratioOf(lead) }}>
             <img src={lead.img} alt={lead.alt} fetchpriority="high" className={cx('block size-full object-cover', lead.crop && 'crop-ig')} />
           </div>
           <p data-intro className="meta mt-4">
             Leading this chapter · {lead.title}
           </p>
         </div>
-      </PageIntro>
+      </PageTop>
 
       {/* ============================== WORKS IN THIS CHAPTER */}
       <section aria-labelledby="cw-h" className="pt-[clamp(48px,6vw,88px)] pb-[clamp(96px,11vw,160px)]">
@@ -105,7 +106,7 @@ export default function CollectionPage() {
           </div>
           <div className="grid grid-cols-12 items-start gap-x-8 gap-y-24 max-lg:grid-cols-2 max-lg:gap-x-6 max-lg:gap-y-14 max-sm:grid-cols-1">
             {works.map((w, i) => (
-              <ArtworkCard key={w.id} work={w} eyebrow={`Pl. ${w.plate}`} titleClassName="font-display text-[28px]/[34px] font-medium" className={slotFor(i)} />
+              <ArtworkCard key={w.id} work={w} eyebrow={`Pl. ${w.plate}`} titleClassName="font-display text-[28px]/[34px] font-medium" cart className={slotFor(i)} />
             ))}
           </div>
         </div>
