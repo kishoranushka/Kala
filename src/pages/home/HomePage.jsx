@@ -1,14 +1,13 @@
 import { usePageMotion } from '@/motion/MotionContext';
 import { homeMotion } from './homeMotion';
 import HeroSection from './sections/HeroSection';
-import Marquee from './sections/Marquee';
-import AtlasSection from './sections/AtlasSection';
-import PatternSection from './sections/PatternSection';
-import HandSection from './sections/HandSection';
-import StudioFilmSection from './sections/StudioFilmSection';
-import QuietSection from './sections/QuietSection';
-import ArchivePreviewSection from './sections/ArchivePreviewSection';
-import CommissionInviteSection from './sections/CommissionInviteSection';
+import PathsSection from './sections/PathsSection';
+import ShopStripSection from './sections/ShopStripSection';
+import WallsSection from './sections/WallsSection';
+import WearablesSection from './sections/WearablesSection';
+import ReelsSection from './sections/ReelsSection';
+import MeetSection from './sections/MeetSection';
+import BandSection from './sections/BandSection';
 
 export default function HomePage() {
   usePageMotion(homeMotion);
@@ -16,14 +15,13 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <Marquee />
-      <AtlasSection />
-      <PatternSection />
-      <HandSection />
-      <StudioFilmSection />
-      <QuietSection />
-      <ArchivePreviewSection />
-      <CommissionInviteSection />
+      <PathsSection />
+      <ShopStripSection />
+      <WallsSection />
+      <WearablesSection />
+      <ReelsSection />
+      <MeetSection />
+      <BandSection />
     </>
   );
 }

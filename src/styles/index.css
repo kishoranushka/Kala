@@ -56,9 +56,16 @@
   --color-error: #b3261e;
   --color-error-wash: #f8e4e1;
 
+  /* ---------- soft tints (home "ways in" cards) ---------- */
+  --color-tint-rose: #efe2d6;
+  --color-tint-sage: #e3e8de;
+  --color-tint-straw: #f2e8d2;
+  --color-tint-sky: #e2e7f0;
+
   /* ---------- decorative ---------- */
   --color-oak: #c9b79c; /* line-mandala strokes, frame edges */
   --color-sand: #bfae93; /* line mandala on sand sections */
+  --color-glyph: #a89b86; /* small spinning flower glyphs */
   --color-film: #1b1a18;
 
   /* ---------- fonts ---------- */
@@ -102,6 +109,12 @@
 
   --ease-gallery: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-glide: cubic-bezier(0.65, 0, 0.35, 1);
+
+  @keyframes glyph-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 }
 
 /* ------------------------------------------------------------------ base */
@@ -349,6 +362,27 @@
   .wi {
     display: inline-block;
     will-change: transform;
+  }
+
+  /* small flower glyphs turn too slowly to notice */
+  .glyph-spin {
+    transform-origin: 0 0;
+    animation: glyph-spin 90s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .glyph-spin {
+      animation: none;
+    }
+  }
+
+  /* horizontal scrollers (reels) hide their scrollbar */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 
   /* hides the Instagram avatar captured in the bottom-left corner of the Krishna and Radha photo */

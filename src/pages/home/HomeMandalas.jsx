@@ -1,118 +1,140 @@
 import { Petals, useSvgId } from '@/components/mandala/Mandala';
 
-/* the large line mandala unfolding behind the hero */
-export function HeroMandala({ className }) {
-  const id = useSvgId();
+/* The pastel mandala rising from the top of the home hero.
+   Illustration colours live here (they are paint, not UI): change them to recolour the bloom. */
+const PAINT = {
+  line: '#DCCFBD',
+  bead: '#D2C3AC',
+  white: '#FFFEFA',
+  sky: '#C9DAEF',
+  mint: '#CAE7E0',
+  rose: '#F2C6BF',
+  peach: '#F6D5B4',
+  straw: '#F3E4AC',
+  blush: '#ECB8BC',
+  sage: '#CCDFC5',
+  lilac: '#DCCFEB',
+  cream: '#FBF7F0',
+};
+
+const P = {
+  p0: 'M0,-500 C87.4,-524.2 84.6,-614.4 0,-610 C-84.6,-614.4 -87.4,-524.2 0,-500Z',
+  p2: 'M0,-360 C58,-391.9 36,-448.9 0,-474 C-36,-448.9 -58,-391.9 0,-360Z',
+  p2i: 'M0,-386 C18,-403.9 11.2,-435.9 0,-450 C-11.2,-435.9 -18,-403.9 0,-386Z',
+  p3: 'M0,-262 C76,-291 73.6,-399.3 0,-394 C-73.6,-399.3 -76,-291 0,-262Z',
+  p3i: 'M0,-286 C30,-310.1 18.6,-353.1 0,-372 C-18.6,-353.1 -30,-310.1 0,-286Z',
+  p3g: 'M0,-318 C15,-338.7 9.3,-375.7 0,-392 C-9.3,-375.7 -15,-338.7 0,-318Z',
+  p5: 'M0,-140 C52,-167.4 32.2,-216.4 0,-238 C-32.2,-216.4 -52,-167.4 0,-140Z',
+  p5i: 'M0,-160 C16,-175.1 9.9,-202.1 0,-214 C-9.9,-202.1 -16,-175.1 0,-160Z',
+  p7: 'M0,-56 C32.3,-69.6 31.3,-120.5 0,-118 C-31.3,-120.5 -32.3,-69.6 0,-56Z',
+};
+
+/* `count` beads on a circle of `radius`, starting at `start` degrees from twelve o'clock */
+function Beads({ count, radius, start = 0, r, fill }) {
+  const fills = Array.isArray(fill) ? fill : [fill];
+  return Array.from({ length: count }, (_, i) => {
+    const a = ((start + (360 / count) * i) * Math.PI) / 180;
+    return <circle key={i} cx={+(Math.sin(a) * radius).toFixed(1)} cy={+(-Math.cos(a) * radius).toFixed(1)} r={r} fill={fills[i % fills.length]} />;
+  });
+}
+
+/* one bloom layer: fades and opens on load (data-ml), then turns (data-spin) */
+function Layer({ spin, children }) {
   return (
-    <svg data-h-mandala viewBox="-500 -500 1000 1000" aria-hidden="true" fill="none" stroke="#C9B79C" strokeWidth="1" className={className}>
-      <defs>
-        <path id={`${id}a`} d="M0,-440 C40,-404 46,-364 0,-332 C-46,-364 -40,-404 0,-440Z" />
-        <path id={`${id}b`} d="M0,-262 C30,-238 30,-212 0,-192 C-30,-212 -30,-238 0,-262Z" />
-        <path id={`${id}c`} d="M0,-120 C40,-92 32,-70 0,-60 C-32,-70 -40,-92 0,-120Z" />
-      </defs>
-      <g data-spin="180">
-        <circle r="486" />
-        <circle r="470" strokeDasharray="1 9" />
-        <circle r="446" />
-        <Petals href={`#${id}a`} count={16} />
-        <circle r="330" />
-      </g>
-      <g data-spin="-120">
-        <circle r="300" strokeWidth="3" strokeLinecap="round" strokeDasharray="0 15.7" className="stroke-secondary" opacity=".55" />
-        <circle r="268" />
-        <Petals href={`#${id}b`} count={12} />
-        <circle r="190" />
-      </g>
-      <g data-spin="80">
-        <circle r="150" strokeDasharray="2 6" />
-        <circle r="124" />
-        <Petals href={`#${id}c`} count={8} />
-        <circle r="58" />
-        <circle r="20" />
-      </g>
-    </svg>
+    <g data-ml>
+      {spin ? <g data-spin={spin}>{children}</g> : children}
+    </g>
   );
 }
 
-/* the painted mandala of "Inside the pattern": petals unfold one by one as it scrolls into place */
-export function PatternMandala() {
+export function HeroDome() {
   const id = useSvgId();
-  const outer = `#${id}s`;
-  const inner = `#${id}r`;
+  const ref = (k) => `#${id}${k}`;
   return (
-    <svg data-pat-mandala viewBox="-360 -360 720 720" aria-hidden="true" className="block w-full max-w-[860px] max-lg:mx-auto">
+    <svg viewBox="-560 -560 1120 1120" aria-hidden="true" focusable="false" className="block size-full overflow-visible">
       <defs>
-        <path id={`${id}s`} d="M0,-322 C60,-272 64,-212 0,-172 C-64,-212 -60,-272 0,-322Z" />
-        <g id={`${id}p`}>
-          <path d="M0,-322 C60,-272 64,-212 0,-172 C-64,-212 -60,-272 0,-322Z" className="fill-primary" stroke="#C9B79C" strokeWidth="1.2" />
-          <path d="M0,-300 C34,-268 36,-226 0,-196 C-36,-226 -34,-268 0,-300Z" fill="none" stroke="#C9B79C" strokeWidth=".6" opacity=".6" />
-          <circle cy="-290" r="5" className="fill-secondary" />
-        </g>
-        <path id={`${id}r`} d="M0,-160 C34,-132 34,-102 0,-82 C-34,-102 -34,-132 0,-160Z" />
+        <radialGradient id={`${id}glow`}>
+          <stop offset="0" stopColor={PAINT.peach} stopOpacity=".55" />
+          <stop offset=".55" stopColor={PAINT.rose} stopOpacity=".18" />
+          <stop offset="1" stopColor="#F6F2EB" stopOpacity="0" />
+        </radialGradient>
+        {Object.entries(P).map(([k, d]) => (
+          <path key={k} id={`${id}${k}`} d={d} />
+        ))}
       </defs>
-      <g data-spin="240">
-        <circle r="352" fill="rgba(255,255,255,0.025)" stroke="#C9B79C" strokeWidth=".6" opacity=".7" />
-        <circle r="338" fill="none" stroke="#C9B79C" strokeWidth="3" strokeDasharray="0 10.6" strokeLinecap="round" opacity=".8" />
-        <g fill="#000000" opacity=".38" transform="translate(4 6)">
-          <Petals href={outer} count={12} data-petal />
-        </g>
-        <Petals href={`#${id}p`} count={12} data-petal />
-      </g>
-      <g data-spin="-160">
-        <circle r="172" className="fill-primary" stroke="#C9B79C" strokeWidth="1.2" />
-        <circle r="164" fill="none" stroke="#C9B79C" strokeWidth="1" strokeDasharray="1 6" />
-        <g fill="#000000" opacity=".38" transform="translate(3 4)">
-          <Petals href={inner} count={16} data-petal2 />
-        </g>
-        <g className="fill-primary" stroke="#C9B79C" strokeWidth="1">
-          <Petals href={inner} count={16} data-petal2 />
-        </g>
-      </g>
-      <g data-spin="60">
-        <circle r="80" className="fill-secondary" />
-        <circle r="64" fill="none" stroke="#F1E6CF" strokeWidth="3" strokeDasharray="0 8.4" strokeLinecap="round" />
-        <circle r="32" fill="#C9B79C" />
-        <circle r="11" className="fill-primary" />
-      </g>
-    </svg>
-  );
-}
+      <circle r="660" fill={`url(#${id}glow)`} />
 
-/* a single paper mandala that turns with the reader */
-export function QuietMandala() {
-  const id = useSvgId();
-  return (
-    <svg
-      data-quiet-mandala
-      viewBox="-100 -100 200 200"
-      aria-hidden="true"
-      className="block w-full max-w-[260px] drop-shadow-[0_18px_22px_rgba(34,33,31,.16)]"
-    >
-      <defs>
-        <path id={`${id}a`} d="M0,-92 C22,-72 24,-50 0,-36 C-24,-50 -22,-72 0,-92Z" />
-        <path id={`${id}b`} d="M0,-58 C14,-46 14,-34 0,-24 C-14,-34 -14,-46 0,-58Z" />
-      </defs>
-      <circle r="96" fill="#FFFEFA" />
-      <circle r="90" fill="none" stroke="#C9B79C" strokeWidth=".8" />
-      <g fill="#EAE4DA" stroke="#C9B79C" strokeWidth=".8">
-        <Petals href={`#${id}a`} count={8} />
-      </g>
-      <circle r="38" fill="#FFFEFA" stroke="#C9B79C" strokeWidth=".8" />
-      <g data-spin="-70" fill="#F6F2EB" stroke="#C9B79C" strokeWidth=".8">
-        <Petals href={`#${id}b`} count={8} start={22.5} />
-      </g>
-      <circle r="10" className="fill-secondary" />
-    </svg>
-  );
-}
+      <Layer spin={-360}>
+        <g fill="none" stroke={PAINT.line} strokeWidth="2">
+          <Petals href={ref('p0')} count={20} />
+        </g>
+        <Beads count={20} radius={560} start={9} r={4} fill={PAINT.bead} />
+      </Layer>
 
-/* the small six-spoked flower between marquee phrases */
-export function MarqueeGlyph() {
-  return (
-    <svg width="22" height="22" viewBox="-12 -12 24 24" fill="none" strokeWidth="1.2" className="shrink-0 stroke-secondary">
-      <circle r="10" />
-      <circle r="3" />
-      <path d="M0,-10 L0,10 M-8.7,-5 L8.7,5 M-8.7,5 L8.7,-5" />
+      <Layer spin={240}>
+        <circle r="512" fill="none" stroke={PAINT.line} strokeWidth="1.5" strokeDasharray="2 10" />
+        <Beads count={72} radius={494} r={4.2} fill={[PAINT.bead, PAINT.blush]} />
+      </Layer>
+
+      <Layer spin={-200}>
+        <g fill={PAINT.sky} stroke={PAINT.white} strokeWidth="5">
+          <Petals href={ref('p2')} count={24} start={7.5} />
+        </g>
+        <g fill={PAINT.mint}>
+          <Petals href={ref('p2i')} count={24} start={7.5} />
+        </g>
+        <Beads count={24} radius={480} start={7.5} r={4.5} fill={PAINT.bead} />
+      </Layer>
+
+      <Layer spin={160}>
+        <g fill={PAINT.rose} stroke={PAINT.white} strokeWidth="5">
+          <Petals href={ref('p3')} count={16} />
+        </g>
+        <g fill={PAINT.peach}>
+          <Petals href={ref('p3i')} count={16} />
+        </g>
+        <g fill={PAINT.straw} stroke={PAINT.white} strokeWidth="3">
+          <Petals href={ref('p3g')} count={16} start={11.25} />
+        </g>
+        <Beads count={16} radius={300} r={3.8} fill={PAINT.white} />
+        <Beads count={16} radius={322} r={3.4} fill={PAINT.white} />
+        <Beads count={16} radius={342} r={3} fill={PAINT.white} />
+      </Layer>
+
+      <Layer spin={-300}>
+        <circle r="262" fill={PAINT.straw} stroke={PAINT.white} strokeWidth="5" />
+        <circle r="236" fill={PAINT.cream} />
+        <Beads count={48} radius={249} r={4.6} fill={PAINT.bead} />
+      </Layer>
+
+      <Layer spin={-140}>
+        <g fill={PAINT.peach} stroke={PAINT.white} strokeWidth="4">
+          <Petals href={ref('p5')} count={12} start={15} />
+        </g>
+        <g fill={PAINT.sage}>
+          <Petals href={ref('p5i')} count={12} start={15} />
+        </g>
+        <Beads count={12} radius={222} r={4} fill={PAINT.lilac} />
+        <Beads count={24} radius={152} start={7.5} r={2.6} fill={PAINT.bead} />
+      </Layer>
+
+      <Layer spin={200}>
+        <circle r="140" fill={PAINT.blush} stroke={PAINT.white} strokeWidth="5" />
+        <Beads count={32} radius={127} r={3.6} fill={PAINT.white} />
+      </Layer>
+
+      <Layer spin={120}>
+        <g fill={PAINT.mint} stroke={PAINT.white} strokeWidth="4">
+          <Petals href={ref('p7')} count={8} start={22.5} />
+        </g>
+      </Layer>
+
+      <Layer>
+        <circle r="56" fill={PAINT.lilac} stroke={PAINT.white} strokeWidth="4" />
+        <Beads count={18} radius={44} r={3} fill={PAINT.straw} />
+        <circle r="18" fill={PAINT.straw} stroke={PAINT.white} strokeWidth="3" />
+        <circle r="6" fill={PAINT.blush} />
+      </Layer>
     </svg>
   );
 }

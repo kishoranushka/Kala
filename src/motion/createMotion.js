@@ -6,7 +6,7 @@
      data-speed  data-parallax="px"  data-scrub-rotate="deg"  data-spin="seconds"  data-fl  data-line
      data-cursor="view|talk|explore"  data-magnetic  data-tilt  data-marquee
    Links: "#id" scrolls behind the curtain, other routes travel behind the curtain. */
-import { gsap, ScrollTrigger, prefersReducedMotion } from './gsap';
+import { gsap, ScrollTrigger, prefersReducedMotion, stillFrames } from './gsap';
 
 export function createMotion(root, { arriving, gentle, extra, navigate, closeMenu, isMenuOpen, setDest }) {
   const html = document.documentElement;
@@ -89,8 +89,8 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
       const label = one('[data-curtain-label]');
 
       /* reduced motion: a quiet fade, everything else stays still */
-      if (d.reduce) {
-        gsap.from(all('[data-intro], [data-intro-line] .li, [data-hero] .li, [data-h-fade], [data-h-canvas]'), { autoAlpha: 0, duration: 0.5, stagger: 0.04 });
+      if (d.reduce || stillFrames) {
+        if (!stillFrames) gsap.from(all('[data-intro], [data-intro-line] .li, [data-hero] .li, [data-h-fade], [data-h-canvas]'), { autoAlpha: 0, duration: 0.5, stagger: 0.04 });
         return cleanup;
       }
 

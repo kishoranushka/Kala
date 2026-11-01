@@ -2,9 +2,9 @@ import { Fragment } from 'react';
 import cx from '@/utils/cx';
 
 /* One masked line of a headline (animated by [data-intro-line] / [data-hero]). */
-export function Line({ className, children }) {
+export function Line({ className, children, ...props }) {
   return (
-    <span className={cx('lm', className)}>
+    <span className={cx('lm', className)} {...props}>
       <span className="li">{children}</span>
     </span>
   );

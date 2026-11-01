@@ -63,6 +63,31 @@ export function PageMandala({
   );
 }
 
+/* the small eight-petal flower on cards and beside photos. It turns slowly (CSS) and
+   colours its outline with currentColor; the three fills are pastel paint. */
+const GLYPH_PETAL = 'M0,-14 C14,-22.4 8.7,-37.4 0,-44 C-8.7,-37.4 -14,-22.4 0,-14Z';
+export const GLYPH_TINTS = {
+  peach: ['#F6D5B4', '#F2C6BF', '#FFFEFA'],
+  rose: ['#F2C6BF', '#F6D5B4', '#FFFEFA'],
+  sage: ['#CCDFC5', '#F3E4AC', '#ECB8BC'],
+  straw: ['#F3E4AC', '#F6D5B4', '#ECB8BC'],
+  sky: ['#C9DAEF', '#DCCFEB', '#F3E4AC'],
+};
+export function FlowerGlyph({ tint = 'peach', className }) {
+  const [petal, heart, dot] = GLYPH_TINTS[tint];
+  return (
+    <svg viewBox="-50 -50 100 100" aria-hidden="true" focusable="false" className={cx('text-glyph', className)}>
+      <g className="glyph-spin">
+        {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+          <path key={a} d={GLYPH_PETAL} transform={`rotate(${a})`} fill={petal} stroke="currentColor" strokeWidth="2.5" />
+        ))}
+        <circle r="15" fill={heart} stroke="currentColor" strokeWidth="2.5" />
+        <circle r="5" fill={dot} />
+      </g>
+    </svg>
+  );
+}
+
 /* a single turning ring of twelve petals — the watermark on dark chapters, menus and the viewing room */
 export function RingMandala({ className, stroke = '#FFFEFA', spin = 200, rings = [186, 120, 60], ...props }) {
   const id = useSvgId();

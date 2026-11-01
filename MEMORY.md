@@ -24,6 +24,14 @@
 - Added `MEMORY.md` (this file) and `CLAUDE.md` (auto-loads this file + working rules).
 - Added `/wrap-up` slash command (`.claude/commands/wrap-up.md`) to update this file at session end.
 
+### 2026-11-01 — Beige redesign port (IN PROGRESS, page by page)
+- Canvas was updated: all pages now use the beige "Homepage 2" look (canvas files `Home2.dc.html`, `home.css`, `home-beige.css`, `site.css`) + new `Walls.dc.html` page. `Main.dc.html` (indigo/Fraunces) is an unused alternate.
+- User decisions: Home2 (beige) is `/`; keep + restyle Collections/Collection/Archive; roll out page by page, commit each.
+- Done: theme tokens (role names: primary, secondary, page, surface, muted… in `src/styles/index.css` top block), header/footer/menu/progress, new data (10 new works, PHOTOS, REELS in `works.js`; real links in `site.js`), `CartButton`, gentle home opening. Commit `4ac1db2`.
+- Remaining order: Home → Walls (new route `/walls`) → Shop → Artwork → Collections → Collection → Archive → Artist → Commission → Contact → Order.
+- New canvas has NO films/videos; old `FILMS` + `Film.jsx` still used by old pages — drop when those pages are ported (tell user).
+- Scratch copy of canvas files: re-download with Artifact read (`path` = `project/X.dc.html`; images: `path` = bare 32-hex blob id).
+
 ## Open / Next up
 
 - Forms (commission, contact, order) validate but aren't wired to any backend — each says so on screen.
