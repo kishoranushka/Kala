@@ -57,7 +57,7 @@
 
 ## Open / Next up
 
-- **Payment flow:** Supabase project set up, schema run, `SUPABASE_URL`/`SUPABASE_SECRET_KEY` in `.env.local` + Vercel (verified 2026-11-11: insert, hold_works, update and delete all work). Still to do: Razorpay webhook + `RAZORPAY_WEBHOOK_SECRET`, Razorpay keys in Vercel, a local test purchase, then commit + push (the payment code is still uncommitted, so the live site doesn't have it yet). Test with Razorpay test keys first, then switch to live keys.
+- **Payment flow:** Supabase project set up, schema run, `SUPABASE_URL`/`SUPABASE_SECRET_KEY` in `.env.local` + Vercel (verified 2026-11-11: insert, hold_works, update and delete all work). Code committed + pushed (`5f875a8`…`71c1e0b`), live: `/api/availability` 200 from production Supabase, `/track` 200. Still to do: Razorpay webhook + `RAZORPAY_WEBHOOK_SECRET`, confirm Razorpay keys in Vercel, one test purchase (cancel the Shiprocket order after). Test with Razorpay test keys first, then switch to live keys.
 - Set real prices for Ganesha, Vitthal, Happy Cat (and any "₹ 00,000" placeholders) in the editor.
 
 - **Shiprocket:** env vars are set (Vercel + `.env.local`); place one real test order, confirm it shows under the Kala channel, then cancel it.
