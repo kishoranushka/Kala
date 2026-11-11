@@ -141,6 +141,48 @@ function StatusActions({ work, inBag, adding, onAdd, onOpenBag }) {
   );
 }
 
+/* below lg: a fixed bar with the title, price and the one action that matters for this work */
+function MobileBar({ work, buyable, inBag, adding, onAdd, onOpenBag }) {
+  /* keep the footer clear of the bar while it's shown */
+  useEffect(() => {
+    document.body.classList.add('has-action-bar');
+    return () => document.body.classList.remove('has-action-bar');
+  }, []);
+
+  let action;
+  if (buyable) {
+    action = inBag ? (
+      <Button onClick={onOpenBag}>View Cart</Button>
+    ) : (
+      <Button onClick={onAdd} aria-busy={adding}>
+        {adding ? 'Adding…' : 'Add to Cart'}
+      </Button>
+    );
+  } else if (work.status === 'available') {
+    action = <Button to="/contact">Ask About It</Button>;
+  } else if (work.status === 'sold') {
+    action = <Button to="/commission">Commission Similar</Button>;
+  } else if (work.status === 'inquiry') {
+    action = <Button to="/commission">Enquire</Button>;
+  } else {
+    action = <Button to="/commission">Commission a Wall</Button>;
+  }
+
+  return (
+    <div className="fixed right-0 bottom-0 left-0 z-55 hidden items-center justify-between gap-3 bg-surface px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] shadow-[0_-12px_32px_-16px_rgba(34,33,31,.3)] max-lg:flex">
+      <span className="flex min-w-0 flex-1 flex-col">
+        <span className="truncate font-display text-xl/6 font-medium">{work.title}</span>
+        {buyable ? (
+          <SalePrice work={work} size="sm" />
+        ) : (
+          <span className="truncate text-[13px] text-muted">{work.status === 'available' ? 'Price on request' : cartOffLabel(work)}</span>
+        )}
+      </span>
+      <span className="shrink-0 whitespace-nowrap">{action}</span>
+    </div>
+  );
+}
+
 function ArtworkView({ work }) {
   const { bag, add, openDrawer } = useBag();
   const [viewIndex, setViewIndex] = useState(0);
@@ -184,8 +226,8 @@ function ArtworkView({ work }) {
       <section aria-labelledby="aw-title" className="pt-[clamp(24px,3vw,40px)] pb-[clamp(96px,11vw,160px)]">
         <div className="wrap">
           <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'Shop', to: '/shop' }, { label: work.title }]} />
-          <div className="mt-6 grid grid-cols-12 items-start gap-x-8">
-            <div className="col-[1/8] max-lg:col-span-full">
+          <div className="mt-6 grid grid-cols-12 items-start gap-x-8 max-lg:grid-cols-1">
+            <div className="col-[1/8] min-w-0 max-lg:col-span-full">
               <div data-intro-wipe className="relative flex justify-center overflow-hidden bg-wall p-[clamp(28px,5vw,72px)]">
                 <RingMandala
                   stroke="var(--color-oak)"
@@ -269,7 +311,7 @@ function ArtworkView({ work }) {
                 <dd>{work.framing}</dd>
               </dl>
               <div data-intro className="flex flex-wrap items-center justify-between gap-4">
-                <StatusBadge status={work.status} />
+                <StatusBadge work={work} />
                 {buyable ? (
                   <SalePrice work={work} size="lg" className="justify-end" />
                 ) : (
@@ -374,7 +416,7 @@ function ArtworkView({ work }) {
                 </span>
                 <span className="flex items-baseline justify-between gap-3">
                   <span className="eyebrow">{plateLabel(r)}</span>
-                  <StatusBadge status={r.status} marker={false} tone="text-on-primary" />
+                  <StatusBadge work={r} marker={false} tone="text-on-primary" />
                 </span>
                 <span className="art-title">{r.title}</span>
               </Link>
@@ -383,18 +425,8 @@ function ArtworkView({ work }) {
         </div>
       </InverseSection>
 
-      {/* ============================== MOBILE BUY BAR */}
-      {buyable && !inBag && (
-        <div className="fixed right-0 bottom-0 left-0 z-55 hidden items-center justify-between gap-4 bg-surface px-5 py-3 shadow-[0_-12px_32px_-16px_rgba(34,33,31,.3)] max-lg:flex">
-          <span className="flex min-w-0 flex-col">
-            <span className="truncate font-display text-xl/6 font-medium">{work.title}</span>
-            <SalePrice work={work} size="sm" />
-          </span>
-          <Button onClick={addToBag} aria-busy={adding}>
-            {adding ? 'Adding…' : 'Add to Cart'}
-          </Button>
-        </div>
-      )}
+      {/* ============================== MOBILE ACTION BAR: the page's main action, always in reach */}
+      <MobileBar work={work} buyable={buyable} inBag={inBag} adding={adding} onAdd={addToBag} onOpenBag={viewBag} />
 
       {toast && (
         <Toast action="View cart" onAction={viewBag}>

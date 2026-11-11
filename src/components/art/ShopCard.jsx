@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import cx from '@/utils/cx';
-import { STATUS, getCollection, isAvailable, isBuyable, metaLine, onSale } from '@/data/works';
+import { getCollection, statusLabel, isAvailable, isBuyable, metaLine, onSale } from '@/data/works';
 import CartButton from './CartButton';
 import SalePrice, { SaleTag } from './Price';
 
@@ -14,15 +14,18 @@ export default function ShopCard({ work, showCollection = false, titleClassName 
       <Link
         to={`/artwork/${work.id}`}
         data-cursor="view"
-        aria-label={`View ${work.title}, ${STATUS[work.status].label}`}
+        aria-label={`View ${work.title}, ${statusLabel(work)}`}
         className="group block text-inherit no-underline hover:text-inherit"
       >
         <div className="relative flex aspect-[4/5] items-center justify-center rounded-ui bg-mat p-[30px] transition-colors duration-600 ease-gallery group-hover:bg-mat-hover max-sm:p-[18px]">
-          <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-surface px-2.5 py-[5px] text-[11px]/[14px] font-bold tracking-[.08em] uppercase">
-            <i aria-hidden="true" className={cx('size-[7px] rounded-full', DOT[work.status])} />
-            {STATUS[work.status].label}
+          {/* status + sale pills share one row that wraps on narrow cards instead of overlapping */}
+          <span className="absolute inset-x-4 top-4 z-1 flex flex-wrap items-start justify-between gap-1.5 max-sm:inset-x-2 max-sm:top-2 max-sm:gap-1">
+            <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-surface px-2.5 py-[5px] text-[11px]/[14px] font-bold tracking-[.08em] uppercase max-sm:gap-1 max-sm:px-2 max-sm:py-1 max-sm:text-[9px]/3 max-sm:tracking-[.05em]">
+              <i aria-hidden="true" className={cx('size-[7px] shrink-0 rounded-full max-sm:size-1.5', DOT[work.status])} />
+              {statusLabel(work)}
+            </span>
+            {onSale(work) && <SaleTag />}
           </span>
-          {onSale(work) && <SaleTag className="absolute top-4 right-4" />}
           <img
             src={work.img}
             alt={work.alt}

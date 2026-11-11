@@ -7,6 +7,7 @@ export const NAV_LINKS = [
   { key: 'walls', label: 'Wall murals', to: '/walls' },
   { key: 'artist', label: 'The Artist', to: '/artist' },
   { key: 'contact', label: 'Contact', to: '/contact' },
+  { key: 'track', label: 'Track order', to: '/track' },
 ];
 
 /* the menu adds the wearables section of the home page after Wall murals */
@@ -17,6 +18,7 @@ export const MENU_LINKS = [
   { key: 'wearables', label: 'Wearables', to: '/#wearables' },
   NAV_LINKS[3],
   NAV_LINKS[4],
+  NAV_LINKS[5],
 ];
 
 export const FOOTER_GROUPS = [

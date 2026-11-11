@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import cx from '@/utils/cx';
-import { STATUS, WORKS, getCollection, isBuyable, metaLine } from '@/data/works';
+import { WORKS, getCollection, isBuyable, metaLine, statusLabel } from '@/data/works';
 import SalePrice from '@/components/art/Price';
 import Mat from '@/components/art/Mat';
 import PageTop from '@/components/sections/PageTop';
@@ -26,12 +26,12 @@ function ArchiveCard({ work }) {
   const step = nextStep(work);
   return (
     <div className="flex flex-col">
-      <Link to={`/artwork/${work.id}`} data-cursor="view" aria-label={`View ${work.title}, ${STATUS[work.status].label}`} className="group block text-primary no-underline hover:text-primary">
+      <Link to={`/artwork/${work.id}`} data-cursor="view" aria-label={`View ${work.title}, ${statusLabel(work)}`} className="group block text-primary no-underline hover:text-primary">
         <Mat work={work} ratio="aspect-[4/5]">
           {work.archiveNo && <span className="absolute top-3 left-3.5 z-1 font-display text-[22px] leading-none text-muted italic">Nº {work.archiveNo}</span>}
           <span className="absolute top-3.5 right-3.5 z-1 inline-flex items-center gap-1.5 rounded-full bg-surface px-2.5 py-[5px] text-[11px]/[14px] font-bold tracking-[.08em] uppercase">
             <i aria-hidden="true" className={cx('size-[7px] rounded-full', DOT[work.status])} />
-            {STATUS[work.status].label}
+            {statusLabel(work)}
           </span>
         </Mat>
         <span className="mt-[18px] block font-display text-[26px]/[30px] font-medium">{work.title}</span>

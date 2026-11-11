@@ -25,6 +25,15 @@ export const STATUS = {
   archived: { label: 'Archived', rank: 3 },
 };
 
+/* the word shown to visitors. "Archived" reads cold, so archived works say where they are instead:
+   murals live on the wall they were painted on; other archived pieces are kept or were given away.
+   A work can set its own `badge` in works.json (keep it true: e.g. "Gifted", "Commissioned"). */
+export const statusLabel = (w) => {
+  if (w.status !== 'archived') return STATUS[w.status].label;
+  if (w.badge) return w.badge;
+  return w.collection === 'murals' ? 'Painted on a wall' : 'Private collection';
+};
+
 /* forgiving about how a status was typed: "Sold", "Inquiry Only", "inquiry"… */
 const normalizeStatus = (s) => {
   const key = String(s ?? '').trim().toLowerCase().replace(/\s*only$/, '');

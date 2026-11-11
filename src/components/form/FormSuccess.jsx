@@ -13,7 +13,7 @@ export default function FormSuccess({ eyebrow = 'Message sent', name, titleClass
   }, []);
 
   return (
-    <div ref={ref} role="status" tabIndex={-1} className={cx('flex flex-col outline-none', className)}>
+    <div ref={ref} role="status" tabIndex={-1} className={cx('flex min-w-0 flex-col outline-none [overflow-wrap:anywhere]', className)}>
       <p className="eyebrow text-success!">{eyebrow}</p>
       <h2 className={cx('font-display font-light', titleClassName)}>
         Thank you, <span className="italic">{name}.</span>

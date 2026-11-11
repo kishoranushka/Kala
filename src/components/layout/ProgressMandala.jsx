@@ -11,8 +11,9 @@ export default function ProgressMandala({ raised = false }) {
       data-magnetic
       aria-label="Back to top"
       className={cx(
-        'fixed right-6 bottom-6 z-60 flex size-14 items-center justify-center rounded-full bg-surface shadow-pop max-sm:right-4 max-sm:bottom-4 max-sm:size-12',
-        raised && 'max-lg:bottom-24'
+        'fixed right-6 z-60 flex size-14 items-center justify-center rounded-full bg-surface shadow-pop max-sm:right-4 max-sm:size-12',
+        /* raised: sits above the page's fixed bottom bar (artwork page, below lg) */
+        raised ? 'bottom-6 max-lg:bottom-[calc(88px_+_env(safe-area-inset-bottom))]' : 'bottom-6 max-sm:bottom-4'
       )}
     >
       <svg viewBox="-24 -24 48 48" width="44" height="44" fill="none" aria-hidden="true" className="max-sm:size-[38px]">

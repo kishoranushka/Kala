@@ -1,18 +1,20 @@
 import { Link } from 'react-router-dom';
 import cx from '@/utils/cx';
-import { STATUS, WORKS, isBuyable, onSale, plateLabel, ratioOf } from '@/data/works';
-import SalePrice, { SaleTag } from '@/components/art/Price';
+import { WORKS, getWork, isBuyable, metaLine, onSale, plateLabel, ratioOf } from '@/data/works';
+import SalePrice from '@/components/art/Price';
+import ShopCard from '@/components/art/ShopCard';
 import { Checkbox, ErrorSummary, Field, FieldError, FieldRow, Input, Textarea, describe } from '@/components/form/Fields';
 import FormSuccess from '@/components/form/FormSuccess';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
-import StatusBadge from '@/components/ui/StatusBadge';
 import TextLink from '@/components/ui/TextLink';
 import Notice from '@/components/ui/Notice';
-import { REVIEW_LIST } from './OrderSummary';
+import { REVIEW_LIST, Totals } from './OrderSummary';
 
 const STEP_HEADING = 'mt-2 font-display text-[clamp(30px,3vw,44px)] leading-[1.06] font-light tracking-[-.01em]';
-const NAV_ROW = 'flex flex-wrap items-center justify-between gap-4 border-t border-divider pt-7';
+/* Back · Next. On phones: the next button full width on top, the back link centred beneath it */
+const NAV_ROW =
+  'flex flex-wrap items-center justify-between gap-4 border-t border-divider pt-7 max-sm:flex-col-reverse max-sm:items-stretch max-sm:gap-1 max-sm:pt-6 max-sm:[&>:first-child]:self-center';
 const imgClass = (w, extra) => cx('block size-full object-cover', extra, w.crop && 'crop-ig');
 
 function StepHeading({ step, id, title, children }) {
@@ -27,101 +29,120 @@ function StepHeading({ step, id, title, children }) {
   );
 }
 
-/* ------------------------------------------------------------------ 1 · choose */
-export function ChooseStep({ selection, onToggle, onContinue, pickError, notices = [] }) {
-  /* worked out on each visit: a painting bought a moment ago is already Sold */
-  const available = WORKS.filter(isBuyable);
-  const unavailable = WORKS.filter((w) => w.status !== 'available');
+/* ------------------------------------------------------------------ 1 · cart */
+/* only what's in the cart; other paintings are suggested below the page (see Recommendations) */
+export function CartStep({ selection, onRemove, onContinue, pickError, notices = [] }) {
+  const items = selection.map(getWork).filter(Boolean);
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <StepHeading step={1} title="Choose your originals" />
-        <p className="meta">Tap a work to add it. Tap again to remove it.</p>
-      </div>
+      <StepHeading step={1} title="Your cart">
+        <p className="meta mt-2">
+          {items.length ? `${items.length} ${items.length === 1 ? 'original' : 'originals'}, each the only one there is.` : 'Nothing in your cart yet.'}
+        </p>
+      </StepHeading>
       {notices.map((text) => (
         <Notice key={text} tone="warn" role="status">
           {text}
         </Notice>
       ))}
-      {available.length === 0 && <p className="meta">Every original is spoken for right now. Commission something, or check back soon.</p>}
 
-      <div data-stagger className="grid grid-cols-3 items-start gap-x-6 gap-y-7 max-lg:grid-cols-2 max-sm:gap-x-3.5 max-sm:gap-y-5">
-        {available.map((w) => {
-          const on = selection.includes(w.id);
-          return (
-            <button
-              key={w.id}
-              type="button"
-              data-cursor="view"
-              aria-pressed={on}
-              onClick={() => onToggle(w.id)}
-              aria-label={on ? `Remove ${w.title} from your order` : `Add ${w.title} to your order`}
-              className="group relative flex cursor-pointer flex-col gap-3 border-0 bg-transparent p-0 text-left font-sans text-primary"
-            >
-              <span
-                className="relative overflow-hidden rounded-ui bg-wall shadow-hang outline-2 outline-offset-4 outline-transparent transition-[outline-color] duration-400 ease-gallery group-aria-pressed:outline-link"
+      {items.length === 0 ? (
+        <div className="flex flex-col items-start gap-4 rounded-ui bg-surface p-7 max-sm:p-5">
+          <p className="m-0 font-display text-[28px]/9 font-light">
+            Your cart is <span className="italic">empty.</span>
+          </p>
+          <p className="meta m-0">Add an original from the shop, or pick one of the suggestions below.</p>
+          <Button variant="secondary" to="/shop" arrow>
+            Explore the Shop
+          </Button>
+        </div>
+      ) : (
+        <ul aria-label="In your cart" className="m-0 list-none border-t border-divider p-0">
+          {items.map((w) => (
+            <li key={w.id} className="flex gap-5 border-b border-divider py-5 max-sm:gap-3.5">
+              <Link
+                to={`/artwork/${w.id}`}
+                aria-label={`View ${w.title}`}
+                className="relative block w-[112px] shrink-0 self-start overflow-hidden rounded-ui bg-wall max-sm:w-[84px]"
                 style={{ aspectRatio: ratioOf(w) }}
               >
-                <img src={w.img} alt="" loading="lazy" className={imgClass(w, 'transition-transform duration-1200 ease-gallery group-hover:scale-[1.04]')} />
-                {onSale(w) && <SaleTag className="absolute top-2.5 left-2.5" />}
-                <span
-                  aria-hidden="true"
-                  className="absolute top-2.5 right-2.5 flex size-9 items-center justify-center rounded-full border border-line bg-[rgba(255,254,250,.94)] text-primary transition-[background-color,color,transform] duration-400 ease-gallery group-aria-pressed:scale-[1.08] group-aria-pressed:border-link group-aria-pressed:bg-link group-aria-pressed:text-on-primary"
-                >
-                  <Icon name={on ? 'check' : 'plus'} size={18} strokeWidth={on ? 2 : 1.75} />
-                </span>
-              </span>
-              <span className="eyebrow">{plateLabel(w)}</span>
-              <span className="font-display text-xl/6 font-medium">{w.title}</span>
-              <span className="flex items-baseline justify-between gap-2">
-                <span className="meta">{w.size}</span>
-                <SalePrice work={w} size="sm" badge={false} stacked />
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="mt-6">
-        <p className="eyebrow">Not available to order</p>
-        <p className="meta mt-2 mb-5">Sold, archived or made-to-order work. Commission something in its spirit instead.</p>
-        <div className="grid grid-cols-4 items-start gap-5 max-lg:grid-cols-3 max-sm:grid-cols-2">
-          {unavailable.map((w) => (
-            <UnavailableCard key={w.id} work={w} />
+                <img src={w.img} alt="" loading="lazy" className={imgClass(w)} />
+              </Link>
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <span className="eyebrow truncate">{plateLabel(w)}</span>
+                <Link to={`/artwork/${w.id}`} className="font-display text-2xl/7 font-medium text-primary no-underline hover:text-primary max-sm:text-xl/6">
+                  {w.title}
+                </Link>
+                <span className="meta">{metaLine(w)}</span>
+                <div className="mt-auto flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pt-3">
+                  <SalePrice work={w} />
+                  <button
+                    type="button"
+                    onClick={() => onRemove(w.id)}
+                    aria-label={`Remove ${w.title} from your cart`}
+                    className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 font-sans text-[13px] font-semibold text-link"
+                  >
+                    <Icon name="close" size={16} strokeWidth={1.8} />
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </li>
           ))}
+        </ul>
+      )}
+
+      {/* phones: the total sits right under the cart (the summary card is hidden there on this step) */}
+      {items.length > 0 && (
+        <div className="hidden rounded-ui bg-surface p-5 max-lg:block">
+          <Totals selection={selection} />
         </div>
-      </div>
+      )}
 
       <div className={NAV_ROW}>
         <TextLink to="/shop">Back to the shop</TextLink>
-        <Button data-magnetic arrow onClick={onContinue} aria-disabled={selection.length === 0}>
+        <Button data-magnetic arrow onClick={onContinue} aria-disabled={selection.length === 0} className="max-sm:w-full">
           Continue to Your Details
         </Button>
       </div>
       {pickError && (
         <FieldError className="m-0" role="alert">
-          Choose at least one original to continue.
+          Add at least one original to continue.
         </FieldError>
       )}
     </div>
   );
 }
 
-/* sold, archived or made-to-order work leads to a commission instead */
-function UnavailableCard({ work }) {
+/* "You may also like": other paintings that can be bought online, at the very bottom of the cart page */
+export function Recommendations({ selection }) {
+  /* worked out on each visit: a painting bought a moment ago is already Sold */
+  const picks = WORKS.filter((w) => isBuyable(w) && !selection.includes(w.id))
+    .reverse()
+    .sort((a, b) => onSale(b) - onSale(a))
+    .slice(0, 4);
+  if (!picks.length) return null;
   return (
-    <Link
-      to="/commission"
-      data-cursor="talk"
-      aria-label={`${work.title}, ${STATUS[work.status].label}. Commission something similar`}
-      className="flex flex-col gap-2 text-primary underline opacity-[.82] hover:text-primary"
-    >
-      <span className="relative overflow-hidden rounded-ui bg-wall saturate-[.9]" style={{ aspectRatio: ratioOf(work) }}>
-        <img src={work.img} alt="" loading="lazy" className={imgClass(work)} />
-      </span>
-      <span className="font-display text-[17px]/[21px] font-medium">{work.title}</span>
-      <StatusBadge status={work.status} className="text-[12px]!" />
-    </Link>
+    <section aria-labelledby="recs-h" className="border-t border-divider pt-[clamp(56px,7vw,96px)] pb-[clamp(96px,11vw,160px)]">
+      <div className="wrap">
+        <div className="mb-[clamp(28px,4vw,48px)] flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="eyebrow">{selection.length ? 'Goes well with your cart' : 'Start with one of these'}</p>
+            <h2 id="recs-h" className="mt-3 mb-0 font-display text-[clamp(30px,3vw,44px)] leading-[1.06] font-light">
+              You may also <em>like</em>
+            </h2>
+          </div>
+          <TextLink to="/shop?available" arrow>
+            See every available painting
+          </TextLink>
+        </div>
+        <div className="grid grid-cols-[repeat(4,minmax(0,1fr))] gap-7 max-xl:grid-cols-[repeat(2,minmax(0,1fr))] max-sm:gap-x-4">
+          {picks.map((w) => (
+            <ShopCard key={w.id} work={w} titleClassName="text-[22px]/[26px] max-sm:text-[17px]/[22px]" />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -141,17 +162,21 @@ export function DetailsStep({ form, errors, onChange, onBack, onSubmit }) {
           <Input type="text" autoComplete="name" {...field('name', 'o-name')} />
         </Field>
         <Field id="o-email" label="Email *" error={errors.email}>
-          <Input type="email" autoComplete="email" {...field('email', 'o-email')} />
+          <Input type="email" autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck={false} {...field('email', 'o-email')} />
         </Field>
       </FieldRow>
-      <Field id="o-phone" label="Mobile number *" hint="The courier calls this number on delivery." error={errors.phone} className="max-w-[360px]">
+      <Field id="o-phone" label="Mobile number *" hint="The courier calls this number on delivery." error={errors.phone} className="max-w-[360px] max-sm:max-w-none">
         <Input type="tel" inputMode="tel" autoComplete="tel" name="phone" value={form.phone} onChange={onChange} {...describe('o-phone', { hint: true, error: errors.phone })} />
       </Field>
 
       <fieldset className="m-0 flex flex-col gap-6 border-0 p-0">
         <legend className="mb-1 p-0 text-[13px]/5 font-semibold">Where should it go? *</legend>
-        <p className="meta -mt-3">
-          Packed with care and shipped free within India. Ordering from abroad? <TextLink to="/contact">Write to me</TextLink> and I’ll arrange it.
+        <p className="meta -mt-1">
+          Packed with care and shipped free within India. Ordering from abroad?{' '}
+          <Link to="/contact" className="font-semibold text-link">
+            Write to me
+          </Link>{' '}
+          and I’ll arrange it.
         </p>
         <Field id="o-addr" label="Address *" error={errors.address}>
           <Input type="text" autoComplete="street-address" {...field('address', 'o-addr')} />
@@ -164,7 +189,7 @@ export function DetailsStep({ form, errors, onChange, onBack, onSubmit }) {
             <Input type="text" autoComplete="address-level1" {...field('state', 'o-state')} />
           </Field>
           <Field id="o-pin" label="PIN code *" error={errors.pin}>
-            <Input type="text" inputMode="numeric" autoComplete="postal-code" {...field('pin', 'o-pin')} />
+            <Input type="text" inputMode="numeric" autoComplete="postal-code" maxLength={6} {...field('pin', 'o-pin')} />
           </Field>
         </FieldRow>
       </fieldset>
@@ -175,7 +200,7 @@ export function DetailsStep({ form, errors, onChange, onBack, onSubmit }) {
 
       <div className={NAV_ROW}>
         <TextLink onClick={onBack}>Back to your works</TextLink>
-        <Button type="submit" data-magnetic arrow>
+        <Button type="submit" data-magnetic arrow className="max-sm:px-4">
           Review Your Order
         </Button>
       </div>
@@ -193,10 +218,10 @@ export function ReviewStep({ form, total, ack, ackError, phase, error, onAck, on
   return (
     <form noValidate onSubmit={onSubmit} aria-labelledby="rev-h" className="flex flex-col gap-6">
       <StepHeading step={3} id="rev-h" title="Review and pay" />
-      <div className="bg-surface p-6">
+      <div className="bg-surface p-6 max-sm:p-5">
         <div className="flex items-baseline justify-between gap-4">
           <p className="eyebrow">Your details</p>
-          <button type="button" onClick={onEdit} disabled={busy} className="h-8 cursor-pointer border-0 bg-transparent p-0 font-sans text-[13px] font-semibold text-link disabled:cursor-not-allowed disabled:opacity-50">
+          <button type="button" onClick={onEdit} disabled={busy} className="-my-2 min-h-11 cursor-pointer border-0 bg-transparent p-0 font-sans text-[13px] font-semibold text-link disabled:cursor-not-allowed disabled:opacity-50">
             Edit
           </button>
         </div>
@@ -213,7 +238,7 @@ export function ReviewStep({ form, total, ack, ackError, phase, error, onAck, on
           <dd>{form.note || 'None'}</dd>
         </dl>
       </div>
-      <div className="bg-surface p-6">
+      <div className="bg-surface p-6 max-sm:p-5">
         <p className="eyebrow">What happens next</p>
         <ol className="mt-3 list-decimal pl-5 text-sm/6 text-soft">
           <li>Pay securely through Razorpay: scan the UPI QR code, or use a UPI app, card or netbanking.</li>
@@ -288,7 +313,7 @@ export function OrderDone({ firstName, orderId, email, confirmed, lost = [], wor
       <p className="meta">
         Your order reference is <b className="font-semibold text-primary">{orderId}</b>. With it and your email you can track your order any time. Razorpay also emails you a payment receipt.
       </p>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 max-sm:flex-col max-sm:gap-3">
         <Button to={track} state={{ email }}>
           Track Your Order
         </Button>

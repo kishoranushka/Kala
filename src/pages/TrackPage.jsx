@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import cx from '@/utils/cx';
 import { CONTACT, EMAIL_PATTERN } from '@/data/site';
 import { formatINR, getWork } from '@/data/works';
@@ -8,7 +8,6 @@ import { Accent, Line } from '@/components/ui/Typography';
 import { Field, FieldRow, Input, describe } from '@/components/form/Fields';
 import Button from '@/components/ui/Button';
 import Notice from '@/components/ui/Notice';
-import TextLink from '@/components/ui/TextLink';
 import { REVIEW_LIST } from './order/OrderSummary';
 
 const STAGES = ['Paid', 'Packed', 'On its way', 'Delivered'];
@@ -49,17 +48,17 @@ function Result({ order }) {
       )}
 
       {stage > 0 && (
-        <ol aria-label="Order progress" className="m-0 grid list-none grid-cols-4 gap-3 p-0">
+        <ol aria-label="Order progress" className="m-0 grid list-none grid-cols-[repeat(4,minmax(0,1fr))] gap-3 p-0 max-sm:gap-2">
           {STAGES.map((label, i) => (
-            <li key={label} aria-current={stage === i + 1 ? 'step' : undefined} className="flex flex-col gap-2">
+            <li key={label} aria-current={stage === i + 1 ? 'step' : undefined} className="flex min-w-0 flex-col gap-2">
               <span className={cx('h-0.5 w-full', stage > i ? 'bg-secondary' : 'bg-divider')} />
-              <span className={cx('text-[13px] font-semibold', stage > i ? 'text-primary' : 'text-muted')}>{label}</span>
+              <span className={cx('text-[13px] font-semibold max-sm:text-xs/4', stage > i ? 'text-primary' : 'text-muted')}>{label}</span>
             </li>
           ))}
         </ol>
       )}
 
-      <div className="bg-page p-6">
+      <div className="bg-page p-6 max-sm:p-4">
         <dl className={REVIEW_LIST}>
           <dt>Paintings</dt>
           <dd>{order.works.map((w) => getWork(w.id)?.title ?? w.title).join(', ')}</dd>
@@ -94,7 +93,7 @@ function Result({ order }) {
         </dl>
       </div>
       {s?.url && (
-        <div>
+        <div className="max-sm:flex max-sm:flex-col">
           <Button to={s.url} arrow>
             Live Courier Tracking
           </Button>
@@ -180,17 +179,17 @@ export default function TrackPage() {
       <section aria-label="Order lookup" className="pb-[clamp(96px,11vw,160px)]">
         <div className="wrap">
           <div className="grid-12 items-start">
-            <div data-cap className="col-[1/8] flex flex-col gap-10 bg-surface p-[clamp(28px,4vw,56px)] max-lg:col-span-full max-sm:-mx-5">
+            <div data-cap className="col-[1/8] flex min-w-0 flex-col gap-10 bg-surface p-[clamp(28px,4vw,56px)] max-lg:col-span-full max-sm:-mx-5 max-sm:gap-8 max-sm:px-5 max-sm:py-9">
               <form noValidate onSubmit={submit} className="flex flex-col gap-6">
                 <FieldRow>
                   <Field id="t-id" label="Order reference *" error={errors.id}>
                     <Input name="id" type="text" autoComplete="off" autoCapitalize="characters" placeholder="KALA-…" value={values.id} onChange={onChange} {...describe('t-id', { error: errors.id })} />
                   </Field>
                   <Field id="t-email" label="Email *" error={errors.email}>
-                    <Input name="email" type="email" autoComplete="email" inputMode="email" value={values.email} onChange={onChange} {...describe('t-email', { error: errors.email })} />
+                    <Input name="email" type="email" autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck={false} value={values.email} onChange={onChange} {...describe('t-email', { error: errors.email })} />
                   </Field>
                 </FieldRow>
-                <div>
+                <div className="max-sm:flex max-sm:flex-col">
                   <Button type="submit" data-magnetic aria-busy={state.loading}>
                     {state.loading ? 'Looking…' : 'Track Order'}
                   </Button>
@@ -210,7 +209,11 @@ export default function TrackPage() {
               <p className="meta">Your order reference starts with KALA- and is in your confirmation, on the thank-you screen and in the Razorpay receipt.</p>
               <p className="meta">Once your painting ships, the courier also sends tracking updates by SMS and email.</p>
               <p className="meta">
-                Something not right? <TextLink to="/contact">Write to me</TextLink> with your reference.
+                Something not right?{' '}
+                <Link to="/contact" className="font-semibold text-link">
+                  Write to me
+                </Link>{' '}
+                with your reference.
               </p>
             </aside>
           </div>

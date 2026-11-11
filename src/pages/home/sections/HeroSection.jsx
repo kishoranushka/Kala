@@ -62,9 +62,12 @@ export default function HeroSection() {
                 to="/shop?available"
                 className="group inline-flex items-center gap-2.5 rounded-full border border-sale/30 bg-surface/85 py-1.5 pr-4 pl-1.5 text-[13px]/[18px] font-semibold tracking-[.02em] text-primary no-underline hover:text-primary"
               >
-                <span className="rounded-full bg-sale px-2.5 py-1 text-[11px]/[14px] font-bold tracking-[.08em] text-on-primary uppercase">{SALE.percent}% off</span>
-                {SALE.name} · every available original
-                <Icon name="arrow" size={15} strokeWidth={1.8} className="transition-transform duration-500 ease-gallery group-hover:translate-x-1" />
+                <span className="shrink-0 rounded-full bg-sale px-2.5 py-1 text-[11px]/[14px] font-bold tracking-[.08em] whitespace-nowrap text-on-primary uppercase">{SALE.percent}% off</span>
+                <span className="whitespace-nowrap">
+                  {SALE.name}
+                  <span className="max-sm:hidden"> · every available original</span>
+                </span>
+                <Icon name="arrow" size={15} strokeWidth={1.8} className="shrink-0 transition-transform duration-500 ease-gallery group-hover:translate-x-1" />
               </Link>
             </p>
           ) : (

@@ -32,7 +32,7 @@ const Header = forwardRef(function Header({ current, isHome = false, menuOpen, o
   const { bag } = useBag();
   return (
     <header data-header className="sticky top-0 z-50 bg-page shadow-[0_1px_0_transparent] transition-shadow duration-500 [&.is-scrolled]:shadow-[0_1px_0_var(--color-divider)]">
-      <div className="wrap flex h-[76px] items-center justify-between gap-8 max-sm:h-[60px]">
+      <div className="wrap flex h-[76px] items-center justify-between gap-8 max-sm:h-[60px] max-sm:gap-3">
         <Wordmark to={isHome ? '#top' : '/'} withName />
         <nav aria-label="Primary" className="flex gap-8 text-sm/5 font-medium tracking-[.01em] max-wide:gap-5 max-nav:hidden">
           {NAV_LINKS.map((link) => (
@@ -41,12 +41,12 @@ const Header = forwardRef(function Header({ current, isHome = false, menuOpen, o
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1">
           <Link
             to="/order"
             data-magnetic
             aria-label={`Cart, ${bag.length} items`}
-            className="inline-flex h-11 items-center gap-2 rounded-ui px-3 font-sans text-sm font-medium text-primary no-underline hover:text-primary"
+            className="inline-flex h-11 items-center gap-2 rounded-ui px-3 max-sm:px-2 font-sans text-sm font-medium text-primary no-underline hover:text-primary"
           >
             <Icon name="cart" strokeWidth={1.6} />
             <CartCount count={bag.length} />

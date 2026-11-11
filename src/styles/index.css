@@ -403,4 +403,11 @@
     height: 108% !important;
     transform-origin: 100% 0;
   }
+
+  /* artwork page: room under the footer for the fixed mobile action bar */
+  @media (max-width: 1023.98px) {
+    body.has-action-bar {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+  }
 }

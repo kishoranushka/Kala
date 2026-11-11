@@ -83,26 +83,27 @@ export default function ShopPage() {
 
   return (
     <>
-      <section aria-labelledby="shop-h" className="relative overflow-hidden pt-[clamp(40px,6vw,88px)] pb-[clamp(56px,7vw,104px)]">
-        <PageMandala className="-top-[260px] -right-[240px] w-[760px] opacity-85 max-sm:-top-[240px] max-sm:-right-[260px] max-sm:w-[520px]" />
+      {/* on phones the intro shrinks to title + sale line so the paintings show on the first screen */}
+      <section aria-labelledby="shop-h" className="relative overflow-hidden pt-[clamp(40px,6vw,88px)] pb-[clamp(56px,7vw,104px)] max-sm:pt-4 max-sm:pb-5">
+        <PageMandala className="-top-[260px] -right-[240px] w-[760px] opacity-85 max-sm:-top-[300px] max-sm:-right-[300px] max-sm:w-[440px]" />
         <div className="wrap relative z-1">
           <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'Shop' }]} />
-          <div className="mt-7 grid-12 items-end">
+          <div className="mt-7 grid-12 items-end max-sm:mt-3">
             <div className="col-[1/7] max-lg:col-span-full">
-              <p data-intro className="eyebrow m-0">
+              <p data-intro className="eyebrow m-0 max-sm:hidden">
                 The shop · Original paintings
               </p>
-              <h1 id="shop-h" data-intro-line className="heading-1 mt-5 mb-0">
+              <h1 id="shop-h" data-intro-line className="heading-1 mt-5 mb-0 max-sm:mt-0 max-sm:text-[38px]">
                 <Line>Paintings to</Line>{' '}
                 <Line>
                   <span className="text-secondary italic">live</span> with.
                 </Line>
               </h1>
-              <p data-intro className="lead mt-6 mb-0">
+              <p data-intro className="lead mt-6 mb-0 max-sm:hidden">
                 Every painting here is an original, so there is only ever one. Add the ones you love to your cart and confirm the details on the order page.
               </p>
               {SALE_WORKS.length > 0 && (
-                <p data-intro className="mt-6 mb-0 inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-ui bg-sale-wash px-4 py-3 text-sm/[22px]">
+                <p data-intro className="mt-6 mb-0 inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-ui bg-sale-wash px-4 py-3 text-sm/[22px] max-sm:mt-4 max-sm:px-3 max-sm:py-2 max-sm:text-[13px]/5">
                   <span className="rounded-full bg-sale px-2.5 py-0.5 text-[11px]/[18px] font-bold tracking-[.08em] text-on-primary uppercase">{SALE.percent}% off</span>
                   <span>
                     <b className="font-bold text-sale">{SALE.name}:</b> every original you can buy online is {SALE.percent}% off, saving you up to {formatINR(BEST_SAVING)}
@@ -110,7 +111,7 @@ export default function ShopPage() {
                   </span>
                 </p>
               )}
-              <div data-intro className="mt-8 flex flex-wrap items-baseline gap-x-8 gap-y-3">
+              <div data-intro className="mt-8 flex flex-wrap items-baseline gap-x-8 gap-y-3 max-sm:hidden">
                 <span>
                   <b className="mr-1.5 font-display text-[34px] leading-none font-normal">{AVAILABLE}</b>available now
                 </span>
@@ -122,7 +123,7 @@ export default function ShopPage() {
                 </TextLink>
               </div>
             </div>
-            <div data-intro aria-label="Newest paintings" className="col-[8/13] grid grid-cols-3 items-end gap-3.5 max-lg:col-span-full max-lg:mt-10 max-lg:max-w-[560px] max-sm:gap-2.5">
+            <div data-intro aria-label="Newest paintings" className="col-[8/13] grid grid-cols-3 items-end gap-3.5 max-lg:hidden">
               {FEATURED.map((w, i) => (
                 <Link key={w.id} to={`/artwork/${w.id}`} data-cursor="view" className={cx('group block text-primary no-underline hover:text-primary', i === 1 && '-translate-y-7')}>
                   <div className="flex aspect-[4/5] min-h-0 items-center justify-center overflow-hidden rounded-ui bg-mat p-3.5">
@@ -164,7 +165,7 @@ export default function ShopPage() {
         <div className="wrap">
           <div
             ref={gridRef}
-            className="grid grid-cols-4 gap-x-7 gap-y-14 pt-14 pb-[clamp(96px,11vw,150px)] max-xl:grid-cols-3 max-lg:grid-cols-2 max-lg:gap-x-5 max-lg:gap-y-11 max-sm:gap-x-3.5 max-sm:gap-y-9"
+            className="grid grid-cols-4 gap-x-7 gap-y-14 pt-14 max-sm:pt-6 pb-[clamp(96px,11vw,150px)] max-xl:grid-cols-3 max-lg:grid-cols-2 max-lg:gap-x-5 max-lg:gap-y-11 max-sm:gap-x-3.5 max-sm:gap-y-9"
           >
             {cards.map((work) => (
               <ShopCard key={work.id} work={work} showCollection titleClassName="text-2xl/7 max-sm:text-[19px]/[23px]" />

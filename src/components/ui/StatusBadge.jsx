@@ -1,5 +1,5 @@
 import cx from '@/utils/cx';
-import { STATUS } from '@/data/works';
+import { STATUS, statusLabel } from '@/data/works';
 
 /* every status pairs a word with a shape, never colour alone */
 const MARKERS = {
@@ -16,12 +16,13 @@ const TONES = {
   inquiry: 'text-link',
 };
 
-/* `leading` — 20px by default; Home's captions let it inherit their 26px rhythm */
-export default function StatusBadge({ status, tone, marker = true, suffix, leading = 'leading-5', className }) {
+/* pass `work` (preferred: archived works get their own wording) or just a `status`.
+   `leading` — 20px by default; Home's captions let it inherit their 26px rhythm */
+export default function StatusBadge({ work, status = work?.status, tone, marker = true, suffix, leading = 'leading-5', className }) {
   return (
     <span className={cx('inline-flex items-center gap-[7px] text-[13px] font-semibold', leading, tone ?? TONES[status], className)}>
       {marker && <span aria-hidden="true" className={cx('size-2 shrink-0', MARKERS[status])} />}
-      {STATUS[status].label}
+      {work ? statusLabel(work) : STATUS[status].label}
       {suffix}
     </span>
   );

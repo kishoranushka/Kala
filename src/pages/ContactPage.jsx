@@ -5,7 +5,7 @@ import { useFormFlow } from '@/hooks/useFormFlow';
 import { SEND_ERROR, sendForm } from '@/utils/sendForm';
 import Notice from '@/components/ui/Notice';
 import FormSuccess from '@/components/form/FormSuccess';
-import { Checkbox, ErrorSummary, Field, FieldRow, Input, Select, Textarea, describe } from '@/components/form/Fields';
+import { Checkbox, ErrorSummary, Field, FieldRow, Input, SUBMIT_ROW, Select, Textarea, describe } from '@/components/form/Fields';
 import PageTop from '@/components/sections/PageTop';
 import Button from '@/components/ui/Button';
 import Disclosure from '@/components/ui/Disclosure';
@@ -22,7 +22,7 @@ const WAYS = [
 const ROUTES = [
   { to: '/commission', cursor: 'talk', label: 'Commission', tone: 'text-secondary!', title: 'A painting or wall, made for you', note: 'The commission form asks the right questions: space, size, timeline.' },
   { to: '/order', cursor: 'explore', label: 'Order', tone: 'text-success!', title: 'Buy an available original', note: 'Choose works, add your details, pay securely online.' },
-  { to: '/shop', cursor: 'explore', label: 'Shop', title: 'Browse every work', note: 'Available, sold and archived, all marked clearly.' },
+  { to: '/shop', cursor: 'explore', label: 'Shop', title: 'Browse every work', note: 'Available, sold and in private collections, all marked clearly.' },
 ];
 
 const FAQ = [
@@ -91,7 +91,7 @@ function MessageForm() {
         className="gap-6"
       >
         <p className="meta">Your message is with me. I’ll reply to {result.email} as soon as I can.</p>
-        <div>
+        <div className="max-sm:flex max-sm:flex-col">
           <Button variant="secondary" onClick={reset}>
             Write Another Message
           </Button>
@@ -115,7 +115,7 @@ function MessageForm() {
           <Input name="name" type="text" autoComplete="name" {...describe('c-name', { error: errors.name })} />
         </Field>
         <Field id="c-email" label="Email *" error={errors.email}>
-          <Input name="email" type="email" autoComplete="email" inputMode="email" {...describe('c-email', { error: errors.email })} />
+          <Input name="email" type="email" autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck={false} {...describe('c-email', { error: errors.email })} />
         </Field>
       </FieldRow>
       <Field id="c-topic" label="Topic">
@@ -136,7 +136,7 @@ function MessageForm() {
           {failMessage || SEND_ERROR}
         </Notice>
       )}
-      <div className="flex flex-wrap items-center gap-5">
+      <div className={SUBMIT_ROW}>
         <Button type="submit" data-magnetic aria-busy={sending}>
           {sending ? 'Sending…' : 'Send Message'}
         </Button>
@@ -210,7 +210,7 @@ export default function ContactPage() {
       <section id="message" aria-labelledby="msg-h" className="pt-[clamp(48px,6vw,88px)] pb-[clamp(96px,11vw,160px)]">
         <div className="wrap">
           <div className="grid-12 items-start">
-            <div data-cap className="col-[1/8] bg-surface p-[clamp(28px,4vw,56px)] max-lg:col-span-full max-sm:-mx-5">
+            <div data-cap className="col-[1/8] min-w-0 bg-surface p-[clamp(28px,4vw,56px)] max-lg:col-span-full max-sm:-mx-5 max-sm:px-5 max-sm:py-9">
               <MessageForm />
             </div>
 
@@ -221,7 +221,7 @@ export default function ContactPage() {
                   key={r.to}
                   to={r.to}
                   data-cursor={r.cursor}
-                  className="flex flex-col gap-2.5 rounded-ui border border-divider bg-page p-7 text-primary no-underline transition-[border-color,transform] duration-600 ease-gallery hover:-translate-y-1 hover:border-primary hover:text-primary"
+                  className="flex flex-col gap-2.5 rounded-ui border border-divider bg-page p-7 text-primary max-sm:p-5 no-underline transition-[border-color,transform] duration-600 ease-gallery hover:-translate-y-1 hover:border-primary hover:text-primary"
                 >
                   <span className={`eyebrow ${r.tone ?? ''}`}>{r.label}</span>
                   <b className="font-display text-[28px]/8 font-normal">{r.title}</b>

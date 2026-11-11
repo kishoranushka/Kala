@@ -77,7 +77,7 @@ export const router = createBrowserRouter(
         {
           path: 'track',
           lazy: page(() => import('@/pages/TrackPage')),
-          handle: { title: 'Track your order', curtain: 'Track your order' },
+          handle: { title: 'Track your order', curtain: 'Track your order', nav: 'track' },
         },
         ...[
           ['shipping', 'Shipping & delivery'],

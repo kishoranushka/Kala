@@ -10,9 +10,9 @@ import { useMotionApi } from '@/motion/MotionContext';
 import PageTop from '@/components/sections/PageTop';
 import { Accent, Line } from '@/components/ui/Typography';
 import OrderSummary from './OrderSummary';
-import { ChooseStep, DetailsStep, OrderDone, ReviewStep } from './steps';
+import { CartStep, DetailsStep, OrderDone, Recommendations, ReviewStep } from './steps';
 
-const STEPS = ['Choose', 'Your details', 'Review & pay'];
+const STEPS = ['Your cart', 'Your details', 'Review & pay'];
 const EMPTY_FORM = { name: '', email: '', phone: '', address: '', city: '', state: '', pin: '', note: '' };
 const PAY_ERROR = `The payment couldn’t be started. Please try again in a minute, or write to me at ${CONTACT.email}.`;
 /* a Razorpay order is reused if the buyer closes the window and tries again, but only while
@@ -91,7 +91,7 @@ async function confirmPayment(orderId, paid) {
 
 /* Choose → details → review & pay → paid. The selection is the bag, limited to works that can be bought online. */
 export default function OrderPage() {
-  const { bag, add, toggle, remove, removeMany, dropped, clearDropped } = useBag();
+  const { bag, add, remove, removeMany, dropped, clearDropped } = useBag();
   const [params] = useSearchParams();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -289,10 +289,9 @@ export default function OrderPage() {
     setStep(1);
   };
   const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
-  const onToggle = (id) => {
-    setPickError(false);
+  const onRemove = (id) => {
     setNotice(null);
-    toggle(id);
+    remove(id);
   };
 
   const progress = step >= 4 ? 1 : (step - 1) / 3 + 0.12;
@@ -303,28 +302,29 @@ export default function OrderPage() {
       <PageTop labelledBy="or-h" crumbs={[{ label: 'Shop', to: '/shop' }, { label: 'Order' }]} paddingBottom="pb-[clamp(32px,4vw,56px)]" bodyClassName="mt-8 grid-12">
         <div className="col-[1/8] max-lg:col-span-full">
           <p data-intro className="eyebrow">
-            Order an original
+            Cart &amp; checkout
           </p>
-          <h1 id="or-h" data-intro-line className="heading-1 mt-5">
-            <Line>Choose a work.</Line>
+          <h1 id="or-h" data-intro-line className="heading-1 mt-5 max-sm:mt-3">
+            <Line>Your originals.</Line>
             <Line className="pl-[12%]">
-              Make it <Accent>yours.</Accent>
+              Make them <Accent>yours.</Accent>
             </Line>
           </h1>
         </div>
-        <div data-intro className="col-[9/13] self-end max-lg:col-span-full max-lg:mt-7">
-          <p className="lead">
+        <div data-intro className="col-[9/13] self-end max-lg:col-span-full max-lg:mt-7 max-sm:mt-4">
+          {/* phones: skip the intro so the cart is near the top */}
+          <p className="lead max-sm:hidden">
             Pick the originals you’d like, tell me where they’re going, and pay securely with UPI, card or netbanking. I pack and send every painting myself.
           </p>
           <p className="meta mt-3.5 font-semibold text-success!">Free shipping within India.</p>
         </div>
-        <div data-intro className="relative col-span-full mt-14 mb-4">
+        <div data-intro className="relative col-span-full mt-14 mb-4 max-sm:mt-8">
           <span
             aria-hidden="true"
             className="absolute top-0 left-0 h-0.5 w-full origin-left bg-secondary transition-transform duration-900 ease-gallery"
             style={{ transform: `scaleX(${progress})` }}
           />
-          <ol aria-label="Order steps" className="m-0 grid list-none grid-cols-3 gap-4 p-0">
+          <ol aria-label="Order steps" className="m-0 grid list-none grid-cols-[repeat(3,minmax(0,1fr))] gap-4 p-0 max-sm:gap-3">
             {STEPS.map((label, i) => {
               const n = i + 1;
               const tone = step >= n ? 'text-primary' : 'text-muted';
@@ -340,14 +340,15 @@ export default function OrderPage() {
       </PageTop>
 
       {/* ============================== THE ORDER */}
-      <section id="choose" aria-label="Your order" className="pb-[clamp(96px,11vw,160px)]">
+      <section id="choose" aria-label="Your order" className={step === 1 ? 'pb-[clamp(56px,7vw,96px)]' : 'pb-[clamp(96px,11vw,160px)]'}>
         <div className="wrap">
-          <div className="grid grid-cols-12 items-start gap-x-8">
-            <div ref={panelRef} className="col-[1/9] max-lg:col-span-full">
+          {/* one column below lg: twelve 1fr tracks + eleven 32px gaps (352px) are wider than a phone */}
+          <div className="grid grid-cols-12 items-start gap-x-8 max-lg:grid-cols-1">
+            <div ref={panelRef} className="col-[1/9] min-w-0 max-lg:col-span-full">
               {step === 1 && (
-                <ChooseStep
+                <CartStep
                   selection={bag}
-                  onToggle={onToggle}
+                  onRemove={onRemove}
                   onContinue={toDetails}
                   pickError={pickError}
                   notices={[
@@ -376,10 +377,20 @@ export default function OrderPage() {
               )}
               {step === 4 && paid && <OrderDone firstName={form.name.trim().split(' ')[0]} {...paid} onRestart={restart} />}
             </div>
-            <OrderSummary selection={step === 4 && paid ? paid.works : bag} canEdit={step <= 2} onRemove={remove} paid={step === 4} />
+            <OrderSummary
+              selection={step === 4 && paid ? paid.works : bag}
+              canEdit={step <= 2}
+              onRemove={onRemove}
+              paid={step === 4}
+              /* the cart step lists the works itself; on phones it shows its own total, so the card is left out there */
+              items={step !== 1}
+              className={step === 1 ? 'max-lg:hidden' : undefined}
+            />
           </div>
         </div>
       </section>
+      {/* suggestions come last, after the cart and its total, on every screen size */}
+      {step === 1 && <Recommendations selection={bag} />}
     </>
   );
 }

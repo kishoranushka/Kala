@@ -11,7 +11,13 @@ const SIZES = {
 /* "50% off" pill for the corner of a card's image */
 export function SaleTag({ className }) {
   return (
-    <span className={cx('z-1 inline-flex items-center rounded-full bg-sale px-2.5 py-[5px] text-[11px]/[14px] font-bold tracking-[.08em] text-on-primary uppercase shadow-[0_6px_14px_-8px_rgba(34,33,31,.6)]', className)}>
+    <span
+      className={cx(
+        'z-1 inline-flex shrink-0 items-center rounded-full bg-sale px-2.5 py-[5px] text-[11px]/[14px] font-bold tracking-[.08em] whitespace-nowrap text-on-primary uppercase shadow-[0_6px_14px_-8px_rgba(34,33,31,.6)]',
+        'max-sm:px-2 max-sm:py-1 max-sm:text-[9px]/3 max-sm:tracking-[.05em]',
+        className
+      )}
+    >
       {SALE.percent}% off
     </span>
   );

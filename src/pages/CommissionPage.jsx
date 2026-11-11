@@ -6,7 +6,7 @@ import { useFormFlow } from '@/hooks/useFormFlow';
 import { SEND_ERROR, sendForm } from '@/utils/sendForm';
 import Notice from '@/components/ui/Notice';
 import FormSuccess from '@/components/form/FormSuccess';
-import { Checkbox, ChoiceCard, ChoiceGrid, ErrorIcon, ErrorSummary, Field, FieldError, FieldRow, Input, Select, Textarea, describe } from '@/components/form/Fields';
+import { Checkbox, ChoiceCard, ChoiceGrid, ErrorIcon, ErrorSummary, Field, FieldError, FieldRow, Input, SUBMIT_ROW, Select, Textarea, describe } from '@/components/form/Fields';
 import PageTop from '@/components/sections/PageTop';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
@@ -76,7 +76,7 @@ function EnquiryForm() {
         titleClassName="text-[clamp(32px,3.4vw,48px)] leading-[1.06]"
         className="gap-7"
       >
-        <dl className="m-0 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 border-y border-divider py-5 text-sm/[22px]">
+        <dl className="m-0 grid grid-cols-[auto_minmax(0,1fr)] gap-x-6 gap-y-2.5 border-y border-divider py-5 text-sm/[22px] max-sm:gap-x-4">
           <dt className="meta">About</dt>
           <dd className="m-0 font-semibold">{KINDS.find((k) => k.value === result.kind)?.title}</dd>
           <dt className="meta">Reply to</dt>
@@ -85,7 +85,7 @@ function EnquiryForm() {
         <p className="meta">
           Your enquiry is with me. I’ll reply soon{files.length > 0 ? ', and ask for your reference images then' : ''}.
         </p>
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-4 max-sm:flex-col max-sm:gap-3">
           <Button
             variant="secondary"
             onClick={() => {
@@ -141,7 +141,7 @@ function EnquiryForm() {
           <Input name="name" type="text" autoComplete="name" {...describe('f-name', { error: errors.name })} />
         </Field>
         <Field id="f-email" label="Email *" error={errors.email}>
-          <Input name="email" type="email" autoComplete="email" inputMode="email" {...describe('f-email', { error: errors.email })} />
+          <Input name="email" type="email" autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck={false} {...describe('f-email', { error: errors.email })} />
         </Field>
       </FieldRow>
 
@@ -196,22 +196,23 @@ function EnquiryForm() {
             <Input id="f-space" name="space" type="text" placeholder="Living room, café wall…" />
           </Field>
         </FieldRow>
-        <div className="flex flex-col items-start gap-2 rounded-ui border border-dashed border-line bg-page p-5">
+        <div className="flex min-w-0 flex-col items-stretch gap-2 rounded-ui border border-dashed border-line bg-page p-5 max-sm:p-4">
           <label htmlFor="f-files" className="text-[13px]/5 font-semibold">
             Reference images
           </label>
-          <span className="text-xs/[18px] text-muted">Photos of the space, sketches, paintings you love. JPG or PNG.</span>
+          <span id="f-files-hint" className="text-xs/[18px] text-muted">Photos of the space, sketches, paintings you love. JPG or PNG.</span>
           <input
             id="f-files"
             name="files"
             type="file"
             accept="image/*"
             multiple
+            aria-describedby="f-files-hint"
             onChange={(e) => setFiles(Array.from(e.target.files ?? [], (f) => f.name))}
-            className="font-sans text-[13px]"
+            className="mt-1 w-full max-w-full min-w-0 cursor-pointer font-sans text-[13px] text-muted file:mr-3 file:min-h-10 file:cursor-pointer file:rounded-ui file:border file:border-solid file:border-line file:bg-surface file:px-4 file:font-sans file:text-[13px] file:font-semibold file:text-primary file:transition-colors hover:file:border-primary"
           />
           {files.length > 0 && (
-            <span className="meta">
+            <span className="meta [overflow-wrap:anywhere]">
               {files.length} {files.length === 1 ? 'image chosen' : 'images chosen'}: {files.join(', ')}. Images aren’t uploaded here; I’ll ask you to email them when I reply.
             </span>
           )}
@@ -227,7 +228,7 @@ function EnquiryForm() {
         </Notice>
       )}
 
-      <div className="flex flex-wrap items-center gap-5">
+      <div className={SUBMIT_ROW}>
         <Button type="submit" data-magnetic data-cursor="talk" aria-busy={sending}>
           {sending ? 'Sending…' : 'Send Enquiry'}
         </Button>
@@ -325,7 +326,7 @@ export default function CommissionPage() {
               <p className="mt-8 max-w-[20ch] font-display text-[26px]/[34px] italic">I read every message personally.</p>
             </aside>
 
-            <div data-cap className="col-[6/13] bg-surface p-[clamp(28px,4vw,56px)] shadow-[0_1px_0_var(--color-divider)] max-lg:col-span-full max-lg:mt-12 max-sm:-mx-5">
+            <div data-cap className="col-[6/13] bg-surface p-[clamp(28px,4vw,56px)] shadow-[0_1px_0_var(--color-divider)] min-w-0 max-lg:col-span-full max-lg:mt-12 max-sm:-mx-5 max-sm:px-5 max-sm:py-9">
               <EnquiryForm />
             </div>
           </div>

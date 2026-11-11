@@ -14,7 +14,7 @@ export default function ArtworkCard({ work, eyebrow = plateLabel(work), titleCla
       <figcaption data-cap className="mt-[18px] flex flex-col gap-1.5">
         <div className="flex items-baseline justify-between gap-3">
           <span className="eyebrow">{eyebrow}</span>
-          <StatusBadge status={work.status} />
+          <StatusBadge work={work} />
         </div>
         <span className={titleClassName}>{work.title}</span>
         <span className="meta">{metaLine(work)}</span>

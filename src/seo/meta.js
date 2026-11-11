@@ -61,7 +61,7 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
 
   function statusLine(w) {
     if (isBuyable(w)) return `Available · ${priceText(w)}`;
-    return { available: 'Available · enquire for price', inquiry: 'Enquire about this work', sold: 'Sold', archived: 'Archive' }[w.status];
+    return { available: 'Available · enquire for price', inquiry: 'Enquire about this work', sold: 'Sold', archived: w.badge || (w.collection === 'murals' ? 'Painted on a wall' : 'Private collection') }[w.status];
   }
 
   /* ------------------------------------------------------------- structured data */
