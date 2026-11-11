@@ -153,12 +153,12 @@ export default function ArtistPage() {
         </div>
       </PageTop>
 
-      {/* ============================== THE STUDIO AS A LANDSCAPE */}
+      {/* ============================== THE WORK AS A LANDSCAPE */}
       <section aria-labelledby="land-h" className="pt-[clamp(64px,8vw,120px)] pb-[clamp(96px,11vw,160px)]">
         <div className="wrap mb-[clamp(48px,6vw,80px)] flex flex-wrap items-end justify-between gap-6">
           <div>
             <p data-eyebrow className="eyebrow">
-              01 · The studio as a landscape
+              01 · The work as a landscape
             </p>
             <SplitWords id="land-h" text="Walls, canvases, and the *places* between." className="heading-2 mt-5 max-w-[14ch] font-light" />
           </div>
@@ -168,7 +168,7 @@ export default function ArtistPage() {
         </div>
         <div
           role="region"
-          aria-label="Works and studio, a horizontal row"
+          aria-label="Works and photographs, a horizontal row"
           tabIndex={0}
           className="overflow-hidden max-lg:snap-x max-lg:snap-mandatory max-lg:overflow-x-auto max-lg:[scrollbar-width:thin]"
         >

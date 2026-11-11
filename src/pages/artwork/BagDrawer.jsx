@@ -106,7 +106,7 @@ export default function BagDrawer() {
                 <span className="font-semibold">Subtotal</span>
                 <span className="meta">Calculated at checkout</span>
               </div>
-              <Notice tone="warn">Ordering works as a request: I confirm availability, then send a secure payment link. Nothing is charged on this site.</Notice>
+              <Notice tone="info">You pay securely on the order page with UPI (scan a QR code), card or netbanking, through Razorpay.</Notice>
               <Button to="/order" block data-cursor="explore">
                 Continue to Order
               </Button>

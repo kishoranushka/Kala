@@ -16,19 +16,19 @@ const WAYS = [
   { icon: 'mail', label: 'Email', value: CONTACT.email, href: `mailto:${CONTACT.email}` },
   { icon: 'instagram', label: 'Instagram', value: CONTACT.instagramHandle, href: CONTACT.instagram, external: true },
   { icon: 'youtube', label: 'YouTube', value: CONTACT.youtubeHandle, href: CONTACT.youtube, external: true },
-  { icon: 'pin', label: 'Studio', value: CONTACT.location },
+  { icon: 'pin', label: 'Based in', value: CONTACT.location },
 ];
 
 const ROUTES = [
   { to: '/commission', cursor: 'talk', label: 'Commission', tone: 'text-secondary!', title: 'A painting or wall, made for you', note: 'The commission form asks the right questions: space, size, timeline.' },
-  { to: '/order', cursor: 'explore', label: 'Order', tone: 'text-success!', title: 'Buy an available original', note: 'Choose works, add your details, send an order request.' },
+  { to: '/order', cursor: 'explore', label: 'Order', tone: 'text-success!', title: 'Buy an available original', note: 'Choose works, add your details, pay securely online.' },
   { to: '/shop', cursor: 'explore', label: 'Shop', title: 'Browse every work', note: 'Available, sold and archived, all marked clearly.' },
 ];
 
 const FAQ = [
   { q: 'Do you ship outside [your city or country]?', a: '[Your answer: where you ship, and how paintings are packed.]' },
   { q: 'How long does a commission take?', a: 'Timelines are agreed per project, once we’ve talked about size and detail. [Add a typical range if you’d like to.]' },
-  { q: 'Can I see a painting in person?', a: '[Your answer: studio visits, collection from the studio, or video calls.]' },
+  { q: 'Can I see a painting in person?', a: '[Your answer: video calls, exhibitions, or more photos on request.]' },
   { q: 'Do you paint walls outside your city?', a: '[Your answer about travelling for murals.]' },
 ];
 
@@ -52,7 +52,7 @@ const sendMessage = (v) =>
     fields: {
       'Topic': v.topic,
       'Message': v.message.trim(),
-      'Studio updates': v.updates ? 'Yes, please' : 'No',
+      'Updates on new work': v.updates ? 'Yes, please' : 'No',
     },
   });
 
@@ -129,7 +129,7 @@ function MessageForm() {
       <Field id="c-msg" label="Message *" error={errors.message}>
         <Textarea name="message" {...describe('c-msg', { error: errors.message })} />
       </Field>
-      <Checkbox name="updates">Send me occasional studio updates. I never share your details.</Checkbox>
+      <Checkbox name="updates">Send me occasional updates on new work. I never share your details.</Checkbox>
       <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       {failed && (
         <Notice tone="error" role="alert">

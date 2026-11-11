@@ -83,7 +83,7 @@ function StatusActions({ work, inBag, adding, onAdd, onOpenBag }) {
         <TextLink to="/contact" data-cursor="talk" className="self-start">
           Ask a question about it
         </TextLink>
-        <p className="meta mt-1">One original, so there is only ever one. You confirm the details on the order page; nothing is charged on this site.</p>
+        <p className="meta mt-1">One original, so there is only ever one. Add your details and pay securely on the order page.</p>
       </>
     );
   }

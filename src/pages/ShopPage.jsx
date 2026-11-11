@@ -98,7 +98,7 @@ export default function ShopPage() {
                   <b className="mr-1.5 font-display text-[34px] leading-none font-normal">{AVAILABLE}</b>available now
                 </span>
                 <span className="text-muted">
-                  <b className="mr-1.5 font-display text-[34px] leading-none font-normal">{WORKS.length}</b>works in the studio
+                  <b className="mr-1.5 font-display text-[34px] leading-none font-normal">{WORKS.length}</b>works in all
                 </span>
                 <TextLink to="/order" arrow>
                   Go to your cart

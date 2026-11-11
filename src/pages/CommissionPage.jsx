@@ -58,7 +58,7 @@ const sendEnquiry = (v) =>
       'Budget range': v.budget,
       'Timeline': v.timeline,
       'Where it will live': v.space?.trim(),
-      'Studio updates': v.updates ? 'Yes, please' : 'No',
+      'Updates on new work': v.updates ? 'Yes, please' : 'No',
     },
   });
 
@@ -217,7 +217,7 @@ function EnquiryForm() {
         </div>
       </div>
 
-      <Checkbox name="updates">Send me occasional studio updates. I never share your details.</Checkbox>
+      <Checkbox name="updates">Send me occasional updates on new work. I never share your details.</Checkbox>
       <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
 
       {failed && (
@@ -313,7 +313,7 @@ export default function CommissionPage() {
                 {[
                   ['Email', <a key="e" href={`mailto:${CONTACT.email}`} className="font-display text-2xl/[30px] break-words text-primary no-underline hover:text-link">{CONTACT.email}</a>],
                   ['Instagram', <a key="i" href={CONTACT.instagram} target="_blank" rel="noopener" className="font-display text-2xl/[30px] text-primary no-underline hover:text-link">{CONTACT.instagramHandle}</a>],
-                  ['Studio', <span key="s" className="font-display text-2xl/[30px]">{CONTACT.location}</span>],
+                  ['Based in', <span key="s" className="font-display text-2xl/[30px]">{CONTACT.location}</span>],
                 ].map(([label, value]) => (
                   <li key={label} className="flex flex-col gap-0.5 border-b border-divider py-4">
                     <span className="meta">{label}</span>
