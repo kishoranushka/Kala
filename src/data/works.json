@@ -1,0 +1,684 @@
+{
+  "collections": [
+    {
+      "id": "devotional",
+      "num": "I",
+      "title": "Devotional",
+      "lead": "radhakrishna",
+      "intro": "[Two or three lines in your words about the devotional paintings: what draws you to these figures and how you paint them.]"
+    },
+    {
+      "id": "mandala",
+      "num": "II",
+      "title": "Mandala Studies",
+      "lead": "om",
+      "intro": "[Two or three lines in your words about the mandala and dot-work pieces.]"
+    },
+    {
+      "id": "portraits",
+      "num": "III",
+      "title": "Portraits",
+      "lead": "child",
+      "intro": "[Two or three lines in your words about portraits and personal pieces.]"
+    },
+    {
+      "id": "murals",
+      "num": "IV",
+      "title": "Murals",
+      "lead": "mural",
+      "intro": "[Two or three lines in your words about painting walls: homes, schools, studios.]"
+    },
+    {
+      "id": "small",
+      "num": "V",
+      "title": "Small Works",
+      "lead": "cat",
+      "intro": "[Two or three lines in your words about little canvases and sketchbook pages: quick, personal, often funny.]"
+    }
+  ],
+  "works": [
+    {
+      "id": "krishna",
+      "plate": "01",
+      "title": "Krishna and Radha",
+      "collection": "devotional",
+      "status": "available",
+      "price": "₹ 2000",
+      "medium": "Acrylic",
+      "size": "A3",
+      "year": "2021",
+      "framing": "Wooden",
+      "image": "krishna-and-radha.webp",
+      "w": 969,
+      "h": 1190,
+      "crop": true,
+      "alt": "Krishna in a striped saffron turban with a peacock feather, his cobalt-blue face beside Radha’s green-and-white face, against a mottled ochre ground",
+      "note": "[A few lines in your words: what started this painting, and what you wanted it to hold.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "34% 24%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "68% 64%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "om",
+      "plate": "02",
+      "title": "Om Mandala",
+      "collection": "mandala",
+      "status": "sold",
+      "price": "not disclosed",
+      "medium": "acrylic",
+      "size": "A4",
+      "year": "2022",
+      "framing": "Canvas",
+      "image": "om-mandala.webp",
+      "w": 1168,
+      "h": 954,
+      "alt": "A dot-work mandala on deep ultramarine: a glowing saffron Om at the centre, ringed with yellow, white and blue dots and pale blue fan motifs",
+      "note": "[A few lines in your words: how long the dot work took, and why the Om sits at its centre.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 48%",
+          "scale": 2.6
+        },
+        {
+          "label": "Detail II",
+          "origin": "24% 42%",
+          "scale": 3
+        }
+      ]
+    },
+    {
+      "id": "child",
+      "plate": "03",
+      "title": "Child Portrait",
+      "collection": "portraits",
+      "status": "inquiry",
+      "price": "",
+      "medium": "Acrylic",
+      "size": "A3",
+      "year": "2020",
+      "framing": "Canvas",
+      "image": "child-portrait.webp",
+      "w": 928,
+      "h": 1206,
+      "alt": "A sleeping child resting their chin in both hands, painted in rose, vermilion and magenta over a violet ground, with small sculpted roses at the edges",
+      "note": "[A few lines in your words about this portrait and the kind of personal pieces you make.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 36%",
+          "scale": 2.1
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 80%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "ganesha",
+      "plate": "04",
+      "title": "Ganesha",
+      "collection": "devotional",
+      "status": "available",
+      "price": "",
+      "medium": "Acrylic",
+      "size": "A3",
+      "year": "2020",
+      "framing": "Glass",
+      "archiveNo": "009",
+      "image": "ganesha.webp",
+      "w": 834,
+      "h": 1201,
+      "alt": "A stylised Ganesha in soft cobalt and periwinkle blue, a raised saffron hand and great curves of orange and vermilion against black, with a red hibiscus in the corner",
+      "note": "[A few lines in your words about this Ganesha.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "52% 28%",
+          "scale": 2.4
+        },
+        {
+          "label": "Detail II",
+          "origin": "86% 88%",
+          "scale": 2.6
+        }
+      ]
+    },
+    {
+      "id": "mural",
+      "plate": "05",
+      "title": "Mandala Wall Mural",
+      "collection": "murals",
+      "status": "archived",
+      "price": "",
+      "medium": "Wall mural",
+      "size": "[Wall size]",
+      "year": "2020",
+      "framing": "Painted on Home Wall",
+      "archiveNo": "011",
+      "image": "mandala-wall-mural.webp",
+      "w": 1166,
+      "h": 656,
+      "alt": "A half-mandala painted on a pale wall, rising in layered petals of crimson, saffron, yellow, lilac and turquoise, with large teal leaves at its edges",
+      "note": "[A few lines in your words: whose wall this was and how long it took.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 92%",
+          "scale": 2.4
+        },
+        {
+          "label": "Detail II",
+          "origin": "36% 30%",
+          "scale": 2.4
+        }
+      ]
+    },
+    {
+      "id": "chalk",
+      "plate": "06",
+      "title": "Think Out of the Box",
+      "collection": "murals",
+      "status": "archived",
+      "price": "",
+      "medium": "Wall mural",
+      "size": "[Wall size]",
+      "year": "2022",
+      "framing": "Painted on site · Bhopal",
+      "archiveNo": "014",
+      "image": "think-out-of-the-box.webp",
+      "w": 1159,
+      "h": 960,
+      "alt": "A chalkboard-black wall mural reading Think Out of the Box in pale blue, with a glowing lightbulb full of gears and a cascade of blue, yellow and white squares; the artist stands beside it pointing to the work",
+      "note": "[A few lines in your words: where this wall is and what it was made for.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "28% 70%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "78% 30%",
+          "scale": 2
+        }
+      ]
+    },
+    {
+      "id": "vitthal",
+      "plate": "07",
+      "title": "Vitthal",
+      "collection": "devotional",
+      "status": "available",
+      "price": "₹ 00,000",
+      "medium": "Acrylic",
+      "size": "A3",
+      "year": "2021",
+      "framing": "No",
+      "image": "vitthal.webp",
+      "w": 1005,
+      "h": 1453,
+      "alt": "Vitthal with closed eyes and a white tilak, a tall saffron-and-gold crown set with blue petal jewels, and sunburst earrings, on deep indigo",
+      "note": "[A few lines in your words about painting Vitthal: the crown, the stillness, the indigo.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 40%",
+          "scale": 2.4
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 74%",
+          "scale": 2.1
+        }
+      ]
+    },
+    {
+      "id": "flute",
+      "plate": "08",
+      "title": "Flute and Veena",
+      "collection": "devotional",
+      "status": "sold",
+      "price": "not disclosed",
+      "medium": "Acrylic",
+      "size": "A3",
+      "year": "2020",
+      "framing": "Framed, black frame with mat",
+      "image": "flute-and-veena.webp",
+      "w": 471,
+      "h": 626,
+      "room": {
+        "image": "flute-and-veena-room.webp",
+        "w": 680,
+        "h": 900,
+        "label": "Framed, on a wall"
+      },
+      "alt": "A serene face with a red forehead mark and gold-beaded hair, a small blue Krishna playing the flute behind her and a veena across the foreground, in cobalt and sky blue",
+      "note": "[A few lines in your words: the two instruments, and why the blues.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "62% 42%",
+          "scale": 2.1
+        },
+        {
+          "label": "Detail II",
+          "origin": "22% 20%",
+          "scale": 3
+        }
+      ]
+    },
+    {
+      "id": "krishnachild",
+      "plate": "09",
+      "title": "Krishna and a Child",
+      "collection": "small",
+      "status": "inquiry",
+      "price": "₹ 00,000",
+      "medium": "Acrylic",
+      "size": "A5",
+      "year": "2026",
+      "framing": "Canvas",
+      "image": "krishna-and-a-child.webp",
+      "w": 1185,
+      "h": 1800,
+      "alt": "Seen from behind, Krishna with a leaf in his hair and a child in a yellow dress lean on a railing together against a soft green ground",
+      "note": "[A few lines in your words about this small canvas.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "35% 22%",
+          "scale": 2.2
+        },
+        {
+          "label": "Signature",
+          "origin": "86% 92%",
+          "scale": 3
+        }
+      ]
+    },
+    {
+      "id": "escape",
+      "plate": "10",
+      "title": "The Escape Key Exists for a Reason",
+      "collection": "small",
+      "status": "inquiry",
+      "price": "₹ 00,000",
+      "medium": "Acrylic",
+      "size": "A4",
+      "year": "2026",
+      "framing": "Canvas",
+      "image": "escape-key.webp",
+      "w": 1800,
+      "h": 1310,
+      "room": {
+        "image": "escape-key-easel.webp",
+        "w": 1705,
+        "h": 1800,
+        "label": "On its easel"
+      },
+      "alt": "A small figure climbs out of a dark keyboard, lifting the Esc key like a hatch, under the words The escape key exists for a reason",
+      "note": "[A few lines in your words: the day this one was painted, and the joke inside it.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "44% 52%",
+          "scale": 2.4
+        },
+        {
+          "label": "Signature",
+          "origin": "12% 88%",
+          "scale": 3
+        }
+      ]
+    },
+    {
+      "id": "bloom",
+      "plate": "11",
+      "title": "Just Bloom",
+      "collection": "small",
+      "status": "inquiry",
+      "price": "",
+      "medium": "Sketchbook spread · Acrylic",
+      "size": "Custom",
+      "year": "2019",
+      "framing": "Unframed",
+      "image": "just-bloom.webp",
+      "w": 700,
+      "h": 1056,
+      "alt": "An open sketchbook painted saffron orange with white lotus line drawings and the words Just Bloom in red script, styled with foam roses",
+      "note": "[A few lines in your words about the sketchbook and the lettering.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "52% 48%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "30% 70%",
+          "scale": 2.4
+        }
+      ]
+    },
+    {
+      "id": "radhakrishna",
+      "plate": "12",
+      "title": "Radha and Krishna in Blue",
+      "collection": "devotional",
+      "status": "inquiry",
+      "price": "",
+      "medium": "Acrylic",
+      "size": "A3",
+      "year": "2020",
+      "framing": "Framed, black frame with white mount",
+      "image": "radha-and-krishna-in-blue.webp",
+      "w": 1120,
+      "h": 1579,
+      "room": {
+        "image": "exhibition-wall.webp",
+        "w": 900,
+        "h": 1600,
+        "label": "At the exhibition"
+      },
+      "alt": "Radha with closed eyes, a red tilak and a crown of golden dots, a sweep of cream and gold behind her, and a small blue Krishna playing the flute in the corner, on a bright blue ground",
+      "note": "[A few lines in your words: what this painting is about, and where it was shown.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "56% 44%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "18% 22%",
+          "scale": 2.6
+        }
+      ]
+    },
+    {
+      "id": "buddha",
+      "plate": "13",
+      "title": "Buddha with Lotus",
+      "collection": "devotional",
+      "status": "available",
+      "price": "₹ 1,000",
+      "medium": "Acrylic on canvas",
+      "size": "A3",
+      "year": "2022",
+      "framing": "Canvas",
+      "image": "buddha-with-lotus.webp",
+      "w": 1148,
+      "h": 1400,
+      "alt": "Half of a serene green Buddha face with closed eyes and a long blue earlobe, a coral lotus below, on a dark green shimmering ground, signed Anushka 28/06/22",
+      "note": "[A few lines in your words about this painting.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "30% 30%",
+          "scale": 2.2
+        },
+        {
+          "label": "Signature",
+          "origin": "88% 92%",
+          "scale": 3
+        }
+      ]
+    },
+    {
+      "id": "sunflower",
+      "plate": "14",
+      "title": "Sunflower",
+      "collection": "small",
+      "status": "inquiry",
+      "price": "₹ 00,000",
+      "medium": "Acrylic",
+      "size": "A4",
+      "year": "2019",
+      "framing": "No",
+      "image": "sunflower.webp",
+      "w": 1290,
+      "h": 1800,
+      "alt": "A close-up sunflower: long saffron and lemon petals around a dark seed head flecked with green, on deep navy",
+      "note": "[A few lines in your words about this painting.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "30% 64%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "66% 40%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "butterfly",
+      "plate": "15",
+      "title": "Blue Butterfly",
+      "collection": "small",
+      "status": "inquiry",
+      "price": "₹ 00,000",
+      "medium": "Acrylic",
+      "size": "A4",
+      "year": "2019",
+      "framing": "No",
+      "image": "blue-butterfly.webp",
+      "w": 1209,
+      "h": 1800,
+      "alt": "A large black butterfly with blue-and-white wing panels and dotted edges, resting by blue tulips on bands of green",
+      "note": "[A few lines in your words about this painting.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 40%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "76% 84%",
+          "scale": 2.4
+        }
+      ]
+    },
+    {
+      "id": "elephant",
+      "plate": "16",
+      "title": "Little Elephant",
+      "collection": "small",
+      "status": "archived",
+      "price": "",
+      "medium": "Watercolour on paper",
+      "size": "A3",
+      "year": "",
+      "framing": "No",
+      "image": "little-elephant.webp",
+      "w": 1077,
+      "h": 1400,
+      "alt": "A watercolour baby elephant in blue with a yellow ear, curled up with its trunk raised, blowing three red hearts, over a blue sky melting into orange and pink",
+      "note": "[A few lines in your words about this painting.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 40%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "58% 26%",
+          "scale": 2.6
+        }
+      ]
+    },
+    {
+      "id": "peacock",
+      "plate": "17",
+      "title": "Peacock",
+      "collection": "small",
+      "status": "available",
+      "price": "₹ 500",
+      "medium": "Acrylic",
+      "size": "Custom",
+      "year": "2022",
+      "framing": "Glass",
+      "image": "peacock.webp",
+      "w": 644,
+      "h": 744,
+      "room": {
+        "image": "artist-with-peacock.webp",
+        "w": 1139,
+        "h": 1600,
+        "label": "In the artist’s hands"
+      },
+      "alt": "A royal-blue peacock with a golden beak against a yellow ground and swirling green tail feathers with blue-and-orange eyes",
+      "note": "[A few lines in your words about this painting.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "62% 56%",
+          "scale": 2
+        },
+        {
+          "label": "Detail II",
+          "origin": "80% 24%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "babybuddha",
+      "plate": "18",
+      "title": "Little Buddha",
+      "collection": "small",
+      "status": "inquiry",
+      "price": "",
+      "medium": "Acrylic",
+      "size": "Custom",
+      "year": "2023",
+      "framing": "No",
+      "image": "little-buddha.webp",
+      "w": 1264,
+      "h": 1400,
+      "room": {
+        "image": "little-buddha-outdoors.webp",
+        "w": 1125,
+        "h": 1500,
+        "label": "Painted outdoors"
+      },
+      "alt": "A smiling little monk in blue robes sitting on a pink lotus, white rays around him on a sky-blue ground, signed Anushka",
+      "note": "[A few lines in your words about this painting.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 34%",
+          "scale": 2.2
+        },
+        {
+          "label": "Signature",
+          "origin": "86% 94%",
+          "scale": 3
+        }
+      ]
+    },
+    {
+      "id": "cat",
+      "plate": "19",
+      "title": "Happy Cat",
+      "collection": "small",
+      "status": "available",
+      "price": "₹ 00,000",
+      "medium": "Acrylic on wood",
+      "size": "Custom",
+      "year": "2024",
+      "framing": "Wood",
+      "image": "happy-cat.webp",
+      "w": 1222,
+      "h": 1400,
+      "alt": "A grinning ginger cat with closed eyes, a red heart nose and long white whiskers, sitting tall against a speckled cobalt-blue ground, signed Anushka",
+      "note": "[A few lines in your words about this painting.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 34%",
+          "scale": 2.2
+        },
+        {
+          "label": "Signature",
+          "origin": "88% 90%",
+          "scale": 3
+        }
+      ]
+    },
+    {
+      "id": "lightning",
+      "plate": "20",
+      "title": "Lightning",
+      "collection": "small",
+      "status": "archived",
+      "price": "",
+      "medium": "Watercolour in a sketchbook",
+      "size": "A4",
+      "year": "2021",
+      "framing": "Unframed",
+      "image": "lightning.webp",
+      "w": 1080,
+      "h": 1080,
+      "alt": "A sketchbook page of branching yellow-white lightning over a smoky orange and red sky, with paint tubes and brushes beside it",
+      "note": "[A few lines in your words about this painting.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 46%",
+          "scale": 2
+        },
+        {
+          "label": "Signature",
+          "origin": "72% 86%",
+          "scale": 2.6
+        }
+      ]
+    },
+    {
+      "id": "bicycle",
+      "plate": "21",
+      "title": "Bicycle with Flowers",
+      "collection": "small",
+      "status": "inquiry",
+      "price": "",
+      "medium": "Acrylic",
+      "size": "A4",
+      "year": "2021",
+      "framing": "Unframed",
+      "image": "bicycle-with-flowers.webp",
+      "w": 1080,
+      "h": 607,
+      "alt": "A rust-orange bicycle with a basket of white and blue flowers against a deep blue wash, styled with foam roses and brushes",
+      "note": "[A few lines in your words about this painting.]",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 30%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "62% 72%",
+          "scale": 2.2
+        }
+      ]
+    }
+  ]
+}

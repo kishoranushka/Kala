@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KALA · Painting editor</title>
+<style>
+  :root {
+    --page: #f4efe6; --surface: #fffdf8; --line: #ddd3c2; --ink: #2a2420; --soft: #6b6157; --muted: #8f8579;
+    --accent: #b5532c; --ok: #2f6b45; --ok-wash: #e3efe5; --warn: #8a5a12; --warn-wash: #f6ead2;
+    --err: #a3302a; --err-wash: #f7e0dc; --radius: 6px;
+    --s-available: #2f6b45; --s-inquiry: #7a4d8c; --s-sold: #a3302a; --s-archived: #6b6157;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 16px; padding: 14px 24px; background: var(--ink); color: var(--page); }
+  header h1 { margin: 0; font: 400 22px/1 Georgia, serif; letter-spacing: .02em; }
+  header .tag { font-size: 12px; opacity: .7; }
+  header .spacer { flex: 1; }
+  header a { color: var(--page); }
+  main { display: grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - 52px); }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } aside { max-height: 40vh; } }
+
+  aside { border-right: 1px solid var(--line); overflow: auto; background: var(--surface); }
+  .aside-top { position: sticky; top: 0; background: var(--surface); padding: 14px; border-bottom: 1px solid var(--line); display: grid; gap: 8px; }
+  .aside-top input, .aside-top select { width: 100%; }
+  ul.list { list-style: none; margin: 0; padding: 0; }
+  ul.list li button { display: grid; grid-template-columns: 48px 1fr; gap: 10px; align-items: center; width: 100%; padding: 8px 14px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+  ul.list li button:hover { background: var(--page); }
+  ul.list li button[aria-current="true"] { background: var(--page); box-shadow: inset 3px 0 var(--accent); }
+  ul.list img { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; background: var(--line); }
+  ul.list .t { font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  ul.list .m { font-size: 12px; color: var(--muted); }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .badge.available { color: var(--s-available); } .badge.inquiry { color: var(--s-inquiry); }
+  .badge.sold { color: var(--s-sold); } .badge.archived { color: var(--s-archived); }
+
+  section.editor { padding: 28px clamp(16px, 4vw, 48px) 120px; max-width: 1100px; }
+  .empty { color: var(--soft); padding: 60px 0; text-align: center; }
+  h2 { font: 400 30px/1.1 Georgia, serif; margin: 0 0 4px; }
+  .sub { color: var(--soft); margin: 0 0 24px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; }
+  .grid .full { grid-column: 1 / -1; }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+  fieldset { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px 20px; margin: 0 0 22px; background: var(--surface); }
+  legend { padding: 0 6px; font-weight: 700; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--soft); }
+  label { display: grid; gap: 6px; font-weight: 600; font-size: 13px; }
+  .hint { font-weight: 400; color: var(--muted); font-size: 12px; }
+  input[type=text], input[type=number], select, textarea { font: inherit; padding: 9px 11px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; color: var(--ink); width: 100%; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  input[readonly] { background: var(--page); color: var(--soft); }
+  textarea { min-height: 80px; resize: vertical; }
+  .check { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; }
+
+  .statuses { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  @media (max-width: 640px) { .statuses { grid-template-columns: 1fr 1fr; } }
+  .statuses label { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; cursor: pointer; background: #fff; font-weight: 400; }
+  .statuses input { position: absolute; opacity: 0; }
+  .statuses label:has(input:checked) { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .statuses label:has(input:focus-visible) { outline: 2px solid var(--accent); }
+  .statuses .hint { display: block; margin-top: 4px; }
+
+  .photo { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 20px; align-items: start; }
+  @media (max-width: 760px) { .photo { grid-template-columns: 1fr; } }
+  .preview { position: relative; background: var(--page); border: 1px dashed var(--line); border-radius: var(--radius); min-height: 220px; display: grid; place-items: center; overflow: hidden; }
+  .preview img { display: block; max-width: 100%; max-height: 520px; }
+  .preview.picking { cursor: crosshair; outline: 3px solid var(--accent); }
+  .pin { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; border: 2px solid #fff; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; box-shadow: 0 1px 4px rgba(0,0,0,.4); pointer-events: none; }
+  .photo-side { display: grid; gap: 12px; }
+  .detail { display: grid; grid-template-columns: 1fr 70px; gap: 8px; padding: 10px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+  .detail .row { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--soft); }
+
+  .btn { font: inherit; font-weight: 600; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--ink); background: var(--ink); color: var(--page); cursor: pointer; text-align: center; text-decoration: none; }
+  .btn.secondary { background: transparent; color: var(--ink); }
+  .btn.small { padding: 6px 12px; font-size: 12px; }
+  .btn.danger { background: transparent; color: var(--err); border-color: var(--err); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .file { position: relative; overflow: hidden; display: block; }
+  .file:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .file input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+  .bar { position: fixed; left: 320px; right: 0; bottom: 0; display: flex; gap: 12px; align-items: center; padding: 14px clamp(16px, 4vw, 48px); background: var(--surface); border-top: 1px solid var(--line); }
+  @media (max-width: 860px) { .bar { left: 0; } }
+  .bar .spacer { flex: 1; }
+  .dirty { color: var(--warn); font-weight: 600; font-size: 13px; }
+  .msg { border-radius: var(--radius); padding: 12px 16px; margin: 0 0 20px; }
+  .msg.ok { background: var(--ok-wash); color: var(--ok); }
+  .msg.err { background: var(--err-wash); color: var(--err); }
+  .msg ul { margin: 6px 0 0; padding-left: 18px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>KALA</h1>
+  <span class="tag">Painting editor · local only, never published</span>
+  <span class="spacer"></span>
+  <a href="/shop" target="_blank" rel="noopener">Open the site ↗</a>
+</header>
+
+<main>
+  <aside>
+    <div class="aside-top">
+      <button class="btn" id="add" type="button">+ Add a painting</button>
+      <input type="text" id="search" placeholder="Search paintings…" aria-label="Search paintings" />
+      <select id="filter" aria-label="Filter by status">
+        <option value="">All statuses</option>
+        <option value="available">Available</option>
+        <option value="inquiry">Inquiry only</option>
+        <option value="sold">Sold</option>
+        <option value="archived">Archived</option>
+      </select>
+    </div>
+    <ul class="list" id="list"></ul>
+  </aside>
+
+  <section class="editor">
+    <div id="message"></div>
+    <div id="empty" class="empty">Choose a painting on the left, or add a new one.</div>
+
+    <form id="form" hidden autocomplete="off">
+      <h2 id="heading">Painting</h2>
+      <p class="sub" id="subheading"></p>
+
+      <fieldset>
+        <legend>Tag</legend>
+        <div class="statuses" id="statuses">
+          <label><input type="radio" name="status" value="available" /><span class="badge available">Available</span><span class="hint">Shows the price. Can be ordered.</span></label>
+          <label><input type="radio" name="status" value="inquiry" /><span class="badge inquiry">Inquiry only</span><span class="hint">No price. Visitors enquire.</span></label>
+          <label><input type="radio" name="status" value="sold" /><span class="badge sold">Sold</span><span class="hint">Still shown, can’t be ordered.</span></label>
+          <label><input type="radio" name="status" value="archived" /><span class="badge archived">Archived</span><span class="hint">Past or not-for-sale work.</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>About the painting</legend>
+        <div class="grid">
+          <label class="full">Title *<input type="text" name="title" required /></label>
+          <label>Collection *<select name="collection" id="collection"></select></label>
+          <label>Price <span class="hint">Shown only when Available, e.g. ₹ 12,000</span><input type="text" name="price" /></label>
+          <label>Medium<input type="text" name="medium" placeholder="Acrylic on canvas" /></label>
+          <label>Size<input type="text" name="size" placeholder="A3, or 30 × 40 cm" /></label>
+          <label>Year<input type="text" name="year" placeholder="2026" /></label>
+          <label>Framing<input type="text" name="framing" placeholder="Unframed, black frame…" /></label>
+          <label class="full">Your words about it <span class="hint">A few lines on the artwork page.</span><textarea name="note"></textarea></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Photo</legend>
+        <div class="photo">
+          <div>
+            <div class="preview" id="preview"><span class="hint">No photo yet</span></div>
+            <p class="hint" id="pickHint" hidden>Click on the photo to place the close-up.</p>
+          </div>
+          <div class="photo-side">
+            <span class="file btn secondary"><span id="uploadLabel">Upload photo</span><input type="file" accept="image/*" id="upload" /></span>
+            <label>…or use an existing image<select id="existing"></select></label>
+            <label>Description for screen readers *<span class="hint">What’s in the painting: subject, colours.</span><textarea name="alt"></textarea></label>
+            <label class="check"><input type="checkbox" name="crop" /> Trim the Instagram corner (only for photos with an avatar in the bottom-left)</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Close-ups on the artwork page</legend>
+        <p class="hint" style="margin-top:0">Two zoomed details. Press “Pick on photo”, then click the spot to zoom into.</p>
+        <div class="grid" id="details"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Second photo (optional)</legend>
+        <div class="grid">
+          <div>
+            <div class="preview" id="roomPreview" style="min-height:140px"><span class="hint">None</span></div>
+          </div>
+          <div class="photo-side">
+            <span class="file btn secondary"><span>Upload second photo</span><input type="file" accept="image/*" id="roomUpload" /></span>
+            <label>Caption<input type="text" name="roomLabel" placeholder="Framed, on a wall" /></label>
+            <button type="button" class="btn small secondary" id="roomClear">Remove second photo</button>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Shipping box (for Shiprocket)</legend>
+        <p class="hint" style="margin-top:0">The packed parcel. Leave blank to use the default: 1 kg, 50 × 40 × 6 cm.</p>
+        <div class="grid" style="grid-template-columns:repeat(4,1fr)">
+          <label>Weight (kg)<input type="number" step="0.1" min="0" data-ship="weight" placeholder="1" /></label>
+          <label>Length (cm)<input type="number" step="1" min="0" data-ship="length" placeholder="50" /></label>
+          <label>Breadth (cm)<input type="number" step="1" min="0" data-ship="breadth" placeholder="40" /></label>
+          <label>Height (cm)<input type="number" step="1" min="0" data-ship="height" placeholder="6" /></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Behind the scenes</legend>
+        <div class="grid">
+          <label>ID <span class="hint">Used in the web address. Can’t change after saving.</span><input type="text" name="id" /></label>
+          <label>Plate no.<input type="text" name="plate" /></label>
+          <label>Archive no. <span class="hint">Optional</span><input type="text" name="archiveNo" /></label>
+          <label>Photo size <span class="hint">Width × height, filled in automatically</span><input type="text" id="dims" readonly /></label>
+        </div>
+      </fieldset>
+    </form>
+  </section>
+</main>
+
+<div class="bar">
+  <span class="dirty" id="dirty" hidden>Unsaved changes</span>
+  <span class="spacer"></span>
+  <button type="button" class="btn danger" id="delete" hidden>Delete painting</button>
+  <a id="view" target="_blank" rel="noopener" class="btn secondary" hidden>View on site ↗</a>
+  <button type="button" class="btn" id="save" disabled>Save</button>
+</div>
+
+<script type="module">
+const $ = (s) => document.querySelector(s);
+const IMG = (f) => `/src/assets/images/${encodeURIComponent(f)}`;
+const STATUS_LABEL = { available: 'Available', inquiry: 'Inquiry only', sold: 'Sold', archived: 'Archived' };
+const DETAIL_DEFAULTS = [{ label: 'Detail I', origin: '50% 40%', scale: 2.2 }, { label: 'Detail II', origin: '50% 70%', scale: 2.2 }];
+
+let data = { collections: [], works: [], images: [] };
+let saved = [];            // ids as last saved (existing ids are locked)
+let current = null;        // index into data.works
+let dirty = false;
+let picking = null;        // detail index waiting for a click
+
+const form = $('#form');
+
+async function load() {
+  const res = await fetch('/__admin/api/data');
+  data = await res.json();
+  saved = data.works.map((w) => w.id);
+  $('#collection').innerHTML = data.collections.map((c) => `<option value="${c.id}">${c.num} · ${c.title}</option>`).join('');
+  fillExisting();
+  renderList();
+}
+
+function fillExisting() {
+  $('#existing').innerHTML = '<option value="">Choose…</option>' + data.images.map((f) => `<option>${f}</option>`).join('');
+}
+
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+function renderList() {
+  const q = $('#search').value.trim().toLowerCase();
+  const f = $('#filter').value;
+  $('#list').innerHTML = data.works
+    .map((w, i) => ({ w, i }))
+    .filter(({ w }) => (!f || w.status === f) && (!q || `${w.title} ${w.id} ${w.medium}`.toLowerCase().includes(q)))
+    .map(({ w, i }) => `<li><button type="button" data-i="${i}" aria-current="${i === current}">
+        ${w.image ? `<img src="${IMG(w.image)}" alt="" loading="lazy" />` : '<img alt="" />'}
+        <span><span class="t">${esc(w.title) || 'Untitled'}</span><span class="badge ${w.status}">${STATUS_LABEL[w.status] ?? w.status}</span> <span class="m">· Pl. ${esc(w.plate)}</span></span>
+      </button></li>`)
+    .join('');
+}
+
+function setDirty(v) {
+  dirty = v;
+  $('#dirty').hidden = !v;
+  $('#save').disabled = !v;
+}
+
+function open(i) {
+  if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
+  if (dirty) { reloadKeepingSelection(i); return; }
+  current = i;
+  showMessage();
+  fillForm();
+  renderList();
+}
+
+async function reloadKeepingSelection(i) {
+  await load();
+  setDirty(false);
+  current = i < data.works.length ? i : null;
+  current === null ? closeForm() : fillForm();
+  renderList();
+}
+
+function closeForm() {
+  form.hidden = true;
+  $('#empty').hidden = false;
+  $('#delete').hidden = true;
+  $('#view').hidden = true;
+}
+
+function fillForm() {
+  const w = data.works[current];
+  form.hidden = false;
+  $('#empty').hidden = true;
+  const isNew = !saved.includes(w.id);
+  $('#heading').textContent = w.title || 'New painting';
+  $('#subheading').textContent = isNew ? 'Not saved yet.' : `Plate ${w.plate} · /artwork/${w.id}`;
+  for (const el of form.elements) {
+    if (!el.name || el.name === 'status' || el.name === 'roomLabel') continue;
+    if (el.type === 'checkbox') el.checked = !!w[el.name];
+    else el.value = w[el.name] ?? '';
+  }
+  for (const r of form.querySelectorAll('input[name=status]')) r.checked = r.value === w.status;
+  form.elements.id.readOnly = !isNew;
+  form.elements.roomLabel.value = w.room?.label ?? '';
+  for (const el of form.querySelectorAll('[data-ship]')) el.value = w.ship?.[el.dataset.ship] ?? '';
+  $('#dims').value = w.w && w.h ? `${w.w} × ${w.h}` : '';
+  $('#existing').value = data.images.includes(w.image) ? w.image : '';
+  $('#delete').hidden = false;
+  $('#view').hidden = isNew;
+  $('#view').href = `/artwork/${w.id}`;
+  renderPreview();
+  renderRoom();
+  renderDetails();
+}
+
+function renderPreview() {
+  const w = data.works[current];
+  const box = $('#preview');
+  box.classList.toggle('picking', picking !== null);
+  $('#pickHint').hidden = picking === null;
+  if (!w.image) { box.innerHTML = '<span class="hint">No photo yet</span>'; return; }
+  box.innerHTML = `<div style="position:relative;display:inline-block"><img src="${IMG(w.image)}" alt="" id="previewImg" />${(w.details ?? [])
+    .map((d, n) => { const [x, y] = String(d.origin).split(/\s+/); return `<span class="pin" style="left:${x};top:${y}">${n + 1}</span>`; })
+    .join('')}</div>`;
+}
+
+function renderRoom() {
+  const w = data.works[current];
+  $('#roomPreview').innerHTML = w.room?.image ? `<img src="${IMG(w.room.image)}" alt="" style="max-height:200px" />` : '<span class="hint">None</span>';
+  $('#roomClear').hidden = !w.room?.image;
+}
+
+function renderDetails() {
+  const w = data.works[current];
+  if (!Array.isArray(w.details) || !w.details.length) w.details = structuredClone(DETAIL_DEFAULTS);
+  $('#details').innerHTML = w.details.map((d, n) => `
+    <div class="detail">
+      <label>Close-up ${n + 1} name<input type="text" data-d="${n}" data-k="label" value="${esc(d.label)}" /></label>
+      <label>Zoom<input type="number" step="0.1" min="1.2" max="5" data-d="${n}" data-k="scale" value="${esc(d.scale)}" /></label>
+      <div class="row"><button type="button" class="btn small secondary" data-pick="${n}">${picking === n ? 'Click the photo…' : 'Pick on photo'}</button> Point: ${esc(d.origin)}</div>
+    </div>`).join('');
+}
+
+/* ------------------------------------------------------------- events */
+$('#list').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-i]');
+  if (b) open(Number(b.dataset.i));
+});
+$('#search').addEventListener('input', renderList);
+$('#filter').addEventListener('change', renderList);
+
+$('#add').addEventListener('click', () => {
+  if (dirty && !confirm('You have unsaved changes. Add a new painting anyway? (Your changes stay until you save.)')) return;
+  const nextPlate = String(Math.max(0, ...data.works.map((w) => parseInt(w.plate, 10) || 0)) + 1).padStart(2, '0');
+  data.works.push({ id: '', plate: nextPlate, title: '', collection: data.collections.at(-1)?.id ?? '', status: 'available', price: '', medium: '', size: '', year: String(new Date().getFullYear()), framing: '', image: '', w: 0, h: 0, alt: '', note: '', details: structuredClone(DETAIL_DEFAULTS) });
+  current = data.works.length - 1;
+  setDirty(true);
+  fillForm();
+  renderList();
+  form.elements.title.focus();
+});
+
+const slugify = (s) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+form.addEventListener('input', (e) => {
+  const w = data.works[current];
+  const el = e.target;
+  if (el.dataset.ship) {
+    w.ship = { ...(w.ship || {}), [el.dataset.ship]: el.value === '' ? undefined : Number(el.value) };
+  } else if (el.dataset.d !== undefined) {
+    w.details[el.dataset.d][el.dataset.k] = el.dataset.k === 'scale' ? Number(el.value) : el.value;
+  } else if (el.name === 'roomLabel') {
+    if (w.room) w.room.label = el.value;
+  } else if (el.name && el.type !== 'file') {
+    w[el.name] = el.type === 'checkbox' ? el.checked : el.value;
+    if (el.name === 'title') {
+      $('#heading').textContent = el.value || 'New painting';
+      if (!saved.includes(w.id) && !w._idTouched) { w.id = slugify(el.value); form.elements.id.value = w.id; }
+    }
+    if (el.name === 'id') w._idTouched = true;
+  }
+  setDirty(true);
+  if (el.name === 'title' || el.name === 'status') renderList();
+});
+
+$('#existing').addEventListener('change', async (e) => {
+  if (!e.target.value) return;
+  const file = e.target.value;
+  const dims = await new Promise((resolve) => { const im = new Image(); im.onload = () => resolve([im.naturalWidth, im.naturalHeight]); im.src = IMG(file); });
+  Object.assign(data.works[current], { image: file, w: dims[0], h: dims[1] });
+  $('#dims').value = `${dims[0]} × ${dims[1]}`;
+  setDirty(true); renderPreview(); renderList();
+});
+
+async function upload(input, name) {
+  const file = input.files[0];
+  if (!file) return null;
+  showMessage('ok', `Uploading and optimising ${file.name}…`);
+  const res = await fetch(`/__admin/api/upload?name=${encodeURIComponent(name)}`, { method: 'POST', body: file });
+  const out = await res.json();
+  input.value = '';
+  if (!res.ok) { showMessage('err', out.error || 'Upload failed.'); return null; }
+  data.images = [...new Set([...data.images, out.file])].sort();
+  fillExisting();
+  showMessage('ok', `Photo saved as src/assets/images/${out.file} (${out.w} × ${out.h}). Remember to press Save.`);
+  return out;
+}
+
+$('#upload').addEventListener('change', async (e) => {
+  const w = data.works[current];
+  const out = await upload(e.target, w.id || slugify(w.title) || 'painting');
+  if (!out) return;
+  Object.assign(w, { image: out.file, w: out.w, h: out.h });
+  $('#dims').value = `${out.w} × ${out.h}`;
+  $('#existing').value = out.file;
+  setDirty(true); renderPreview(); renderList();
+});
+
+$('#roomUpload').addEventListener('change', async (e) => {
+  const w = data.works[current];
+  const out = await upload(e.target, `${w.id || slugify(w.title) || 'painting'}-room`);
+  if (!out) return;
+  w.room = { image: out.file, w: out.w, h: out.h, label: form.elements.roomLabel.value || 'On a wall' };
+  form.elements.roomLabel.value = w.room.label;
+  setDirty(true); renderRoom();
+});
+
+$('#roomClear').addEventListener('click', () => {
+  delete data.works[current].room;
+  form.elements.roomLabel.value = '';
+  setDirty(true); renderRoom();
+});
+
+$('#details').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-pick]');
+  if (!b) return;
+  if (!data.works[current].image) { showMessage('err', 'Add the photo first, then pick the close-up points.'); return; }
+  picking = picking === Number(b.dataset.pick) ? null : Number(b.dataset.pick);
+  renderDetails(); renderPreview();
+});
+
+$('#preview').addEventListener('click', (e) => {
+  const img = $('#previewImg');
+  if (picking === null || !img) return;
+  const r = img.getBoundingClientRect();
+  const x = Math.round(((e.clientX - r.left) / r.width) * 100);
+  const y = Math.round(((e.clientY - r.top) / r.height) * 100);
+  if (x < 0 || x > 100 || y < 0 || y > 100) return;
+  data.works[current].details[picking].origin = `${x}% ${y}%`;
+  picking = null;
+  setDirty(true); renderDetails(); renderPreview();
+});
+
+$('#delete').addEventListener('click', async () => {
+  const w = data.works[current];
+  if (!confirm(`Delete “${w.title || 'this painting'}”? Tip: if it was sold, mark it Sold instead so it stays in the archive.`)) return;
+  const wasSaved = saved.includes(w.id);
+  data.works.splice(current, 1);
+  current = null;
+  closeForm();
+  renderList();
+  if (wasSaved) await save();
+});
+
+$('#save').addEventListener('click', () => save());
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); if (dirty) save(); }
+});
+
+async function save() {
+  const editingId = current !== null ? data.works[current].id : null;
+  const works = data.works.map(({ _idTouched, ...w }) => w);
+  $('#save').disabled = true;
+  const res = await fetch('/__admin/api/works', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ works }) });
+  const out = await res.json();
+  if (!res.ok) {
+    showMessage('err', out.error || 'Could not save.', out.problems);
+    $('#save').disabled = false;
+    if (out.problems?.some((p) => p.includes('can’t be removed'))) await reloadKeepingSelection(null);
+    return;
+  }
+  data.works = out.works;
+  saved = data.works.map((w) => w.id);
+  setDirty(false);
+  current = editingId ? data.works.findIndex((w) => w.id === editingId) : null;
+  if (current === -1) current = null;
+  current === null ? closeForm() : fillForm();
+  renderList();
+  showMessage('ok', 'Saved to src/data/works.json. The site updates straight away; commit and push to publish it.');
+}
+
+function showMessage(kind, text, list) {
+  const box = $('#message');
+  if (!kind) { box.innerHTML = ''; return; }
+  box.innerHTML = `<div class="msg ${kind}" role="${kind === 'err' ? 'alert' : 'status'}">${esc(text)}${list?.length ? `<ul>${list.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}</div>`;
+  box.scrollIntoView({ block: 'nearest' });
+}
+
+window.addEventListener('beforeunload', (e) => { if (dirty) e.preventDefault(); });
+/* /__admin#peacock opens that painting */
+load().then(() => {
+  const i = data.works.findIndex((w) => w.id === decodeURIComponent(location.hash.slice(1)));
+  if (i >= 0) open(i);
+});
+</script>
+</body>
+</html>
