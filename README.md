@@ -82,4 +82,12 @@ src/
 - **Content** comes from `data/works.json`, `data/works.js` and `data/site.js`. Bracketed text such as `[Medium]` or `[Location]` is a placeholder for the artist to replace.
 - **Painting editor** (local only): `npm run admin` opens http://localhost:5173/__admin. Add paintings, upload photos (auto-converted to WebP), set the tag (Available / Inquiry only / Sold / Archived), price and details, and pick close-up points. It writes `src/data/works.json` and `src/assets/images/`; commit and push to publish. It's a dev-server plugin (`scripts/admin/`), so it never ships with `vite build`. Paintings the site shows by ID (home hero, shop strip…) can't be deleted; mark them Sold or Archived instead.
 - **Forms** (commission, contact, order) are emailed to the artist via Web3Forms; the access key is `FORM_ACCESS_KEY` in `data/site.js`.
-- **Shiprocket:** orders to be shipped also go to `api/order.js` (a Vercel function), which creates the order in Shiprocket under the "Kala" channel. Set `SHIPROCKET_EMAIL`, `SHIPROCKET_PASSWORD` (a Shiprocket API user) and `SHIPROCKET_PICKUP_LOCATION` in Vercel → Settings → Environment Variables, and in `.env.local` for local testing (`npm run dev` runs `/api` too). Parcel size per painting: "Shipping box" in the painting editor.
+- **Orders and payment** (Vercel functions in `api/`; `npm run dev` runs them too, reading `.env.local`):
+  1. `POST /api/order` checks the details, prices the paintings from `works.json`, holds them for 20 minutes in Supabase and creates a Razorpay order.
+  2. The buyer pays in Razorpay Checkout (UPI QR code first, then cards and netbanking).
+  3. `POST /api/verify` (from the browser) or `POST /api/razorpay-webhook` (from Razorpay) checks the signature and finalises the order once: paid → paintings sold → Shiprocket order (channel "Kala") → emails.
+  4. `GET /api/availability` lists paintings sold online; the site marks them Sold on load.
+  5. `GET /api/track` powers `/track` (order reference + email, no login).
+  - Database tables: `supabase/schema.sql`. Only works marked Available **with a price** can be bought online. Shipping is free within India; orders from abroad go through Contact.
+  - Env vars (Vercel → Settings → Environment Variables, and `.env.local`): `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SHIPROCKET_EMAIL`, `SHIPROCKET_PASSWORD`, `SHIPROCKET_PICKUP_LOCATION`. Optional: `RESEND_API_KEY` (server emails the artist), `MAIL_FROM` (verified-domain sender, which also emails customers), `ORDER_EMAIL_TO`. Without Resend, the browser sends the artist alert via Web3Forms.
+  - Parcel size per painting: "Shipping box" in the painting editor.

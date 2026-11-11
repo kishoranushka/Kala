@@ -47,7 +47,18 @@
 - `scripts/dev-api.mjs` runs `/api/*` under `vite` dev (loads `.env.local`). `vercel.json` rewrite now excludes `/api/`. Editor has "Shipping box" fields.
 - Env (Vercel + `.env.local`): SHIPROCKET_EMAIL, SHIPROCKET_PASSWORD (API user), SHIPROCKET_PICKUP_LOCATION; optional SHIPROCKET_CHANNEL_NAME/ID.
 
+### 2026-11-11 — Razorpay + Supabase checkout, order tracking, no studio (uncommitted, NOT deployed)
+- Order flow is now pay-online: `/api/order` (validate, price from works.json, hold works 20 min via Supabase rpc `hold_works`, Razorpay order) → Razorpay Checkout (UPI QR first) → `/api/verify` or `/api/razorpay-webhook` → `_lib/finalize.js` (claim pending→paid once, `sell_works`, Shiprocket, Resend emails). `replaces` lets a buyer restart their own checkout; late payment on an abandoned checkout is honoured + flagged (no 2nd Shiprocket order if all works clashed).
+- `/api/availability` → `src/data/liveStatus.js` marks online-sold works Sold before first render (1.5 s timeout). `/track` page + `/api/track` (ref + email). Footer link "Track an order".
+- Schema in `supabase/schema.sql` (orders, holds, RLS on, no policies). DB via REST, no SDK. Emails: Resend optional; without it the browser sends the artist alert via Web3Forms.
+- Buyable = available AND price ≥ ₹1 (Ganesha, Vitthal, Happy Cat have no real price → hidden from order page). Shipping free, India only (abroad → Contact).
+- Studio removed: no "collect from studio"; "Studio" labels → "Based in"; "studio updates" → "updates on new work"; Artist page eyebrow "The work as a landscape"; shop "works in all". Client spaces ("schools, studios" for murals) kept.
+- Tested with a mocked Supabase/Razorpay/Shiprocket/Resend (scratchpad paytest.mjs): all flows OK. SQL itself not run yet.
+
 ## Open / Next up
+
+- **Payment flow:** Supabase project set up, schema run, `SUPABASE_URL`/`SUPABASE_SECRET_KEY` in `.env.local` + Vercel (verified 2026-11-11: insert, hold_works, update and delete all work). Still to do: Razorpay webhook + `RAZORPAY_WEBHOOK_SECRET`, Razorpay keys in Vercel, a local test purchase, then commit + push (the payment code is still uncommitted, so the live site doesn't have it yet). Test with Razorpay test keys first, then switch to live keys.
+- Set real prices for Ganesha, Vitthal, Happy Cat (and any "₹ 00,000" placeholders) in the editor.
 
 - **Shiprocket:** env vars are set (Vercel + `.env.local`); place one real test order, confirm it shows under the Kala channel, then cancel it.
 
@@ -68,6 +79,7 @@
 
 ## Session log
 
+- 2026-11-11 — Razorpay + Supabase checkout, /track page, studio text removed. Builds clean; mocked tests pass; uncommitted, not deployed (needs env + schema first).
 - 2026-11-11 — Editor, logo, Shiprocket; committed in 6 commits, pushed, deployed to kala.anushkakishor.in. Next: Web3Forms key, Shiprocket test order.
 - 2026-11-11 — Painting data → works.json + local editor at /__admin (npm run admin). Builds clean.
 - 2026-11-10 — Wired commission/contact/order forms to email via Web3Forms. Builds clean; uncommitted. Next: paste access key, test, commit/push.
