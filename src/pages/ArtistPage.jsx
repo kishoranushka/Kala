@@ -22,17 +22,18 @@ const LANDSCAPE = [
 ];
 
 const METHOD = [
-  { num: 'I', title: 'Observe', work: 'child', scale: 2, origin: '50% 36%', alt: 'Close-up of the child portrait’s face', note: '[How you look before you paint: references, sketches, memory.]' },
-  { num: 'II', title: 'Layer', work: 'ganesha', scale: 2.4, origin: '52% 28%', alt: 'Close-up of Ganesha’s eye and blue brushwork', note: '[What you paint with, and how a surface builds up.]', className: 'mt-24 max-sm:mt-0 max-sm:ml-[12%]' },
-  { num: 'III', title: 'Resolve', work: 'om', scale: 2.6, origin: '50% 48%', alt: 'Close-up of the dot work around the Om', note: '[How you know a piece is finished.]', className: 'mt-10 max-lg:mt-0 max-sm:mr-[12%]' },
+  { num: 'I', title: 'Observe', work: 'child', scale: 2, origin: '50% 36%', alt: 'Close-up of the child portrait’s face', note: 'I look for a long time before I paint: photographs, a quick line sketch, and whatever memory a face or a festival brings back. The red pencil comes out before the brush does.' },
+  { num: 'II', title: 'Layer', work: 'ganesha', scale: 2.4, origin: '52% 28%', alt: 'Close-up of Ganesha’s eye and blue brushwork', note: 'Mostly acrylics, on canvas, paper, wood and walls. Colour goes on first in broad, flat fields, then thinner layers on top, until the surface has depth you can almost touch.', className: 'mt-24 max-sm:mt-0 max-sm:ml-[12%]' },
+  { num: 'III', title: 'Resolve', work: 'om', scale: 2.6, origin: '50% 48%', alt: 'Close-up of the dot work around the Om', note: 'The last pass is the smallest: dots, highlights, a line of gold. A piece is finished when adding one more dot would take something away. Then I sign it.', className: 'mt-10 max-lg:mt-0 max-sm:mr-[12%]' },
 ];
 
 const MAKES = ['Paintings', 'Mandalas', 'Wall murals', 'Painted wearables', 'Face paint'];
 
 const MILESTONES = [
-  { year: '[Year]', title: '[Milestone]', note: '[A line about it]' },
-  { year: '[Year]', title: '[Milestone]', note: '[A line about it]' },
-  { year: '[Year]', title: '[Milestone]', note: '[A line about it]' },
+  { year: '2019', title: 'Sketchbook days', note: 'Sunflowers, butterflies and lettering, painted for the joy of it.' },
+  { year: '2020', title: 'A first wall', note: 'A mandala mural, painted on a wall at home.' },
+  { year: '2022', title: 'Painting on site', note: 'Think Out of the Box, a chalkboard mural in Bhopal.' },
+  { year: '2026', title: 'KALA opens', note: 'Originals online, shipped free across India.' },
   { year: 'Now', title: 'Taking commissions', note: 'Paintings, portraits and walls.' },
 ];
 
@@ -116,7 +117,7 @@ export default function ArtistPage() {
             </Line>
           </h1>
           <p data-intro className="lead mt-7 mb-0">
-            [One or two sentences in your own words: who you are, what you paint, and where you paint it.]
+            I’m an artist from India who paints gods and mandalas, faces and small funny things, on canvas, on walls and on whatever you’d like to wear.
           </p>
           <ul data-intro aria-label="What I make" className="m-0 mt-7 flex list-none flex-wrap gap-2 p-0">
             {MAKES.map((m) => (
@@ -224,7 +225,7 @@ export default function ArtistPage() {
               </p>
               <SplitWords id="two-h" text="A little logic. ~A~ ~lot~ ~of~ ~imagination.~" className="heading-2 mt-5 font-light" />
               <p data-cap className="lead mt-7">
-                [A short paragraph in your words: building software by day, painting by passion, and what each one teaches the other.]
+                By day I build software; by evening I paint. Code taught me patience and structure: break a big problem into small steps and keep going. Paint taught me to let go of the plan when the colour has a better idea. Each one keeps the other honest.
               </p>
               <p data-cap className="mt-10 max-w-[26ch] font-display text-[clamp(24px,2.4vw,32px)] leading-[1.35] italic">
                 “Logic creates structure; art creates room for interpretation.”
@@ -262,7 +263,7 @@ export default function ArtistPage() {
               </p>
               <SplitWords id="tl-h" text="Milestones, *kept* honestly." className="heading-2 mt-5 font-light" />
               <p data-cap className="meta mt-5 max-w-[30ch]">
-                Only what’s true goes here: a first mural, a first commission, a show. Leave it short if it’s short.
+                A short list, and a growing one.
               </p>
             </div>
             <ol data-stagger className="col-[6/13] m-0 list-none p-0">
@@ -288,7 +289,7 @@ export default function ArtistPage() {
           </p>
           <SplitWords
             as="p"
-            text="[A few warm lines to whoever is reading: why you *paint.]*"
+            text="I paint because it’s the one place my mind goes quiet. If something here made you pause, even for a second, then it has found the person it was *painted* *for.*"
             className="mt-6 font-display text-[clamp(30px,3.6vw,52px)] leading-[1.2] font-light"
           />
           <p data-cap className="mt-8 font-display text-[28px] text-secondary italic">

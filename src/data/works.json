@@ -5,35 +5,35 @@
       "num": "I",
       "title": "Devotional",
       "lead": "radhakrishna",
-      "intro": "[Two or three lines in your words about the devotional paintings: what draws you to these figures and how you paint them.]"
+      "intro": "Krishna, Radha, Ganesha, Vitthal, the Buddha: faces I grew up seeing in prayer rooms and at festivals. I paint them the way I remember them, in deep blues and saffron, eyes closed or softly open, with the gold laid in one small dot at a time."
     },
     {
       "id": "mandala",
       "num": "II",
       "title": "Mandala Studies",
       "lead": "om",
-      "intro": "[Two or three lines in your words about the mandala and dot-work pieces.]"
+      "intro": "Mandalas are where I slow down. Each one grows outward from a single point, ring by ring, dot by dot, with the tip of a brush and a lot of patience, until the whole surface hums."
     },
     {
       "id": "portraits",
       "num": "III",
       "title": "Portraits",
       "lead": "child",
-      "intro": "[Two or three lines in your words about portraits and personal pieces.]"
+      "intro": "Faces of people I love, and of people someone else loves. I paint the mood more than the likeness: the tilt of a head, the warmth of a cheek, the colour a moment felt like."
     },
     {
       "id": "murals",
       "num": "IV",
       "title": "Murals",
       "lead": "mural",
-      "intro": "[Two or three lines in your words about painting walls: homes, schools, studios.]"
+      "intro": "A wall is the biggest canvas I get. I’ve painted one at home and one on site in Bhopal, and I’d love to paint yours: a home, an office, a café, a school or a studio, anywhere a blank wall could hold a story."
     },
     {
       "id": "small",
       "num": "V",
       "title": "Small Works",
       "lead": "cat",
-      "intro": "[Two or three lines in your words about little canvases and sketchbook pages: quick, personal, often funny.]"
+      "intro": "Little canvases, sketchbook spreads and paintings on wood, made in between the bigger pieces. Quick, personal and sometimes a joke: a sunflower, a very happy cat, a figure escaping through the Esc key."
     }
   ],
   "works": [
@@ -43,17 +43,17 @@
       "title": "Krishna and Radha",
       "collection": "devotional",
       "status": "available",
-      "price": "₹ 2",
+      "price": "₹ 3,000",
       "medium": "Acrylic",
       "size": "A3",
       "year": "2021",
-      "framing": "Wooden",
+      "framing": "Canvas",
       "image": "krishna-and-radha.webp",
       "w": 969,
       "h": 1190,
       "crop": true,
       "alt": "Krishna in a striped saffron turban with a peacock feather, his cobalt-blue face beside Radha’s green-and-white face, against a mottled ochre ground",
-      "note": "[A few lines in your words: what started this painting, and what you wanted it to hold.]",
+      "note": "I started with Krishna’s blue face and let everything else find its place around it: the striped saffron turban, the peacock feather, Radha close beside him in green and white. I wanted it to hold the quiet closeness of two people who don’t need to look at each other to know the other is there. The ochre ground went on in thin, mottled layers so it feels warm and old, like a temple wall.",
       "details": [
         {
           "label": "Detail I",
@@ -73,7 +73,7 @@
       "title": "Om Mandala",
       "collection": "mandala",
       "status": "sold",
-      "price": "not disclosed",
+      "price": "₹ 1,800",
       "medium": "acrylic",
       "size": "A4",
       "year": "2022",
@@ -82,7 +82,7 @@
       "w": 1168,
       "h": 954,
       "alt": "A dot-work mandala on deep ultramarine: a glowing saffron Om at the centre, ringed with yellow, white and blue dots and pale blue fan motifs",
-      "note": "[A few lines in your words: how long the dot work took, and why the Om sits at its centre.]",
+      "note": "Dot work from the first mark to the last, built over many evenings, a few rings at a time. The Om sits at the centre because that’s where every mandala begins: one point, and everything else radiating out of it. Saffron on ultramarine felt like a lamp lit in the dark.",
       "details": [
         {
           "label": "Detail I",
@@ -101,8 +101,8 @@
       "plate": "03",
       "title": "Child Portrait",
       "collection": "portraits",
-      "status": "inquiry",
-      "price": "",
+      "status": "available",
+      "price": "₹ 5,249",
       "medium": "Acrylic",
       "size": "A3",
       "year": "2020",
@@ -111,7 +111,7 @@
       "w": 928,
       "h": 1206,
       "alt": "A sleeping child resting their chin in both hands, painted in rose, vermilion and magenta over a violet ground, with small sculpted roses at the edges",
-      "note": "[A few lines in your words about this portrait and the kind of personal pieces you make.]",
+      "note": "A little one asleep with their chin in their hands: the kind of moment that lasts a few seconds and stays with you for years. I painted it in rose, vermilion and magenta over violet, and added small sculpted roses at the edges. Personal pieces like this are close to my heart. If you have a moment like it, I’d love to paint it for you.",
       "details": [
         {
           "label": "Detail I",
@@ -131,7 +131,7 @@
       "title": "Ganesha",
       "collection": "devotional",
       "status": "available",
-      "price": "",
+      "price": "₹ 2,249",
       "medium": "Acrylic",
       "size": "A3",
       "year": "2020",
@@ -141,7 +141,7 @@
       "w": 834,
       "h": 1201,
       "alt": "A stylised Ganesha in soft cobalt and periwinkle blue, a raised saffron hand and great curves of orange and vermilion against black, with a red hibiscus in the corner",
-      "note": "[A few lines in your words about this Ganesha.]",
+      "note": "Ganesha is often the first figure I paint when I begin something new. Here I kept him in soft cobalt and periwinkle, let great curves of saffron and vermilion move around him, and set it all on black so the colour glows. The red hibiscus in the corner is his favourite flower.",
       "details": [
         {
           "label": "Detail I",
@@ -163,7 +163,7 @@
       "status": "archived",
       "price": "",
       "medium": "Wall mural",
-      "size": "[Wall size]",
+      "size": "Site-specific",
       "year": "2020",
       "framing": "Painted on Home Wall",
       "archiveNo": "011",
@@ -171,7 +171,7 @@
       "w": 1166,
       "h": 656,
       "alt": "A half-mandala painted on a pale wall, rising in layered petals of crimson, saffron, yellow, lilac and turquoise, with large teal leaves at its edges",
-      "note": "[A few lines in your words: whose wall this was and how long it took.]",
+      "note": "This wall is at home. A half-mandala rising in layered petals of crimson, saffron, yellow, lilac and turquoise, with big teal leaves at its edges. It taught me how differently paint behaves on a wall than on canvas, and how much a room changes when one wall starts to bloom.",
       "details": [
         {
           "label": "Detail I",
@@ -193,7 +193,7 @@
       "status": "archived",
       "price": "",
       "medium": "Wall mural",
-      "size": "[Wall size]",
+      "size": "Site-specific",
       "year": "2022",
       "framing": "Painted on site · Bhopal",
       "archiveNo": "014",
@@ -201,7 +201,7 @@
       "w": 1159,
       "h": 960,
       "alt": "A chalkboard-black wall mural reading Think Out of the Box in pale blue, with a glowing lightbulb full of gears and a cascade of blue, yellow and white squares; the artist stands beside it pointing to the work",
-      "note": "[A few lines in your words: where this wall is and what it was made for.]",
+      "note": "Painted on site in Bhopal. A chalkboard-black wall, the words in pale blue, a lightbulb full of gears and squares tumbling out of the box: a small nudge to think a little differently every time someone walks past it.",
       "details": [
         {
           "label": "Detail I",
@@ -221,16 +221,16 @@
       "title": "Vitthal",
       "collection": "devotional",
       "status": "available",
-      "price": "₹ 00,000",
+      "price": "₹ 3,150",
       "medium": "Acrylic",
       "size": "A3",
       "year": "2021",
-      "framing": "No",
+      "framing": "Glass",
       "image": "vitthal.webp",
       "w": 1005,
       "h": 1453,
       "alt": "Vitthal with closed eyes and a white tilak, a tall saffron-and-gold crown set with blue petal jewels, and sunburst earrings, on deep indigo",
-      "note": "[A few lines in your words about painting Vitthal: the crown, the stillness, the indigo.]",
+      "note": "Vitthal is all stillness: eyes closed, a calm white tilak, waiting patiently for his devotees. I wanted the painting to feel just as patient, so all the movement went into the crown, saffron and gold set with blue petal jewels, and the deep indigo around him keeps everything else quiet.",
       "details": [
         {
           "label": "Detail I",
@@ -250,7 +250,7 @@
       "title": "Flute and Veena",
       "collection": "devotional",
       "status": "sold",
-      "price": "not disclosed",
+      "price": "₹ 3,150",
       "medium": "Acrylic",
       "size": "A3",
       "year": "2020",
@@ -265,7 +265,7 @@
         "label": "Framed, on a wall"
       },
       "alt": "A serene face with a red forehead mark and gold-beaded hair, a small blue Krishna playing the flute behind her and a veena across the foreground, in cobalt and sky blue",
-      "note": "[A few lines in your words: the two instruments, and why the blues.]",
+      "note": "Two instruments, two kinds of devotion: Krishna’s flute behind her and the veena resting across the front. I kept the whole painting in blues, from cobalt to sky, so the gold beads in her hair and the small red mark on her forehead would be its only warm notes.",
       "details": [
         {
           "label": "Detail I",
@@ -285,7 +285,7 @@
       "title": "Krishna and a Child",
       "collection": "small",
       "status": "inquiry",
-      "price": "₹ 00,000",
+      "price": "",
       "medium": "Acrylic",
       "size": "A5",
       "year": "2026",
@@ -294,7 +294,7 @@
       "w": 1185,
       "h": 1800,
       "alt": "Seen from behind, Krishna with a leaf in his hair and a child in a yellow dress lean on a railing together against a soft green ground",
-      "note": "[A few lines in your words about this small canvas.]",
+      "note": "Krishna and a child leaning on a railing together, seen from behind. No faces, just company. I love the idea of the divine as a friend you can stand beside and look out at the world with.",
       "details": [
         {
           "label": "Detail I",
@@ -314,7 +314,7 @@
       "title": "The Escape Key Exists for a Reason",
       "collection": "small",
       "status": "inquiry",
-      "price": "₹ 00,000",
+      "price": "",
       "medium": "Acrylic",
       "size": "A4",
       "year": "2026",
@@ -329,7 +329,7 @@
         "label": "On its easel"
       },
       "alt": "A small figure climbs out of a dark keyboard, lifting the Esc key like a hatch, under the words The escape key exists for a reason",
-      "note": "[A few lines in your words: the day this one was painted, and the joke inside it.]",
+      "note": "Painted at the end of a day spent staring at a screen. I build software by day and paint by evening, and this is where the two met: a little figure climbing out of the keyboard through the Esc key. The joke is for anyone who has ever needed a way out of a long day.",
       "details": [
         {
           "label": "Detail I",
@@ -358,7 +358,7 @@
       "w": 700,
       "h": 1056,
       "alt": "An open sketchbook painted saffron orange with white lotus line drawings and the words Just Bloom in red script, styled with foam roses",
-      "note": "[A few lines in your words about the sketchbook and the lettering.]",
+      "note": "A sketchbook spread painted saffron, with white lotus line drawings and “Just Bloom” lettered in red. It’s a note to myself as much as anything: grow where you are, at your own pace.",
       "details": [
         {
           "label": "Detail I",
@@ -393,7 +393,7 @@
         "label": "At the exhibition"
       },
       "alt": "Radha with closed eyes, a red tilak and a crown of golden dots, a sweep of cream and gold behind her, and a small blue Krishna playing the flute in the corner, on a bright blue ground",
-      "note": "[A few lines in your words: what this painting is about, and where it was shown.]",
+      "note": "Radha with her eyes closed and a crown of golden dots, lost in the music, and a small blue Krishna with his flute in the corner. To me it’s about devotion as a way of listening. This one was framed and shown at an exhibition, hung above my orange-and-blue Ganesha.",
       "details": [
         {
           "label": "Detail I",
@@ -413,7 +413,7 @@
       "title": "Buddha with Lotus",
       "collection": "devotional",
       "status": "available",
-      "price": "₹ 1,000",
+      "price": "₹ 1,199",
       "medium": "Acrylic on canvas",
       "size": "A3",
       "year": "2022",
@@ -422,7 +422,7 @@
       "w": 1148,
       "h": 1400,
       "alt": "Half of a serene green Buddha face with closed eyes and a long blue earlobe, a coral lotus below, on a dark green shimmering ground, signed Anushka 28/06/22",
-      "note": "[A few lines in your words about this painting.]",
+      "note": "Half a face, eyes closed, a long blue earlobe and a coral lotus below. I wanted the stillness to feel as if the rest of the Buddha were just outside the frame. The dark green ground has a shimmer that shifts as you walk past it. Signed and dated 28/06/22.",
       "details": [
         {
           "label": "Detail I",
@@ -442,7 +442,7 @@
       "title": "Sunflower",
       "collection": "small",
       "status": "inquiry",
-      "price": "₹ 00,000",
+      "price": "",
       "medium": "Acrylic",
       "size": "A4",
       "year": "2019",
@@ -451,7 +451,7 @@
       "w": 1290,
       "h": 1800,
       "alt": "A close-up sunflower: long saffron and lemon petals around a dark seed head flecked with green, on deep navy",
-      "note": "[A few lines in your words about this painting.]",
+      "note": "A sunflower painted close enough to count the seeds. I wanted the petals to look as if they were still opening, saffron and lemon reaching out against a deep navy night.",
       "details": [
         {
           "label": "Detail I",
@@ -471,7 +471,7 @@
       "title": "Blue Butterfly",
       "collection": "small",
       "status": "inquiry",
-      "price": "₹ 00,000",
+      "price": "",
       "medium": "Acrylic",
       "size": "A4",
       "year": "2019",
@@ -480,7 +480,7 @@
       "w": 1209,
       "h": 1800,
       "alt": "A large black butterfly with blue-and-white wing panels and dotted edges, resting by blue tulips on bands of green",
-      "note": "[A few lines in your words about this painting.]",
+      "note": "A big black butterfly with blue-and-white wings, stopping for a moment beside blue tulips. From the year I mostly painted whatever made me happy that week.",
       "details": [
         {
           "label": "Detail I",
@@ -509,7 +509,7 @@
       "w": 1077,
       "h": 1400,
       "alt": "A watercolour baby elephant in blue with a yellow ear, curled up with its trunk raised, blowing three red hearts, over a blue sky melting into orange and pink",
-      "note": "[A few lines in your words about this painting.]",
+      "note": "A tiny watercolour elephant, curled up and blowing hearts into a sunset sky. Made to make someone smile, and it did.",
       "details": [
         {
           "label": "Detail I",
@@ -529,7 +529,7 @@
       "title": "Peacock",
       "collection": "small",
       "status": "available",
-      "price": "₹ 500",
+      "price": "₹ 899",
       "medium": "Acrylic",
       "size": "Custom",
       "year": "2022",
@@ -544,7 +544,7 @@
         "label": "In the artist’s hands"
       },
       "alt": "A royal-blue peacock with a golden beak against a yellow ground and swirling green tail feathers with blue-and-orange eyes",
-      "note": "[A few lines in your words about this painting.]",
+      "note": "A royal-blue peacock on a sunny yellow ground, its tail swirling round in green with blue-and-orange eyes. A small, bright piece, framed under glass and ready to hang.",
       "details": [
         {
           "label": "Detail I",
@@ -563,12 +563,12 @@
       "plate": "18",
       "title": "Little Buddha",
       "collection": "small",
-      "status": "inquiry",
-      "price": "",
+      "status": "sold",
+      "price": "₹ 599",
       "medium": "Acrylic",
       "size": "Custom",
       "year": "2023",
-      "framing": "No",
+      "framing": "Canvas",
       "image": "little-buddha.webp",
       "w": 1264,
       "h": 1400,
@@ -579,7 +579,7 @@
         "label": "Painted outdoors"
       },
       "alt": "A smiling little monk in blue robes sitting on a pink lotus, white rays around him on a sky-blue ground, signed Anushka",
-      "note": "[A few lines in your words about this painting.]",
+      "note": "A smiling little monk sitting on a pink lotus, with white rays around him on sky blue. I painted this one outdoors, sitting on a rock, and I think some of that open air found its way in.",
       "details": [
         {
           "label": "Detail I",
@@ -599,7 +599,7 @@
       "title": "Happy Cat",
       "collection": "small",
       "status": "available",
-      "price": "₹ 00,000",
+      "price": "₹ 1,199",
       "medium": "Acrylic on wood",
       "size": "Custom",
       "year": "2024",
@@ -608,7 +608,7 @@
       "w": 1222,
       "h": 1400,
       "alt": "A grinning ginger cat with closed eyes, a red heart nose and long white whiskers, sitting tall against a speckled cobalt-blue ground, signed Anushka",
-      "note": "[A few lines in your words about this painting.]",
+      "note": "A very pleased ginger cat with a red heart for a nose, painted on wood on a speckled cobalt ground. No deep meaning here: just the face every cat makes when the sun is warm.",
       "details": [
         {
           "label": "Detail I",
@@ -637,7 +637,7 @@
       "w": 1080,
       "h": 1080,
       "alt": "A sketchbook page of branching yellow-white lightning over a smoky orange and red sky, with paint tubes and brushes beside it",
-      "note": "[A few lines in your words about this painting.]",
+      "note": "A page from my watercolour sketchbook: branching lightning over a smoky orange and red sky. I wanted to catch the split second when the whole sky lights up.",
       "details": [
         {
           "label": "Detail I",
@@ -666,7 +666,7 @@
       "w": 1080,
       "h": 607,
       "alt": "A rust-orange bicycle with a basket of white and blue flowers against a deep blue wash, styled with foam roses and brushes",
-      "note": "[A few lines in your words about this painting.]",
+      "note": "A rust-orange bicycle with a basket of white and blue flowers, against a deep blue wash. The kind of slow afternoon I’d like to be having: somewhere to go, and no hurry to get there.",
       "details": [
         {
           "label": "Detail I",

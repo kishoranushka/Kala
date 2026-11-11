@@ -1,5 +1,6 @@
 import cx from '@/utils/cx';
-import { isAvailable, metaLine, plateLabel, priceLine } from '@/data/works';
+import { isAvailable, isBuyable, metaLine, plateLabel, priceLine } from '@/data/works';
+import SalePrice from './Price';
 import StatusBadge from '@/components/ui/StatusBadge';
 import ArtLink from './ArtLink';
 import CartButton from './CartButton';
@@ -17,8 +18,10 @@ export default function ArtworkCard({ work, eyebrow = plateLabel(work), titleCla
         </div>
         <span className={titleClassName}>{work.title}</span>
         <span className="meta">{metaLine(work)}</span>
-        {isAvailable(work) ? (
-          <span className="price">{work.price}</span>
+        {isBuyable(work) ? (
+          <SalePrice work={work} />
+        ) : isAvailable(work) ? (
+          <span className="text-sm/6 font-semibold text-link">Price on request</span>
         ) : (
           <span className="text-sm/6 font-semibold text-link">{priceLine(work)}</span>
         )}

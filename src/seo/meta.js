@@ -6,6 +6,8 @@
    Copy lives in src/seo/copy.json. A painting without an entry there still gets a sensible
    title/description generated from works.json, so new works added in the editor are covered. */
 
+import { SALE, discounted } from '../data/sale.js';
+
 const STATUS = ['available', 'inquiry', 'sold', 'archived'];
 export const normalizeStatus = (s) => {
   const key = String(s ?? '').trim().toLowerCase().replace(/\s*only$/, '');
@@ -13,7 +15,11 @@ export const normalizeStatus = (s) => {
 };
 export const priceValue = (w) => Number(String(w?.price ?? '').replace(/[^\d.]/g, '')) || 0;
 export const isBuyable = (w) => w.status === 'available' && priceValue(w) >= 1;
+/* today's price (the sale price while the sale env is on) */
+export const payValue = (w) => (isBuyable(w) ? discounted(priceValue(w)) : priceValue(w));
 const inr = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
+/* "₹1,000 (was ₹2,000, 50% off)" during a sale, else "₹2,000" */
+const priceText = (w) => (payValue(w) < priceValue(w) ? `${inr(payValue(w))} (was ${inr(priceValue(w))}, ${SALE.percent}% off)` : inr(priceValue(w)));
 
 /* ISO paper sizes in cm (short side, long side) — orientation comes from the photo */
 const PAPER = { A3: [29.7, 42], A4: [21, 29.7], A5: [14.8, 21] };
@@ -45,7 +51,7 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
     const facts = [w.medium, isPlaceholder(w.size) ? null : w.size, w.year].filter(Boolean).join(', ');
     const lead = c.lead || `${w.title} by ${S.artist}${facts ? `: ${facts}` : ''}${coll ? `, from the ${coll.title} chapter` : ''}.`;
     let tail;
-    if (isBuyable(w)) tail = `${inr(priceValue(w))}, free shipping in India.`;
+    if (isBuyable(w)) tail = `${priceText(w)}, free shipping in India.`;
     else if (w.status === 'available') tail = 'Original, available: enquire for the price.';
     else if (w.status === 'sold') tail = 'Sold. Commission something similar.';
     else if (w.status === 'inquiry') tail = 'One of a kind: enquire about this original.';
@@ -54,7 +60,7 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
   }
 
   function statusLine(w) {
-    if (isBuyable(w)) return `Available · ${inr(priceValue(w))}`;
+    if (isBuyable(w)) return `Available · ${priceText(w)}`;
     return { available: 'Available · enquire for price', inquiry: 'Enquire about this work', sold: 'Sold', archived: 'Archive' }[w.status];
   }
 
@@ -144,8 +150,19 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
         offers: {
           '@type': 'Offer',
           url,
-          price: priceValue(w),
+          price: payValue(w),
           priceCurrency: 'INR',
+          ...(payValue(w) < priceValue(w)
+            ? {
+                ...(SALE.endsAt ? { priceValidUntil: new Date(SALE.endsAt).toISOString().slice(0, 10) } : {}),
+                priceSpecification: {
+                  '@type': 'UnitPriceSpecification',
+                  priceType: 'https://schema.org/StrikethroughPrice',
+                  price: priceValue(w),
+                  priceCurrency: 'INR',
+                },
+              }
+            : {}),
           availability: 'https://schema.org/InStock',
           itemCondition: 'https://schema.org/NewCondition',
           seller: { '@id': ID.org },
@@ -329,7 +346,7 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
       isBuyable(w) ? { href: '/order', text: `Buy ${w.title}` } : { href: '/commission', text: w.status === 'inquiry' ? 'Enquire about this work' : 'Commission something similar' },
       ...(c ? [{ href: `/collections/${c.id}`, text: `More from ${c.title}` }] : []),
     ];
-    if (isBuyable(w)) m.product = { price: priceValue(w), currency: 'INR', availability: 'instock' };
+    if (isBuyable(w)) m.product = { price: payValue(w), currency: 'INR', availability: 'instock' };
     const node = artworkNode(w, m);
     m.graph = [
       webPage(m, isBuyable(w) ? 'ItemPage' : 'WebPage', { mainEntity: { '@id': node['@id'] } }),
@@ -357,5 +374,5 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
 
   const paths = () => [...STATIC_PATHS, ...collections.map((c) => `/collections/${c.id}`), ...works.map((w) => `/artwork/${w.id}`)];
 
-  return { meta, paths, works, collections, workCopy, statusLine, isBuyable, priceValue, inr, abs, site: S, isPlaceholder };
+  return { meta, paths, works, collections, workCopy, statusLine, isBuyable, priceValue, payValue, priceText, inr, abs, site: S, isPlaceholder };
 }

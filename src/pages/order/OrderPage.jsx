@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { CONTACT, EMAIL_PATTERN } from '@/data/site';
-import { formatINR, getWork, isBuyable, priceValue } from '@/data/works';
+import { formatINR, getWork, isBuyable, payValue, priceValue } from '@/data/works';
 import { sendForm } from '@/utils/sendForm';
 import { payWithRazorpay } from '@/utils/razorpay';
 import { useBag } from '@/context/BagContext';
@@ -188,7 +188,7 @@ export default function OrderPage() {
     const botcheck = e.currentTarget.elements.botcheck?.checked;
     const ids = [...bag];
     const works = ids.map(getWork).filter(Boolean);
-    const total = works.reduce((s, w) => s + priceValue(w), 0);
+    const total = works.reduce((s, w) => s + payValue(w), 0);
     const sig = JSON.stringify([ids, form]);
 
     try {
@@ -232,7 +232,7 @@ export default function OrderPage() {
           fields: {
             'Order': session.orderId,
             'Paid': `${formatINR(total)} · Razorpay payment ${payment.razorpay_payment_id}${result.confirmed ? '' : ' (not yet verified by the server)'}`,
-            'Works': works.map((w) => `${w.title} (${w.price})`).join('\n'),
+            'Works': works.map((w) => `${w.title} (${formatINR(payValue(w))}${payValue(w) < priceValue(w) ? `, was ${formatINR(priceValue(w))}` : ''})`).join('\n'),
             'Phone': cleanPhone(form.phone),
             'Ship to': [form.address, form.city, form.state, form.pin, 'India'].map((s) => s.trim()).filter(Boolean).join(', '),
             'Shiprocket': !result.confirmed ? 'Not confirmed yet: check the Razorpay dashboard, then Shiprocket.' : result.shiprocket?.ok ? 'Created automatically. Assign a courier and ship.' : `NOT created: ${result.shiprocket?.error || 'unknown'}. Add this order in Shiprocket by hand.`,
@@ -361,7 +361,7 @@ export default function OrderPage() {
               {step === 3 && (
                 <ReviewStep
                   form={form}
-                  total={formatINR(bag.map(getWork).reduce((s, w) => s + priceValue(w), 0))}
+                  total={formatINR(bag.map(getWork).reduce((s, w) => s + payValue(w), 0))}
                   ack={ack}
                   ackError={ackError}
                   phase={phase}

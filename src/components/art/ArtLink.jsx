@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import cx from '@/utils/cx';
-import { ratioOf } from '@/data/works';
+import { onSale, ratioOf } from '@/data/works';
+import { SaleTag } from './Price';
 
 /* A framed artwork that opens its viewing room. Reveals on scroll unless `reveal` is false. */
 export default function ArtLink({ work, reveal = true, priority = false, shadow = 'shadow-hang', className, style, imgClassName, ...props }) {
@@ -26,6 +27,7 @@ export default function ArtLink({ work, reveal = true, priority = false, shadow 
           imgClassName
         )}
       />
+      {onSale(work) && <SaleTag className="absolute top-3 left-3" />}
     </Link>
   );
 }

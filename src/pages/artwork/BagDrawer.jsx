@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
-import { getWork, metaLine } from '@/data/works';
+import { formatINR, getWork, metaLine, payValue, priceValue } from '@/data/works';
+import { SALE } from '@/data/sale';
+import SalePrice from '@/components/art/Price';
 import { useBag } from '@/context/BagContext';
 import { gsap, canAnimate } from '@/motion/gsap';
 import { useDialogKeys } from '@/hooks/useDialogKeys';
@@ -45,6 +47,8 @@ export default function BagDrawer() {
 
   if (!drawerOpen) return null;
   const items = bag.map(getWork).filter(Boolean);
+  const total = items.reduce((s, w) => s + payValue(w), 0);
+  const saved = items.reduce((s, w) => s + priceValue(w), 0) - total;
 
   return (
     <>
@@ -100,7 +104,7 @@ export default function BagDrawer() {
                   <span className="meta">Original · quantity 1</span>
                 </span>
                 <span className="flex flex-col items-end gap-2">
-                  <span className="price">{w.price}</span>
+                  <SalePrice work={w} size="sm" badge={false} stacked />
                   <button type="button" onClick={() => remove(w.id)} className="h-8 cursor-pointer border-0 bg-transparent p-0 font-sans text-[13px] font-semibold text-link">
                     Remove
                   </button>
@@ -108,9 +112,17 @@ export default function BagDrawer() {
               </div>
             ))}
             <div className="mt-auto flex flex-col gap-4 border-t border-divider p-6">
-              <div className="flex justify-between text-sm">
-                <span className="font-semibold">Subtotal</span>
-                <span className="meta">Calculated at checkout</span>
+              <div className="flex flex-col gap-1.5 text-sm">
+                {saved > 0 && (
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-sale">{SALE.name} ({SALE.percent}% off)</span>
+                    <span className="font-semibold text-sale tabular-nums">− {formatINR(saved)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="font-semibold">Subtotal · free shipping in India</span>
+                  <span className="font-bold tabular-nums">{formatINR(total)}</span>
+                </div>
               </div>
               <Notice tone="info">You pay securely on the order page with UPI (scan a QR code), card or netbanking, through Razorpay.</Notice>
               <Button to="/order" block data-cursor="explore">

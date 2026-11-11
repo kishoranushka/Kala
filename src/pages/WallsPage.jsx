@@ -10,15 +10,15 @@ import CtaBand from '@/components/sections/CtaBand';
 const SPACES = ['Homes', 'Offices', 'Cafés', 'Schools', 'Studios'];
 
 const PAINTED = [
-  { id: 'mural', alt: 'The mandala wall mural, close up', slot: 'col-[1/8]', ratio: 'aspect-[1166/656]' },
-  { id: 'chalk', alt: 'A chalkboard-black mural reading Think Out of the Box with a lightbulb full of gears; Anushka stands beside it', slot: 'col-[8/13]', ratio: 'aspect-[1159/960]' },
+  { id: 'mural', alt: 'The mandala wall mural, close up', slot: 'col-[1/8]', ratio: 'aspect-[1166/656]', where: 'A wall at home' },
+  { id: 'chalk', alt: 'A chalkboard-black mural reading Think Out of the Box with a lightbulb full of gears; Anushka stands beside it', slot: 'col-[8/13]', ratio: 'aspect-[1159/960]', where: 'Painted on site in Bhopal' },
 ];
 
 const STEPS = [
   { title: 'Share', text: 'Send photos of the wall, its size, and the feeling you want in the room.' },
   { title: 'Talk', text: 'We settle the idea, colours and timing together.' },
   { title: 'Sketch & quote', text: 'I draw the design and share a quote before anything is painted.' },
-  { title: 'Paint on site', text: 'I come and paint the wall by hand. [How long a typical wall takes.]' },
+  { title: 'Paint on site', text: 'I come and paint the wall by hand, usually over a few days, depending on its size and detail.' },
 ];
 
 export default function WallsPage() {
@@ -41,7 +41,7 @@ export default function WallsPage() {
                 </Line>
               </h1>
               <p data-intro className="lead mt-6 mb-0">
-                Hire me to paint a mural for your home, office, café, school or studio. [Add the cities you can travel to, and roughly how big a wall you take on.]
+                Hire me to paint a mural for your home, office, café, school or studio. I travel for walls across India, from a single feature wall to a whole room.
               </p>
               <ul data-intro aria-label="Spaces I paint" className="m-0 mt-7 flex list-none flex-wrap gap-2 p-0">
                 {SPACES.map((s) => (
@@ -78,7 +78,7 @@ export default function WallsPage() {
           </p>
           <SplitWords id="painted-h" text="Walls that tell a *story.*" className="heading-2 mt-5 mb-0 font-light" />
           <div data-stagger className="mt-[clamp(40px,5vw,64px)] grid grid-cols-12 gap-7 max-lg:grid-cols-1">
-            {PAINTED.map(({ id, alt, slot, ratio }) => {
+            {PAINTED.map(({ id, alt, slot, ratio, where }) => {
               const w = getWork(id);
               return (
                 <figure key={id} className={cx('m-0 flex flex-col max-lg:col-span-full', slot)}>
@@ -87,7 +87,7 @@ export default function WallsPage() {
                   </Link>
                   <figcaption className="mt-4">
                     <b className="block font-display text-[28px]/8 font-medium">{w.title}</b>
-                    <span className="mt-1 block text-[13px] text-muted">[Location · Year · Wall size]</span>
+                    <span className="mt-1 block text-[13px] text-muted">{where} · {w.year}</span>
                   </figcaption>
                 </figure>
               );

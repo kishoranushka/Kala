@@ -1,4 +1,6 @@
-import { formatINR, getWork, priceValue } from '@/data/works';
+import { formatINR, getWork, payValue, priceValue } from '@/data/works';
+import { SALE } from '@/data/sale';
+import SalePrice from '@/components/art/Price';
 import Notice from '@/components/ui/Notice';
 
 const DL = 'm-0 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 text-sm/[22px] [&_dd]:m-0 [&_dd]:font-semibold [&_dt]:text-muted';
@@ -6,7 +8,9 @@ const DL = 'm-0 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 text-sm/[22px] [&_dd
 /* the sticky "Your order" card beside every step */
 export default function OrderSummary({ selection, canEdit, onRemove, paid = false }) {
   const picked = selection.map(getWork).filter(Boolean);
-  const total = picked.reduce((s, w) => s + priceValue(w), 0);
+  const full = picked.reduce((s, w) => s + priceValue(w), 0);
+  const total = picked.reduce((s, w) => s + payValue(w), 0);
+  const saved = full - total;
   return (
     <aside
       aria-labelledby="sum-h"
@@ -32,7 +36,7 @@ export default function OrderSummary({ selection, canEdit, onRemove, paid = fals
               <span className="meta text-[12px]!">Original · quantity 1</span>
             </span>
             <span className="flex flex-col items-end gap-1">
-              <span className="price text-[14px]!">{w.price}</span>
+              <SalePrice work={w} size="sm" badge={false} stacked />
               {canEdit && (
                 <button
                   type="button"
@@ -49,7 +53,15 @@ export default function OrderSummary({ selection, canEdit, onRemove, paid = fals
       </div>
       <dl className={`${DL} mt-5`}>
         <dt>Subtotal</dt>
-        <dd>{formatINR(total)}</dd>
+        <dd className={saved > 0 ? 'text-muted line-through decoration-1' : undefined}>{formatINR(full)}</dd>
+        {saved > 0 && (
+          <>
+            <dt className="text-sale! font-semibold">
+              {SALE.name} · {SALE.percent}% off
+            </dt>
+            <dd className="text-sale">− {formatINR(saved)}</dd>
+          </>
+        )}
         <dt>Shipping</dt>
         <dd>Free within India</dd>
         <dt>{paid ? 'Paid' : 'Total'}</dt>

@@ -19,7 +19,7 @@ export default function WearablesSection() {
           <SplitWords id="wear-h" text="Wear the *art.*" className="heading-section mt-3.5 mb-0" />
           <p data-cap className="lead-lg mt-5 mb-0">
             Your own design, hand-painted on a t-shirt, a jacket, a pair of shoes, or anything else you’d like to wear. Tell me the piece and the idea, and I’ll paint
-            it for you. [Add turnaround time and a starting price.]
+            it for you. We agree the design, the price and a delivery date before I start.
           </p>
           <Chips label="Things I paint on" items={['T-shirts', 'Jackets', 'Shoes', '& more']} />
           <div data-cap className="mt-8 flex flex-wrap gap-3.5">

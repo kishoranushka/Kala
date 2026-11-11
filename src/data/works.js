@@ -4,6 +4,7 @@
    Status is one of: available · sold · archived · inquiry  (a business state — never inferred from price). */
 
 import DATA from './works.json';
+import { discounted, rupeesOf } from './sale';
 
 /* every image in src/assets/images, by file name (e.g. 'peacock.webp') */
 const IMAGES = Object.fromEntries(
@@ -61,14 +62,14 @@ export const PHOTOS = {
 /* Instagram reels — swap each url for the reel's own link (instagram.com/reel/…) */
 const REEL_URL = 'https://www.instagram.com/chaotic_kishor/reels/';
 export const REELS = [
-  { cover: img('little-buddha-outdoors.webp'), title: '[Reel title]', url: REEL_URL, alt: 'Anushka outdoors holding a small painting of a smiling monk on a lotus' },
-  { cover: img('child-sketch.webp'), title: '[Reel title]', url: REEL_URL, alt: 'A red line sketch of a child with hands on cheeks on a white canvas, brushes and paints on the desk' },
-  { cover: img('face-paint-closeup.webp'), title: '[Reel title]', url: REEL_URL, alt: 'Close-up of Anushka in face paint: blue glitter on one cheek, bold black liner and lips' },
-  { cover: img('little-elephant.webp'), title: '[Reel title]', url: REEL_URL, alt: 'Watercolour of a little blue elephant blowing hearts' },
-  { cover: img('painting-mural.webp'), title: '[Reel title]', url: REEL_URL, alt: 'Anushka in a red jacket painting a colourful mandala mural high on a white wall' },
-  { cover: img('costume-rose-gown.webp'), title: '[Reel title]', url: REEL_URL, alt: 'Anushka in a corridor in a black gown with a long sheer train covered in black roses' },
-  { cover: img('jacket-worn.webp'), title: '[Reel title]', url: REEL_URL, alt: 'Anushka wearing an olive jacket with a hand-painted monarch butterfly on the sleeve' },
-  { cover: img('buddha-with-lotus.webp'), title: '[Reel title]', url: REEL_URL, alt: 'Green Buddha with a coral lotus' },
+  { cover: img('little-buddha-outdoors.webp'), title: 'Little Buddha, painted outdoors', url: REEL_URL, alt: 'Anushka outdoors holding a small painting of a smiling monk on a lotus' },
+  { cover: img('child-sketch.webp'), title: 'A portrait begins with a line', url: REEL_URL, alt: 'A red line sketch of a child with hands on cheeks on a white canvas, brushes and paints on the desk' },
+  { cover: img('face-paint-closeup.webp'), title: 'Face paint, up close', url: REEL_URL, alt: 'Close-up of Anushka in face paint: blue glitter on one cheek, bold black liner and lips' },
+  { cover: img('little-elephant.webp'), title: 'Little Elephant in watercolour', url: REEL_URL, alt: 'Watercolour of a little blue elephant blowing hearts' },
+  { cover: img('painting-mural.webp'), title: 'Painting a mandala wall', url: REEL_URL, alt: 'Anushka in a red jacket painting a colourful mandala mural high on a white wall' },
+  { cover: img('costume-rose-gown.webp'), title: 'The black rose gown', url: REEL_URL, alt: 'Anushka in a corridor in a black gown with a long sheer train covered in black roses' },
+  { cover: img('jacket-worn.webp'), title: 'The butterfly jacket', url: REEL_URL, alt: 'Anushka wearing an olive jacket with a hand-painted monarch butterfly on the sleeve' },
+  { cover: img('buddha-with-lotus.webp'), title: 'Buddha with Lotus', url: REEL_URL, alt: 'Green Buddha with a coral lotus' },
 ];
 
 /* studio photographs (real, not artworks) */
@@ -89,11 +90,15 @@ export const availableWorks = () => WORKS.filter((w) => w.status === 'available'
 
 export const isAvailable = (w) => w.status === 'available';
 
-/* "₹ 12,000" → 12000 (0 if no price is set) */
-export const priceValue = (w) => Number(String(w?.price ?? '').replace(/[^\d.]/g, '')) || 0;
+/* "₹ 12,000" → 12000 (0 if no price is set) — the full price, before any sale */
+export const priceValue = (w) => rupeesOf(w?.price);
 export const formatINR = (n) => `₹ ${Number(n).toLocaleString('en-IN')}`;
 /* can be bought online: available and has a real price */
 export const isBuyable = (w) => w.status === 'available' && priceValue(w) >= 1;
+/* what the buyer pays today (the sale price while a sale runs) */
+export const payValue = (w) => (isBuyable(w) ? discounted(priceValue(w)) : priceValue(w));
+/* a buyable work whose price is cut right now */
+export const onSale = (w) => isBuyable(w) && payValue(w) < priceValue(w);
 export const ratioOf = (w) => `${w.w} / ${w.h}`;
 export const metaLine = (w) => `${w.medium} · ${w.size}`;
 export const plateLabel = (w) => `Pl. ${w.plate} · ${getCollection(w.collection).title}`;
@@ -101,7 +106,7 @@ export const pad2 = (n) => String(n).padStart(2, '0');
 
 /* what to offer instead of a price when a work can't be bought */
 export function priceLine(w) {
-  if (w.status === 'available') return w.price;
+  if (w.status === 'available') return isBuyable(w) ? formatINR(payValue(w)) : 'Price on request';
   if (w.status === 'sold') return 'Commission something similar';
   if (w.status === 'inquiry') return 'Enquire about this work';
   return 'Commission a wall';

@@ -10,6 +10,7 @@ import { clean, clientKey, json, readJson } from './_lib/http.js';
 import { dbConfigured, getOrder, holdWorks, insertOrder, recentCheckouts, releaseHolds, updateOrder } from './_lib/db.js';
 import { createRazorpayOrder, publicKey, razorpayConfigured } from './_lib/razorpay.js';
 import { orderableWorks, rupees } from './_lib/shiprocket.js';
+import { discounted } from '../src/data/sale.js';
 
 const PHONE = /^[6-9]\d{9}$/;
 const PIN = /^[1-9]\d{5}$/;
@@ -72,7 +73,13 @@ export default async function handler(req, res) {
   if (missing.length) return json(res, 422, { error: `Please check: ${missing.join(', ')}.`, fields: missing });
 
   const orderId = newOrderId();
-  const lines = works.map((w) => ({ id: w.id, title: w.title, price: rupees(w.price) }));
+  /* price = what is charged today (the sale price while VITE_SALE_ON is set); full = the price before the sale */
+  const now = Date.now();
+  const lines = works.map((w) => {
+    const full = rupees(w.price);
+    const price = discounted(full, now);
+    return { id: w.id, title: w.title, price, ...(price < full ? { full } : {}) };
+  });
   const amount = lines.reduce((s, w) => s + w.price, 0) * 100; // paise; shipping within India is free
 
   let inserted = false;

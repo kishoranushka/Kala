@@ -11,7 +11,7 @@ export default function devApi() {
     apply: 'serve',
     configResolved(config) {
       const env = loadEnv(config.mode, config.root, '');
-      for (const [k, v] of Object.entries(env)) if (!k.startsWith('VITE_') && process.env[k] === undefined) process.env[k] = v;
+      for (const [k, v] of Object.entries(env)) if ((!k.startsWith('VITE_') || k.startsWith('VITE_SALE_')) && process.env[k] === undefined) process.env[k] = v;
     },
     configureServer(server) {
       server.middlewares.use('/api', async (req, res, next) => {

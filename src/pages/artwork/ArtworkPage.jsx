@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import cx from '@/utils/cx';
 import { CONTACT } from '@/data/site';
-import { WORKS, getWork, isAvailable, isBuyable, plateLabel, ratioOf } from '@/data/works';
+import { WORKS, formatINR, getWork, isAvailable, isBuyable, onSale, payValue, plateLabel, priceValue, ratioOf } from '@/data/works';
+import { SALE, saleEndsLabel } from '@/data/sale';
+import SalePrice from '@/components/art/Price';
 import { useBag } from '@/context/BagContext';
 import { cartOffLabel } from '@/components/art/CartButton';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
@@ -266,10 +268,20 @@ function ArtworkView({ work }) {
                 <dt>{work.status === 'archived' ? 'Site' : 'Framing'}</dt>
                 <dd>{work.framing}</dd>
               </dl>
-              <div data-intro className="flex items-center justify-between gap-4">
+              <div data-intro className="flex flex-wrap items-center justify-between gap-4">
                 <StatusBadge status={work.status} />
-                {available && <span className="price text-[22px]">{work.price}</span>}
+                {buyable ? (
+                  <SalePrice work={work} size="lg" className="justify-end" />
+                ) : (
+                  available && <span className="text-sm font-semibold text-muted">Price on request</span>
+                )}
               </div>
+              {onSale(work) && (
+                <p data-intro className="mt-4 rounded-ui bg-sale-wash px-4 py-3 text-sm/[22px] text-primary">
+                  <b className="font-bold text-sale">{SALE.name}:</b> you save {formatINR(priceValue(work) - payValue(work))} on this original
+                  {saleEndsLabel() ? `, until ${saleEndsLabel()}` : ''}. One painting, one buyer: first to check out takes it home.
+                </p>
+              )}
 
               <div data-intro className="mt-6 flex flex-col gap-3">
                 <StatusActions work={work} inBag={inBag} adding={adding} onAdd={addToBag} onOpenBag={viewBag} />
@@ -279,7 +291,9 @@ function ArtworkView({ work }) {
                 <Disclosure title="Shipping & delivery">
                   Free shipping within India. I pack every painting myself and hand it to a tracked courier within 7 working days of payment; tracking reaches you by SMS and email. Ordering from abroad? <Link to="/contact" className="font-semibold text-link">Write to me</Link>. <Link to="/shipping" className="font-semibold text-link">Shipping policy</Link>
                 </Disclosure>
-                <Disclosure title="Framing & care">[Framing and care notes to be supplied.]</Disclosure>
+                <Disclosure title="Framing & care">
+                  It comes to you as described under Framing above. Hang it out of direct sunlight and away from damp walls, kitchens and bathrooms. To clean, dust gently with a soft, dry cloth: no water or sprays on the paint. Works under glass can have the glass wiped with a barely damp cloth.
+                </Disclosure>
                 <Disclosure title="Returns">
                   Each painting is a one-of-a-kind original, so all sales are final: no cancellations, returns or refunds once your order is confirmed. If it arrives damaged in transit, tell me within 48 hours with an unboxing video and I’ll repair or replace it. <Link to="/returns" className="font-semibold text-link">Returns policy</Link>
                 </Disclosure>
@@ -374,7 +388,7 @@ function ArtworkView({ work }) {
         <div className="fixed right-0 bottom-0 left-0 z-55 hidden items-center justify-between gap-4 bg-surface px-5 py-3 shadow-[0_-12px_32px_-16px_rgba(34,33,31,.3)] max-lg:flex">
           <span className="flex min-w-0 flex-col">
             <span className="truncate font-display text-xl/6 font-medium">{work.title}</span>
-            <span className="price">{work.price}</span>
+            <SalePrice work={work} size="sm" />
           </span>
           <Button onClick={addToBag} aria-busy={adding}>
             {adding ? 'Adding…' : 'Add to Cart'}

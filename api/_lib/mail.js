@@ -6,6 +6,7 @@
                          own address: the artist still gets alerts, but customers get no confirmation email
                          (they still get Razorpay's payment receipt). */
 import { timedFetch } from './http.js';
+import { confirmationHtml, LOGO } from './email-html.js';
 
 const ARTIST = 'kishoranushka96@gmail.com';
 const SITE = process.env.SITE_URL || 'https://kala.anushkakishor.in';
@@ -13,7 +14,7 @@ const SITE = process.env.SITE_URL || 'https://kala.anushkakishor.in';
 export const mailConfigured = () => Boolean(process.env.RESEND_API_KEY);
 export const customerMailConfigured = () => mailConfigured() && Boolean(process.env.MAIL_FROM);
 
-async function send({ to, subject, text, replyTo }) {
+async function send({ to, subject, text, html, attachments, replyTo }) {
   const res = await timedFetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
@@ -22,6 +23,8 @@ async function send({ to, subject, text, replyTo }) {
       to: [to],
       subject,
       text,
+      ...(html ? { html } : {}),
+      ...(attachments ? { attachments } : {}),
       ...(replyTo ? { reply_to: replyTo } : {}),
     }),
   });
@@ -33,7 +36,7 @@ async function send({ to, subject, text, replyTo }) {
 
 const inr = (rupees) => `₹ ${Number(rupees).toLocaleString('en-IN')}`;
 const address = (c) => [c.address, c.city, c.state, c.pin, c.country].filter(Boolean).join(', ');
-const workLines = (order) => order.works.map((w) => `  • ${w.title} — ${inr(w.price)}`).join('\n');
+const workLines = (order) => order.works.map((w) => `  • ${w.title} — ${inr(w.price)}${w.full > w.price ? ` (sale price, was ${inr(w.full)})` : ''}`).join('\n');
 
 export function artistAlert(order) {
   const c = order.customer;
@@ -72,6 +75,8 @@ export function customerConfirmation(order) {
     to: c.email,
     replyTo: process.env.ORDER_EMAIL_TO || ARTIST,
     subject: allLost ? `About your KALA order ${order.id}` : `Your KALA order ${order.id} is confirmed`,
+    html: confirmationHtml({ order, track, lost, allLost }),
+    attachments: [{ filename: 'kala-logo.png', content: LOGO.base64, content_type: 'image/png', content_id: 'kala-logo' }],
     text: [
       `Hi ${c.name.split(' ')[0]},`,
       '',

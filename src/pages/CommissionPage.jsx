@@ -176,9 +176,10 @@ function EnquiryForm() {
           <Field id="f-budget" label="Budget range">
             <Select id="f-budget" name="budget" tall>
               <option value="">Prefer to discuss</option>
-              <option>[Range A]</option>
-              <option>[Range B]</option>
-              <option>[Range C]</option>
+              <option>Under ₹5,000</option>
+              <option>₹5,000 – ₹15,000</option>
+              <option>₹15,000 – ₹40,000</option>
+              <option>Above ₹40,000</option>
             </Select>
           </Field>
         </FieldRow>

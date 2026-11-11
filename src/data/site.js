@@ -1,4 +1,4 @@
-/* Site-wide navigation and contact details. Replace bracketed values with real details. */
+/* Site-wide navigation and contact details. */
 
 /* the header nav (and the order of the full-screen menu) */
 export const NAV_LINKS = [

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import cx from '@/utils/cx';
-import { STATUS, WORKS, getCollection, metaLine } from '@/data/works';
+import { STATUS, WORKS, getCollection, isBuyable, metaLine } from '@/data/works';
+import SalePrice from '@/components/art/Price';
 import Mat from '@/components/art/Mat';
 import PageTop from '@/components/sections/PageTop';
 import { PageMandala } from '@/components/mandala/Mandala';
@@ -14,7 +15,7 @@ const ORDER = { sold: 0, archived: 1, inquiry: 2 };
 /* everything that can't be bought: sold first, then murals and other archived works, then personal pieces */
 const ITEMS = WORKS.filter((w) => w.status !== 'available').sort((a, b) => ORDER[a.status] - ORDER[b.status]);
 /* the most recent available works, newest first */
-const HOMES = WORKS.filter((w) => w.status === 'available').slice(-4).reverse();
+const HOMES = WORKS.filter((w) => w.status === 'available').reverse().sort((a, b) => isBuyable(b) - isBuyable(a)).slice(0, 4);
 
 function nextStep(w) {
   if (w.collection === 'murals') return { to: '/walls', label: 'Commission a wall' };
@@ -105,8 +106,9 @@ export default function ArchivePage() {
             {HOMES.map((w) => (
               <Link key={w.id} to={`/artwork/${w.id}`} data-cursor="view" className="group block text-on-primary no-underline hover:text-on-primary">
                 <Mat work={w} ratio="aspect-square" padding="p-4" tone="bg-primary-hover" />
-                <span className="mt-2.5 block text-[13px] text-on-primary-soft">
-                  {w.title} · {w.price}
+                <span className="mt-2.5 flex flex-wrap items-baseline justify-between gap-x-3 text-[13px] text-on-primary-soft">
+                  {w.title}
+                  {isBuyable(w) ? <SalePrice work={w} size="sm" badge={false} dark className="text-on-primary" /> : <span>Price on request</span>}
                 </span>
               </Link>
             ))}

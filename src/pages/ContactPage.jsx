@@ -26,10 +26,10 @@ const ROUTES = [
 ];
 
 const FAQ = [
-  { q: 'Do you ship outside [your city or country]?', a: '[Your answer: where you ship, and how paintings are packed.]' },
-  { q: 'How long does a commission take?', a: 'Timelines are agreed per project, once we’ve talked about size and detail. [Add a typical range if you’d like to.]' },
-  { q: 'Can I see a painting in person?', a: '[Your answer: video calls, exhibitions, or more photos on request.]' },
-  { q: 'Do you paint walls outside your city?', a: '[Your answer about travelling for murals.]' },
+  { q: 'Do you ship outside India?', a: 'Paintings ordered on this site ship free anywhere in India. I pack each one myself, wrapped and protected at the corners, and send it with a tracked courier. For delivery abroad, write to me first and we’ll work out shipping and customs together.' },
+  { q: 'How long does a commission take?', a: 'It depends on the size and the detail: a small canvas takes far less time than a large portrait or a wall. Once we’ve talked it through, I’ll give you a clear timeline along with the quote, before any paint goes on.' },
+  { q: 'Can I see a painting in person?', a: 'Most of my work lives online, so I’m happy to send more photographs, close-ups in daylight, or a short video of a painting before you decide. Just ask on the work’s page or write to me.' },
+  { q: 'Do you paint walls outside your city?', a: 'Yes. I travel for murals within India. Tell me your city and the size of the wall, and travel and stay are included in the quote so there are no surprises.' },
 ];
 
 const ROW = 'grid min-h-[72px] grid-cols-[40px_120px_1fr_auto] items-center gap-4 text-primary max-sm:grid-cols-[28px_1fr] max-sm:gap-y-0.5 max-sm:py-3';

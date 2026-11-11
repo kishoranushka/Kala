@@ -5,7 +5,7 @@ import { SplitWords } from '@/components/ui/Typography';
 import { ArrowLink } from '@/components/sections/SectionHead';
 
 const MOMENTS = [
-  { photo: PHOTOS.exhibition, title: 'Exhibited', note: '[Show, city, year]', position: '50% 30%' },
+  { photo: PHOTOS.exhibition, title: 'Exhibited', note: 'Two paintings, framed and hung', position: '50% 30%' },
   { photo: PHOTOS.childSketch, title: 'It starts with a line', note: 'A sketch before the paint' },
   { photo: PHOTOS.outdoors, title: 'Painted outdoors', note: 'Little Buddha, brush still in hand', position: '50% 35%' },
 ];
@@ -34,7 +34,7 @@ export default function MeetSection() {
             </p>
             <SplitWords id="meet-h" text={`Hi, I’m *${first}.*`} className="heading-section mt-3.5 mb-0" />
             <p data-cap className="lead-lg mt-5 mb-0">
-              [Two or three lines in your words: where you’re from, how you started painting, and what you love to paint.]
+              I’m an artist from India, and I’ve been painting for as long as I can remember: in sketchbooks first, then on canvas, walls and jackets. I love painting gods and mandalas, faces, and small happy things.
             </p>
             <div data-cap className="mt-7">
               <ArrowLink to="/artist">More about me</ArrowLink>
@@ -64,7 +64,7 @@ export default function MeetSection() {
               Face paint &amp; <em>costume.</em>
             </h3>
             <p data-cap className="mt-4 mb-0 max-w-[34ch] text-base/[26px] text-muted">
-              Art doesn’t stop at paper. [One line about this work: what the look was for, and whether you take bookings.]
+              Art doesn’t stop at paper. Sometimes the canvas is a face, a gown, or me: looks painted and styled by hand, from the first line of liner to the last rose.
             </p>
           </div>
           <div data-stagger className="col-[5/13] grid grid-cols-[.667fr_1.5fr_.667fr] items-end gap-4 max-lg:col-span-full max-sm:grid-cols-2 max-sm:gap-2.5">

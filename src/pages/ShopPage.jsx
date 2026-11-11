@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import cx from '@/utils/cx';
-import { COLLECTIONS, STATUS, WORKS, getWork } from '@/data/works';
+import { COLLECTIONS, STATUS, WORKS, formatINR, getWork, isBuyable, onSale, payValue, priceValue } from '@/data/works';
+import { SALE, saleEndsLabel } from '@/data/sale';
 import { useMotionApi } from '@/motion/MotionContext';
 import ShopCard from '@/components/art/ShopCard';
 import CtaBand from '@/components/sections/CtaBand';
@@ -11,8 +12,13 @@ import Button from '@/components/ui/Button';
 import TextLink from '@/components/ui/TextLink';
 import { Line } from '@/components/ui/Typography';
 
-/* available first, then the rest; newest plates first inside each group */
-const SORTED = [...WORKS].sort((a, b) => STATUS[a.status].rank - STATUS[b.status].rank || parseInt(b.plate, 10) - parseInt(a.plate, 10));
+/* available first (ones you can buy online before "price on request"), then the rest; newest plates first inside each group */
+const SORTED = [...WORKS].sort(
+  (a, b) => STATUS[a.status].rank - STATUS[b.status].rank || isBuyable(b) - isBuyable(a) || parseInt(b.plate, 10) - parseInt(a.plate, 10)
+);
+const SALE_WORKS = WORKS.filter(onSale);
+/* the biggest saving on one painting, for the sale callout */
+const BEST_SAVING = Math.max(0, ...SALE_WORKS.map((w) => priceValue(w) - payValue(w)));
 const CHIPS = [{ id: 'all', title: 'All' }, ...COLLECTIONS].map((c) => ({
   ...c,
   count: c.id === 'all' ? WORKS.length : WORKS.filter((w) => w.collection === c.id).length,
@@ -53,7 +59,9 @@ function Toggle({ pressed, onClick, children }) {
 
 export default function ShopPage() {
   const [col, setCol] = useState('all');
-  const [availOnly, setAvailOnly] = useState(false);
+  /* /shop?available opens with "available only" on (the sale banners link here) */
+  const [params] = useSearchParams();
+  const [availOnly, setAvailOnly] = useState(() => params.has('available'));
   const cards = useMemo(() => SORTED.filter((w) => (col === 'all' || w.collection === col) && (!availOnly || w.status === 'available')), [col, availOnly]);
   const reset = () => {
     setCol('all');
@@ -93,6 +101,15 @@ export default function ShopPage() {
               <p data-intro className="lead mt-6 mb-0">
                 Every painting here is an original, so there is only ever one. Add the ones you love to your cart and confirm the details on the order page.
               </p>
+              {SALE_WORKS.length > 0 && (
+                <p data-intro className="mt-6 mb-0 inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-ui bg-sale-wash px-4 py-3 text-sm/[22px]">
+                  <span className="rounded-full bg-sale px-2.5 py-0.5 text-[11px]/[18px] font-bold tracking-[.08em] text-on-primary uppercase">{SALE.percent}% off</span>
+                  <span>
+                    <b className="font-bold text-sale">{SALE.name}:</b> every original you can buy online is {SALE.percent}% off, saving you up to {formatINR(BEST_SAVING)}
+                    {saleEndsLabel() ? `, until ${saleEndsLabel()}` : ''}.
+                  </span>
+                </p>
+              )}
               <div data-intro className="mt-8 flex flex-wrap items-baseline gap-x-8 gap-y-3">
                 <span>
                   <b className="mr-1.5 font-display text-[34px] leading-none font-normal">{AVAILABLE}</b>available now

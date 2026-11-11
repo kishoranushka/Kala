@@ -8,10 +8,15 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createSeo } from '../../src/seo/meta.js';
-import { POLICIES, UPDATED } from '../../src/data/policies.js';
+import { loadEnv } from 'vite';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+/* the sale switch (VITE_SALE_*, see src/data/sale.js) from .env / .env.local, like `vite build` sees it.
+   Set before meta.js loads, since sale.js reads it once. Vercel's own env wins. */
+for (const [k, v] of Object.entries(loadEnv('production', ROOT, 'VITE_SALE_'))) if (process.env[k] === undefined) process.env[k] = v;
+const { createSeo } = await import('../../src/seo/meta.js');
+const { POLICIES, UPDATED } = await import('../../src/data/policies.js');
 const DIST = join(ROOT, 'dist');
 const readJson = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
 
@@ -184,7 +189,7 @@ const llms = [
   '',
   '## Paintings available to buy online',
   '',
-  ...buyable.map((w) => `- [${w.title}](${url(`/artwork/${w.id}`)}): ${factsOf(w)}. ${seo.inr(seo.priceValue(w))}, free shipping in India. ${w.alt}.`),
+  ...buyable.map((w) => `- [${w.title}](${url(`/artwork/${w.id}`)}): ${factsOf(w)}. ${seo.priceText(w)}, free shipping in India. ${w.alt}.`),
   '',
   '## Other works (enquire, sold or archived)',
   '',

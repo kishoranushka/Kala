@@ -1,6 +1,8 @@
 import { usePageMotion } from '@/motion/MotionContext';
 import { homeMotion } from './homeMotion';
+import { saleActive } from '@/data/sale';
 import HeroSection from './sections/HeroSection';
+import SaleSection from './sections/SaleSection';
 import PathsSection from './sections/PathsSection';
 import ShopStripSection from './sections/ShopStripSection';
 import WallsSection from './sections/WallsSection';
@@ -15,6 +17,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
+      {saleActive() && <SaleSection />}
       <PathsSection />
       <ShopStripSection />
       <WallsSection />

@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import cx from '@/utils/cx';
-import { STATUS, getCollection, isAvailable, metaLine } from '@/data/works';
+import { STATUS, getCollection, isAvailable, isBuyable, metaLine, onSale } from '@/data/works';
 import CartButton from './CartButton';
+import SalePrice, { SaleTag } from './Price';
 
 const DOT = { available: 'bg-success', sold: 'bg-muted', archived: 'bg-muted', inquiry: 'bg-link' };
 
@@ -21,6 +22,7 @@ export default function ShopCard({ work, showCollection = false, titleClassName 
             <i aria-hidden="true" className={cx('size-[7px] rounded-full', DOT[work.status])} />
             {STATUS[work.status].label}
           </span>
+          {onSale(work) && <SaleTag className="absolute top-4 right-4" />}
           <img
             src={work.img}
             alt={work.alt}
@@ -33,7 +35,11 @@ export default function ShopCard({ work, showCollection = false, titleClassName 
         )}
         <div className={cx('flex items-baseline justify-between gap-3 max-sm:flex-col max-sm:gap-0.5', showCollection ? 'mt-1' : 'mt-[18px]')}>
           <span className={cx('font-display font-medium', titleClassName)}>{work.title}</span>
-          {isAvailable(work) && <span className="shrink-0 text-[15px] font-bold">{work.price}</span>}
+          {isBuyable(work) ? (
+            <SalePrice work={work} badge={false} className="shrink-0 justify-end max-sm:justify-start" />
+          ) : (
+            isAvailable(work) && <span className="shrink-0 text-[13px] font-semibold text-muted">Price on request</span>
+          )}
         </div>
         <span className="mt-1 block text-[13px]/5 text-muted">{metaLine(work)}</span>
       </Link>

@@ -31,7 +31,7 @@ export default function WallsSection() {
           </p>
           <SplitWords id="walls-h" text="Your walls, painted by *hand.*" className="heading-section mt-3.5 mb-0" />
           <p data-cap className="lead-lg mt-5 mb-0">
-            Hire me to paint a mural for your home, office, café, school or studio, [Add the cities you can travel to, and roughly how big a wall you take on.]
+            Hire me to paint a mural for your home, office, café, school or studio. I travel for walls across India, from a single feature wall to a whole room.
           </p>
           <Chips label="Spaces I paint" items={['Homes', 'Offices', 'Cafés', 'Schools', 'Studios']} />
           <div data-cap className="mt-8 flex flex-wrap gap-3.5">

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import cx from '@/utils/cx';
-import { STATUS, WORKS, isBuyable, plateLabel, ratioOf } from '@/data/works';
+import { STATUS, WORKS, isBuyable, onSale, plateLabel, ratioOf } from '@/data/works';
+import SalePrice, { SaleTag } from '@/components/art/Price';
 import { Checkbox, ErrorSummary, Field, FieldError, FieldRow, Input, Textarea, describe } from '@/components/form/Fields';
 import FormSuccess from '@/components/form/FormSuccess';
 import Button from '@/components/ui/Button';
@@ -62,6 +63,7 @@ export function ChooseStep({ selection, onToggle, onContinue, pickError, notices
                 style={{ aspectRatio: ratioOf(w) }}
               >
                 <img src={w.img} alt="" loading="lazy" className={imgClass(w, 'transition-transform duration-1200 ease-gallery group-hover:scale-[1.04]')} />
+                {onSale(w) && <SaleTag className="absolute top-2.5 left-2.5" />}
                 <span
                   aria-hidden="true"
                   className="absolute top-2.5 right-2.5 flex size-9 items-center justify-center rounded-full border border-line bg-[rgba(255,254,250,.94)] text-primary transition-[background-color,color,transform] duration-400 ease-gallery group-aria-pressed:scale-[1.08] group-aria-pressed:border-link group-aria-pressed:bg-link group-aria-pressed:text-on-primary"
@@ -73,7 +75,7 @@ export function ChooseStep({ selection, onToggle, onContinue, pickError, notices
               <span className="font-display text-xl/6 font-medium">{w.title}</span>
               <span className="flex items-baseline justify-between gap-2">
                 <span className="meta">{w.size}</span>
-                <span className="price">{w.price}</span>
+                <SalePrice work={w} size="sm" badge={false} stacked />
               </span>
             </button>
           );

@@ -4,6 +4,7 @@ import { MotionProvider } from '@/motion/MotionContext';
 import { useSiteMotion } from '@/motion/useSiteMotion';
 import { useSeo } from '@/seo/useSeo';
 import Header from './Header';
+import SaleBar from './SaleBar';
 import Footer from './Footer';
 import MenuOverlay from './MenuOverlay';
 import Curtain from './Curtain';
@@ -45,6 +46,7 @@ export default function SiteLayout() {
   return (
     <MotionProvider value={motion}>
       <div ref={rootRef} data-kala className="overflow-x-clip bg-page font-sans text-base/[26px] text-primary antialiased">
+        <SaleBar />
         <Header
           ref={menuButtonRef}
           current={page.nav}

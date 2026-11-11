@@ -227,6 +227,7 @@ export const POLICIES = {
         title: 'Prices',
         body: [
           'Prices are in Indian Rupees (₹). The total shown at checkout is the full amount you pay, with free shipping within India. Prices may change at any time, but the price on your confirmed order won’t.',
+          'During a sale, the reduced price is shown beside the original price, which is struck through. A sale price applies to orders paid while the sale is running; it isn’t applied to earlier orders.',
           'If a price was clearly shown by mistake, I may cancel the order, tell you by email and refund you in full.',
         ],
       },

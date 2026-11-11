@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import cx from '@/utils/cx';
 import { CONTACT } from '@/data/site';
 import { getWork } from '@/data/works';
+import { SALE, saleActive } from '@/data/sale';
 import { Line } from '@/components/ui/Typography';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
@@ -55,10 +56,23 @@ export default function HeroSection() {
 
       <div className="wrap relative grid min-h-[clamp(660px,58vw,860px)] grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] items-center gap-12 pt-[72px] pb-[72px] max-lg:min-h-0 max-lg:grid-cols-1 max-lg:gap-6 max-lg:pt-14 max-lg:pb-16 max-sm:pt-12">
         <div className="relative z-3">
-          <p data-intro className="m-0 inline-flex items-center gap-2.5 rounded-full border border-divider bg-surface/85 py-2 pr-4 pl-2.5 text-[13px]/[18px] font-semibold tracking-[.02em]">
-            <i aria-hidden="true" className="mr-[30px] block size-2.5 rounded-full bg-secondary shadow-[14px_0_0_#E9A9A0,28px_0_0_#9DB8DC]" />
-            Original paintings · Commissions · Wall murals
-          </p>
+          {saleActive() ? (
+            <p data-intro className="m-0">
+              <Link
+                to="/shop?available"
+                className="group inline-flex items-center gap-2.5 rounded-full border border-sale/30 bg-surface/85 py-1.5 pr-4 pl-1.5 text-[13px]/[18px] font-semibold tracking-[.02em] text-primary no-underline hover:text-primary"
+              >
+                <span className="rounded-full bg-sale px-2.5 py-1 text-[11px]/[14px] font-bold tracking-[.08em] text-on-primary uppercase">{SALE.percent}% off</span>
+                {SALE.name} · every available original
+                <Icon name="arrow" size={15} strokeWidth={1.8} className="transition-transform duration-500 ease-gallery group-hover:translate-x-1" />
+              </Link>
+            </p>
+          ) : (
+            <p data-intro className="m-0 inline-flex items-center gap-2.5 rounded-full border border-divider bg-surface/85 py-2 pr-4 pl-2.5 text-[13px]/[18px] font-semibold tracking-[.02em]">
+              <i aria-hidden="true" className="mr-[30px] block size-2.5 rounded-full bg-secondary shadow-[14px_0_0_#E9A9A0,28px_0_0_#9DB8DC]" />
+              Original paintings · Commissions · Wall murals
+            </p>
+          )}
           <h1 id="hero-h" data-intro-line aria-label="Colour, devotion and a little chaos." className="heading-hero mt-7 mb-0">
             <Line className="!pb-[.06em]" aria-hidden="true">Colour,</Line>
             <Line className="!pb-[.06em]" aria-hidden="true">devotion &amp; a</Line>
