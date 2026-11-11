@@ -6,10 +6,15 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 
 const API = 'https://api.razorpay.com/v1';
 
-export const razorpayConfigured = () => Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET);
-export const publicKey = () => process.env.RAZORPAY_KEY_ID;
+/* trimmed: a pasted key often carries a stray space or newline, which makes Razorpay reply "Authentication failed" */
+const env = (name) => (process.env[name] || '').trim();
+const keyId = () => env('RAZORPAY_KEY_ID');
+const keySecret = () => env('RAZORPAY_KEY_SECRET');
 
-const auth = () => 'Basic ' + Buffer.from(`${process.env.RAZORPAY_KEY_ID}:${process.env.RAZORPAY_KEY_SECRET}`).toString('base64');
+export const razorpayConfigured = () => Boolean(keyId() && keySecret());
+export const publicKey = keyId;
+
+const auth = () => 'Basic ' + Buffer.from(`${keyId()}:${keySecret()}`).toString('base64');
 
 /* amount in paise */
 export async function createRazorpayOrder({ amount, receipt, notes }) {
@@ -31,12 +36,12 @@ function same(expected, given) {
 
 /* the checkout's success response is genuine only if this matches */
 export function validPaymentSignature({ razorpayOrderId, paymentId, signature }) {
-  const expected = createHmac('sha256', process.env.RAZORPAY_KEY_SECRET).update(`${razorpayOrderId}|${paymentId}`).digest('hex');
+  const expected = createHmac('sha256', keySecret()).update(`${razorpayOrderId}|${paymentId}`).digest('hex');
   return same(expected, signature);
 }
 
 export function validWebhookSignature(rawBody, signature) {
-  const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+  const secret = env('RAZORPAY_WEBHOOK_SECRET');
   if (!secret) return false;
   const expected = createHmac('sha256', secret).update(rawBody).digest('hex');
   return same(expected, signature);
