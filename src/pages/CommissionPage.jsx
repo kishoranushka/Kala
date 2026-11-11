@@ -3,6 +3,8 @@ import { CONTACT, EMAIL_PATTERN } from '@/data/site';
 import cx from '@/utils/cx';
 import { PHOTOS, getWork } from '@/data/works';
 import { useFormFlow } from '@/hooks/useFormFlow';
+import { SEND_ERROR, sendForm } from '@/utils/sendForm';
+import Notice from '@/components/ui/Notice';
 import FormSuccess from '@/components/form/FormSuccess';
 import { Checkbox, ChoiceCard, ChoiceGrid, ErrorIcon, ErrorSummary, Field, FieldError, FieldRow, Input, Select, Textarea, describe } from '@/components/form/Fields';
 import PageTop from '@/components/sections/PageTop';
@@ -43,10 +45,27 @@ function validate({ kind, name = '', email = '', message = '' }) {
   return errors;
 }
 
-const FORM_HEADING = 'mt-3 font-display text-[clamp(32px,3.4vw,48px)] leading-[1.06] font-light tracking-[-.01em]';
+const sendEnquiry = (v) =>
+  sendForm({
+    subject: `New commission enquiry: ${KINDS.find((k) => k.value === v.kind)?.title ?? v.kind} from ${v.name.trim()}`,
+    name: v.name.trim(),
+    email: v.email.trim(),
+    botcheck: v.botcheck,
+    fields: {
+      'About': KINDS.find((k) => k.value === v.kind)?.title,
+      'Idea': v.message.trim(),
+      'Approximate size': v.size,
+      'Budget range': v.budget,
+      'Timeline': v.timeline,
+      'Where it will live': v.space?.trim(),
+      'Studio updates': v.updates ? 'Yes, please' : 'No',
+    },
+  });
+
+const FORM_HEADING ='mt-3 font-display text-[clamp(32px,3.4vw,48px)] leading-[1.06] font-light tracking-[-.01em]';
 
 function EnquiryForm() {
-  const { formRef, errors, sending, done, result, submit, reset } = useFormFlow(validate);
+  const { formRef, errors, sending, failed, done, result, submit, reset } = useFormFlow(validate, sendEnquiry);
   const [more, setMore] = useState(false);
   const [files, setFiles] = useState([]);
 
@@ -56,7 +75,6 @@ function EnquiryForm() {
         name={result.name.trim().split(' ')[0]}
         titleClassName="text-[clamp(32px,3.4vw,48px)] leading-[1.06]"
         className="gap-7"
-        notConnected="This form isn’t connected yet, so nothing has been sent. When it’s live, your message will go straight to me and you’ll see a confirmation here."
       >
         <dl className="m-0 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 border-y border-divider py-5 text-sm/[22px]">
           <dt className="meta">About</dt>
@@ -65,7 +83,7 @@ function EnquiryForm() {
           <dd className="m-0 font-semibold">{result.email}</dd>
         </dl>
         <p className="meta">
-          For now, you can write to <a href="#enquiry" className="underline">{CONTACT.email}</a> directly.
+          Your enquiry is with me. I’ll reply soon{files.length > 0 ? ', and ask for your reference images then' : ''}.
         </p>
         <div className="flex flex-wrap gap-4">
           <Button
@@ -193,17 +211,24 @@ function EnquiryForm() {
           />
           {files.length > 0 && (
             <span className="meta">
-              {files.length} {files.length === 1 ? 'image chosen' : 'images chosen'}: {files.join(', ')}. In this preview they stay on your device.
+              {files.length} {files.length === 1 ? 'image chosen' : 'images chosen'}: {files.join(', ')}. Images aren’t uploaded here; I’ll ask you to email them when I reply.
             </span>
           )}
         </div>
       </div>
 
       <Checkbox name="updates">Send me occasional studio updates. I never share your details.</Checkbox>
+      <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+
+      {failed && (
+        <Notice tone="error" role="alert">
+          {SEND_ERROR}
+        </Notice>
+      )}
 
       <div className="flex flex-wrap items-center gap-5">
         <Button type="submit" data-magnetic data-cursor="talk" aria-busy={sending}>
-          {sending ? 'Preparing…' : 'Send Enquiry'}
+          {sending ? 'Sending…' : 'Send Enquiry'}
         </Button>
         <span className="meta">Your details are used only to reply to you.</span>
       </div>
@@ -246,6 +271,7 @@ export default function CommissionPage() {
                 src={tile.img}
                 alt={tile.alt}
                 fetchpriority={i === 0 ? 'high' : undefined}
+                loading={i === 0 ? undefined : 'lazy'}
                 className="block size-full object-cover transition-transform duration-1400 ease-gallery group-hover:scale-105"
                 style={tile.position ? { objectPosition: tile.position } : undefined}
               />

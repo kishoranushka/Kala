@@ -1,21 +1,27 @@
 import { useEffect, useRef, useState } from 'react';
 
-/* Validate → "sending" pause → done, for the enquiry forms (not yet connected to a backend).
-   `validate(values)` returns { field: message }; the first invalid control receives focus. */
-export function useFormFlow(validate, { delay = 900 } = {}) {
+/* Validate → send → done (or error), for the enquiry forms.
+   `validate(values)` returns { field: message }; the first invalid control receives focus.
+   `send(values)` is async and throws if the message didn't go through. */
+export function useFormFlow(validate, send) {
   const formRef = useRef(null);
-  const timer = useRef(null);
+  const alive = useRef(true);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('idle');
   const [result, setResult] = useState(null);
   const [errorTick, setErrorTick] = useState(0);
 
-  useEffect(() => () => clearTimeout(timer.current), []);
+  useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
   useEffect(() => {
     if (errorTick) formRef.current?.querySelector('[aria-invalid="true"]')?.focus();
   }, [errorTick]);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     if (status === 'sending') return;
     const values = Object.fromEntries(new FormData(e.currentTarget));
@@ -27,10 +33,15 @@ export function useFormFlow(validate, { delay = 900 } = {}) {
     }
     setErrors({});
     setStatus('sending');
-    timer.current = setTimeout(() => {
+    try {
+      await send(values);
+      if (!alive.current) return;
       setResult(values);
       setStatus('done');
-    }, delay);
+    } catch (err) {
+      console.error('Form send failed:', err);
+      if (alive.current) setStatus('error');
+    }
   };
 
   const reset = () => {
@@ -39,5 +50,5 @@ export function useFormFlow(validate, { delay = 900 } = {}) {
     setStatus('idle');
   };
 
-  return { formRef, errors, sending: status === 'sending', done: status === 'done', result, submit, reset };
+  return { formRef, errors, sending: status === 'sending', failed: status === 'error', done: status === 'done', result, submit, reset };
 }

@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { CONTACT, EMAIL_PATTERN } from '@/data/site';
 import { PHOTOS } from '@/data/works';
 import { useFormFlow } from '@/hooks/useFormFlow';
+import { SEND_ERROR, sendForm } from '@/utils/sendForm';
+import Notice from '@/components/ui/Notice';
 import FormSuccess from '@/components/form/FormSuccess';
 import { Checkbox, ErrorSummary, Field, FieldRow, Input, Select, Textarea, describe } from '@/components/form/Fields';
 import PageTop from '@/components/sections/PageTop';
@@ -41,6 +43,19 @@ function validate({ name = '', email = '', message = '' }) {
   return errors;
 }
 
+const sendMessage = (v) =>
+  sendForm({
+    subject: `New message from ${v.name.trim()}: ${v.topic}`,
+    name: v.name.trim(),
+    email: v.email.trim(),
+    botcheck: v.botcheck,
+    fields: {
+      'Topic': v.topic,
+      'Message': v.message.trim(),
+      'Studio updates': v.updates ? 'Yes, please' : 'No',
+    },
+  });
+
 /* the "o" of "hello" is a small turning mandala */
 function MandalaO() {
   return (
@@ -66,7 +81,7 @@ function MandalaO() {
 }
 
 function MessageForm() {
-  const { formRef, errors, sending, done, result, submit, reset } = useFormFlow(validate, { delay: 800 });
+  const { formRef, errors, sending, failed, done, result, submit, reset } = useFormFlow(validate, sendMessage);
 
   if (done) {
     return (
@@ -74,11 +89,8 @@ function MessageForm() {
         name={result.name.trim().split(' ')[0]}
         titleClassName="text-[clamp(32px,3.4vw,48px)] leading-[1.06]"
         className="gap-6"
-        notConnected="This form isn’t connected yet, so nothing has been sent. When it’s live, your message comes straight to me and you’ll see a confirmation here."
       >
-        <p className="meta">
-          For now, write to <a href="#message" className="underline">{CONTACT.email}</a> directly.
-        </p>
+        <p className="meta">Your message is with me. I’ll reply to {result.email} as soon as I can.</p>
         <div>
           <Button variant="secondary" onClick={reset}>
             Write Another Message
@@ -118,9 +130,15 @@ function MessageForm() {
         <Textarea name="message" {...describe('c-msg', { error: errors.message })} />
       </Field>
       <Checkbox name="updates">Send me occasional studio updates. I never share your details.</Checkbox>
+      <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+      {failed && (
+        <Notice tone="error" role="alert">
+          {SEND_ERROR}
+        </Notice>
+      )}
       <div className="flex flex-wrap items-center gap-5">
         <Button type="submit" data-magnetic aria-busy={sending}>
-          {sending ? 'Preparing…' : 'Send Message'}
+          {sending ? 'Sending…' : 'Send Message'}
         </Button>
         <span className="meta">Your details are used only to reply to you.</span>
       </div>

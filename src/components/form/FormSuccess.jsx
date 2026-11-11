@@ -1,10 +1,9 @@
 import { useEffect, useRef } from 'react';
 import cx from '@/utils/cx';
 import { gsap, canAnimate } from '@/motion/gsap';
-import Notice from '@/components/ui/Notice';
 
 /* the thank-you panel that replaces a form; takes focus and settles in line by line */
-export default function FormSuccess({ eyebrow = 'Ready to send', name, titleClassName, notConnected, className, children }) {
+export default function FormSuccess({ eyebrow = 'Message sent', name, titleClassName, className, children }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -19,7 +18,6 @@ export default function FormSuccess({ eyebrow = 'Ready to send', name, titleClas
       <h2 className={cx('font-display font-light', titleClassName)}>
         Thank you, <span className="italic">{name}.</span>
       </h2>
-      <Notice tone="warn">{notConnected}</Notice>
       {children}
     </div>
   );
