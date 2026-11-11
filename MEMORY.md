@@ -2,13 +2,13 @@
 
 > Running log of work done, current state, and what's next. Read at the start of every session (auto-loaded via `CLAUDE.md`); update at the end of every session. Keep it short — this is a handoff note, not documentation (structure/how-to lives in `README.md`).
 
-## Snapshot (last updated 2026-11-01)
+## Snapshot (last updated 2026-11-11)
 
 - **What:** KALA by Anushka Kishor — paintings, mandalas, wall murals, painted wearables. Faithful React port of the artist's own design canvas.
 - **Design source of truth:** Claude Design canvas https://claude.ai/artifact/H27WqPukwCvbTamhj7wZ6J. Live design = beige "Homepage 2" (`project/Home2.dc.html` + `home.css`, `home-beige.css`, `site.css`) and the inner `*.dc.html` pages. `Main.dc.html` (indigo/Fraunces) is an unused alternate. Re-read the canvas when design questions come up — don't guess.
 - **Stack:** Vite 6 + React 18 (JSX) + Tailwind CSS v4 + React Router 6 + GSAP 3 / ScrollTrigger.
-- **Deploy:** Vercel project `kala` (`.vercel/` gitignored); pushing `main` to github.com/kishoranushka/Kala likely auto-deploys.
-- **Status:** All 11 pages on the beige redesign, committed and pushed (`origin/main` = `170cdde`, in sync). Builds clean. No backend. Vercel deploy not yet verified.
+- **Deploy:** Vercel project `kala` (`.vercel/` gitignored); pushing `main` to github.com/kishoranushka/Kala auto-deploys. Production: https://kala.anushkakishor.in
+- **Status:** Everything through Shiprocket committed and pushed (2026-11-11), live and verified (pages 200, `/api/order` responds). Shiprocket env vars set in Vercel (Production). Web3Forms key still empty → forms error until it's added.
 
 ## Done
 
@@ -49,11 +49,10 @@
 
 ## Open / Next up
 
-- **Shiprocket:** create API user, set env vars in Vercel + `.env.local`, place a test order, then cancel it in Shiprocket.
+- **Shiprocket:** env vars are set (Vercel + `.env.local`); place one real test order, confirm it shows under the Kala channel, then cancel it.
 
 - **Paste the Web3Forms access key** (from web3forms.com, made with kishoranushka96@gmail.com) into `FORM_ACCESS_KEY` in `src/data/site.js`, then test each form once. Without it, forms show the "couldn't be sent" error.
 - Placeholder content (`[Medium]`, `[Size]`, `[Location]`, reel titles/links, bios) — needs real values from the artist.
-- Check the Vercel deploy of the redesign went live, and record the production URL.
 
 ## Decisions & gotchas
 
@@ -69,7 +68,8 @@
 
 ## Session log
 
-- 2026-11-11 — Painting data → works.json + local editor at /__admin (npm run admin). Builds clean; uncommitted.
+- 2026-11-11 — Editor, logo, Shiprocket; committed in 6 commits, pushed, deployed to kala.anushkakishor.in. Next: Web3Forms key, Shiprocket test order.
+- 2026-11-11 — Painting data → works.json + local editor at /__admin (npm run admin). Builds clean.
 - 2026-11-10 — Wired commission/contact/order forms to email via Web3Forms. Builds clean; uncommitted. Next: paste access key, test, commit/push.
 <!-- Newest first. One entry per session: date — what changed — where things were left. -->
 - 2026-11-02 — Mobile-friendly motion, WebP + lazy images. Builds clean; uncommitted. Next: commit/push, pick a form-to-email service.
