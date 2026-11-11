@@ -86,6 +86,12 @@ export const worksIn = (collectionId) => WORKS.filter((w) => w.collection === co
 export const availableWorks = () => WORKS.filter((w) => w.status === 'available');
 
 export const isAvailable = (w) => w.status === 'available';
+
+/* "₹ 12,000" → 12000 (0 if no price is set) */
+export const priceValue = (w) => Number(String(w?.price ?? '').replace(/[^\d.]/g, '')) || 0;
+export const formatINR = (n) => `₹ ${Number(n).toLocaleString('en-IN')}`;
+/* can be bought online: available and has a real price */
+export const isBuyable = (w) => w.status === 'available' && priceValue(w) >= 1;
 export const ratioOf = (w) => `${w.w} / ${w.h}`;
 export const metaLine = (w) => `${w.medium} · ${w.size}`;
 export const plateLabel = (w) => `Pl. ${w.plate} · ${getCollection(w.collection).title}`;

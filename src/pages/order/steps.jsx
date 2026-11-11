@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import cx from '@/utils/cx';
-import { CONTACT } from '@/data/site';
-import { STATUS, WORKS, plateLabel, ratioOf } from '@/data/works';
-import { Checkbox, ChoiceCard, ChoiceGrid, ErrorSummary, Field, FieldError, FieldRow, Input, Textarea, describe } from '@/components/form/Fields';
+import { STATUS, WORKS, isBuyable, plateLabel, ratioOf } from '@/data/works';
+import { Checkbox, ErrorSummary, Field, FieldError, FieldRow, Input, Textarea, describe } from '@/components/form/Fields';
 import FormSuccess from '@/components/form/FormSuccess';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
@@ -13,8 +12,6 @@ import { REVIEW_LIST } from './OrderSummary';
 
 const STEP_HEADING = 'mt-2 font-display text-[clamp(30px,3vw,44px)] leading-[1.06] font-light tracking-[-.01em]';
 const NAV_ROW = 'flex flex-wrap items-center justify-between gap-4 border-t border-divider pt-7';
-const available = WORKS.filter((w) => w.status === 'available');
-const unavailable = WORKS.filter((w) => w.status !== 'available');
 const imgClass = (w, extra) => cx('block size-full object-cover', extra, w.crop && 'crop-ig');
 
 function StepHeading({ step, id, title, children }) {
@@ -31,6 +28,9 @@ function StepHeading({ step, id, title, children }) {
 
 /* ------------------------------------------------------------------ 1 · choose */
 export function ChooseStep({ selection, onToggle, onContinue, pickError }) {
+  /* worked out on each visit: a painting bought a moment ago is already Sold */
+  const available = WORKS.filter(isBuyable);
+  const unavailable = WORKS.filter((w) => w.status !== 'available');
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -120,7 +120,6 @@ function UnavailableCard({ work }) {
 /* ------------------------------------------------------------------ 2 · details */
 export function DetailsStep({ form, errors, onChange, onBack, onSubmit }) {
   const field = (name, id) => ({ name, value: form[name], onChange, ...describe(id, { error: errors[name] }) });
-  const collect = form.delivery === 'collect';
 
   return (
     <form noValidate onSubmit={onSubmit} aria-labelledby="det-h" className="flex flex-col gap-6">
@@ -137,49 +136,30 @@ export function DetailsStep({ form, errors, onChange, onBack, onSubmit }) {
           <Input type="email" autoComplete="email" {...field('email', 'o-email')} />
         </Field>
       </FieldRow>
-      <Field
-        id="o-phone"
-        label={collect ? 'Phone' : 'Mobile number *'}
-        hint={collect ? 'So I can arrange the pickup. Optional.' : 'The courier calls this number on delivery.'}
-        error={errors.phone}
-        className="max-w-[360px]"
-      >
+      <Field id="o-phone" label="Mobile number *" hint="The courier calls this number on delivery." error={errors.phone} className="max-w-[360px]">
         <Input type="tel" inputMode="tel" autoComplete="tel" name="phone" value={form.phone} onChange={onChange} {...describe('o-phone', { hint: true, error: errors.phone })} />
       </Field>
 
-      <fieldset className="m-0 border-0 p-0">
-        <legend className="mb-3 p-0 text-[13px]/5 font-semibold">How would you like to receive it? *</legend>
-        <ChoiceGrid>
-          <ChoiceCard name="delivery" value="ship" checked={!collect} onChange={onChange} title="Ship to me">
-            Packed with care. Shipping is confirmed with your order.
-          </ChoiceCard>
-          <ChoiceCard name="delivery" value="collect" checked={collect} onChange={onChange} title="Collect from the studio">
-            {CONTACT.location} · by appointment
-          </ChoiceCard>
-        </ChoiceGrid>
+      <fieldset className="m-0 flex flex-col gap-6 border-0 p-0">
+        <legend className="mb-1 p-0 text-[13px]/5 font-semibold">Where should it go? *</legend>
+        <p className="meta -mt-3">
+          Packed with care and shipped free within India. Ordering from abroad? <TextLink to="/contact">Write to me</TextLink> and I’ll arrange it.
+        </p>
+        <Field id="o-addr" label="Address *" error={errors.address}>
+          <Input type="text" autoComplete="street-address" {...field('address', 'o-addr')} />
+        </Field>
+        <FieldRow cols="three">
+          <Field id="o-city" label="City *" error={errors.city}>
+            <Input type="text" autoComplete="address-level2" {...field('city', 'o-city')} />
+          </Field>
+          <Field id="o-state" label="State *" error={errors.state}>
+            <Input type="text" autoComplete="address-level1" {...field('state', 'o-state')} />
+          </Field>
+          <Field id="o-pin" label="PIN code *" error={errors.pin}>
+            <Input type="text" inputMode="numeric" autoComplete="postal-code" {...field('pin', 'o-pin')} />
+          </Field>
+        </FieldRow>
       </fieldset>
-
-      {!collect && (
-        <div className="flex flex-col gap-6">
-          <Field id="o-addr" label="Address *" error={errors.address}>
-            <Input type="text" autoComplete="street-address" {...field('address', 'o-addr')} />
-          </Field>
-          <FieldRow cols="three">
-            <Field id="o-city" label="City *" error={errors.city}>
-              <Input type="text" autoComplete="address-level2" {...field('city', 'o-city')} />
-            </Field>
-            <Field id="o-state" label="State *" error={errors.state}>
-              <Input type="text" autoComplete="address-level1" {...field('state', 'o-state')} />
-            </Field>
-            <Field id="o-pin" label="PIN code *" error={errors.pin}>
-              <Input type="text" inputMode="numeric" autoComplete="postal-code" {...field('pin', 'o-pin')} />
-            </Field>
-          </FieldRow>
-          <Field id="o-country" label="Country" className="max-w-[360px]">
-            <Input type="text" autoComplete="country-name" {...field('country', 'o-country')} />
-          </Field>
-        </div>
-      )}
 
       <Field id="o-note" label="A note for the artist" hint="A gift message, framing questions, a deadline. Optional.">
         <Textarea name="note" value={form.note} onChange={onChange} className="min-h-[110px]!" {...describe('o-note', { hint: true })} />
@@ -196,15 +176,14 @@ export function DetailsStep({ form, errors, onChange, onBack, onSubmit }) {
 }
 
 /* ------------------------------------------------------------------ 3 · review */
-export function ReviewStep({ form, ack, ackError, sending, error, onAck, onEdit, onSubmit }) {
-  const receiving =
-    form.delivery === 'collect'
-      ? `Collect from the studio, ${CONTACT.location}`
-      : [form.address, form.city, form.state, form.pin, form.country].filter(Boolean).join(', ');
+const PAY_LABEL = { starting: 'Opening payment…', paying: 'Waiting for payment…', confirming: 'Confirming payment…' };
+
+export function ReviewStep({ form, total, ack, ackError, phase, error, onAck, onEdit, onSubmit }) {
+  const shipTo = [form.address, form.city, form.state, form.pin, 'India'].map((s) => s.trim()).filter(Boolean).join(', ');
 
   return (
     <form noValidate onSubmit={onSubmit} aria-labelledby="rev-h" className="flex flex-col gap-6">
-      <StepHeading step={3} id="rev-h" title="Review your order request" />
+      <StepHeading step={3} id="rev-h" title="Review and pay" />
       <div className="bg-surface p-6">
         <div className="flex items-baseline justify-between gap-4">
           <p className="eyebrow">Your details</p>
@@ -218,9 +197,9 @@ export function ReviewStep({ form, ack, ackError, sending, error, onAck, onEdit,
           <dt>Email</dt>
           <dd>{form.email}</dd>
           <dt>Phone</dt>
-          <dd>{form.phone || 'Not given'}</dd>
-          <dt>Receiving</dt>
-          <dd>{receiving}</dd>
+          <dd>{form.phone}</dd>
+          <dt>Ship to</dt>
+          <dd>{shipTo}</dd>
           <dt>Note</dt>
           <dd>{form.note || 'None'}</dd>
         </dl>
@@ -228,17 +207,17 @@ export function ReviewStep({ form, ack, ackError, sending, error, onAck, onEdit,
       <div className="bg-surface p-6">
         <p className="eyebrow">What happens next</p>
         <ol className="mt-3 list-decimal pl-5 text-sm/6 text-soft">
-          <li>I check each work is still available and confirm shipping.</li>
-          <li>You receive a confirmation and a secure payment link by email.</li>
-          <li>Once paid, your painting is packed and sent, or ready to collect.</li>
+          <li>Pay securely through Razorpay: scan the UPI QR code, or use a UPI app, card or netbanking.</li>
+          <li>Your order is confirmed straight away, with an order reference.</li>
+          <li>I pack your painting with care and ship it. The courier’s tracking reaches you by SMS and email.</li>
         </ol>
       </div>
       <Checkbox name="ack" checked={ack} onChange={(e) => onAck(e.target.checked)} aria-invalid={ackError || undefined} aria-describedby={ackError ? 'oe-ack' : undefined}>
-        I understand this is an order request. Payment happens only after the artist confirms.
+        My details are correct, and I understand each painting is a one-of-a-kind original.
       </Checkbox>
       {ackError && (
         <FieldError id="oe-ack" role="alert">
-          Tick the box above to send your request.
+          Tick the box above to continue to payment.
         </FieldError>
       )}
       <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
@@ -249,8 +228,8 @@ export function ReviewStep({ form, ack, ackError, sending, error, onAck, onEdit,
       )}
       <div className={NAV_ROW}>
         <TextLink onClick={onEdit}>Back to your details</TextLink>
-        <Button type="submit" data-magnetic aria-busy={sending}>
-          {sending ? 'Sending…' : 'Send Order Request'}
+        <Button type="submit" data-magnetic aria-busy={Boolean(phase)}>
+          {PAY_LABEL[phase] ?? `Pay ${total}`}
         </Button>
       </div>
     </form>
@@ -258,28 +237,25 @@ export function ReviewStep({ form, ack, ackError, sending, error, onAck, onEdit,
 }
 
 /* ------------------------------------------------------------------ done */
-export function OrderDone({ firstName, orderId, onRestart }) {
+export function OrderDone({ firstName, orderId, email, confirmed, onRestart }) {
+  const track = `/track?id=${encodeURIComponent(orderId)}&email=${encodeURIComponent(email)}`;
   return (
-    <FormSuccess
-      eyebrow="Order request sent"
-      name={firstName || 'there'}
-      titleClassName="heading-2"
-      className="gap-6"
-    >
+    <FormSuccess eyebrow="Payment received" name={firstName || 'there'} titleClassName="heading-2" className="gap-6">
       <p className="lead">
-        Your request is with me. I’ll check availability and shipping, then email you a confirmation and a secure payment link. Nothing has been charged.
+        {confirmed
+          ? 'Your order is confirmed. I’ll pack your painting with care and send it soon. Once it ships, the courier’s tracking reaches you by SMS and email.'
+          : 'Your payment went through and your order is being confirmed. That can take a few minutes; you don’t need to pay again.'}
       </p>
-      {orderId && (
-        <p className="meta">
-          Your order reference is <b className="font-semibold text-primary">{orderId}</b>. Keep it handy if you write to me.
-        </p>
-      )}
+      <p className="meta">
+        Your order reference is <b className="font-semibold text-primary">{orderId}</b>. With it and your email you can track your order any time. Razorpay also emails you a payment receipt.
+      </p>
       <div className="flex flex-wrap gap-4">
+        <Button to={track}>Track Your Order</Button>
         <Button variant="secondary" to="/shop">
           Back to the Shop
         </Button>
-        <Button onClick={onRestart}>Start a New Order</Button>
       </div>
+      <TextLink onClick={onRestart}>Start a new order</TextLink>
     </FormSuccess>
   );
 }

@@ -77,7 +77,27 @@ export function orderableWorks(ids) {
   if (!works.length || works.some((w) => !w)) throw new Error('Unknown painting in the order.');
   const unavailable = works.filter((w) => String(w.status).trim().toLowerCase() !== 'available');
   if (unavailable.length) throw new Error(`No longer available: ${unavailable.map((w) => w.title).join(', ')}.`);
+  const unpriced = works.filter((w) => rupees(w.price) < 1);
+  if (unpriced.length) throw new Error(`${unpriced.map((w) => w.title).join(', ')} can’t be bought online yet. Please write to me about ${unpriced.length > 1 ? 'them' : 'it'}.`);
   return works;
+}
+
+/* courier status for the "Track your order" page; null until a courier is assigned */
+export async function trackShipment(shipmentId) {
+  const out = await call(`/courier/track/shipment/${encodeURIComponent(shipmentId)}`);
+  const data = out?.tracking_data ?? Object.values(out ?? {})[0]?.tracking_data;
+  const t = data?.shipment_track?.[0];
+  if (!data || !t?.awb_code) return null;
+  const latest = data.shipment_track_activities?.[0];
+  return {
+    courier: t.courier_name || null,
+    awb: t.awb_code,
+    status: t.current_status || latest?.activity || null,
+    updated: latest?.date || null,
+    eta: t.edd || data.etd || null,
+    delivered: Boolean(t.delivered_date) || /delivered/i.test(t.current_status || ''),
+    url: data.track_url || null,
+  };
 }
 
 /* one parcel: the heaviest-sized box, stacked heights, summed weight */
@@ -115,6 +135,7 @@ export async function createOrder({ orderId, customer, works }) {
     order_items: works.map((w) => ({ name: w.title, sku: `KALA-${w.id}`, units: 1, selling_price: rupees(w.price) })),
     payment_method: 'Prepaid',
     sub_total: subTotal,
+    shipping_charges: 0,
     ...parcel(works),
   });
   return { shiprocketOrderId: out.order_id, shipmentId: out.shipment_id, subTotal };

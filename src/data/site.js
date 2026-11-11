@@ -27,6 +27,7 @@ export const FOOTER_GROUPS = [
       { label: 'Collections', to: '/collections' },
       { label: 'Archive', to: '/archive' },
       { label: 'The Artist', to: '/artist' },
+      { label: 'Track an order', to: '/track' },
     ],
   },
   {

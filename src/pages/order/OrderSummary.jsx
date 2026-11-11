@@ -1,11 +1,12 @@
-import { getWork } from '@/data/works';
+import { formatINR, getWork, priceValue } from '@/data/works';
 import Notice from '@/components/ui/Notice';
 
 const DL = 'm-0 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 text-sm/[22px] [&_dd]:m-0 [&_dd]:font-semibold [&_dt]:text-muted';
 
 /* the sticky "Your order" card beside every step */
-export default function OrderSummary({ selection, canEdit, onRemove, collect }) {
-  const picked = selection.map(getWork);
+export default function OrderSummary({ selection, canEdit, onRemove, paid = false }) {
+  const picked = selection.map(getWork).filter(Boolean);
+  const total = picked.reduce((s, w) => s + priceValue(w), 0);
   return (
     <aside
       aria-labelledby="sum-h"
@@ -48,12 +49,14 @@ export default function OrderSummary({ selection, canEdit, onRemove, collect }) 
       </div>
       <dl className={`${DL} mt-5`}>
         <dt>Subtotal</dt>
-        <dd>Confirmed with your order</dd>
+        <dd>{formatINR(total)}</dd>
         <dt>Shipping</dt>
-        <dd>{collect ? 'Studio collection' : 'Confirmed with your order'}</dd>
+        <dd>Free within India</dd>
+        <dt>{paid ? 'Paid' : 'Total'}</dt>
+        <dd className="text-base">{formatINR(total)}</dd>
       </dl>
       <Notice tone="info" className="mt-5 text-[13px]/5!">
-        Payment is never taken on this page. You’ll receive a secure link once your order is confirmed.
+        Secure payment by Razorpay: UPI (scan a QR code), cards and netbanking. Your card and UPI details never reach this site.
       </Notice>
     </aside>
   );

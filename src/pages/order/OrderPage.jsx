@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { EMAIL_PATTERN } from '@/data/site';
-import { availableWorks, getWork } from '@/data/works';
-import { SEND_ERROR, sendForm } from '@/utils/sendForm';
+import { CONTACT, EMAIL_PATTERN } from '@/data/site';
+import { WORKS, formatINR, getWork, isBuyable, priceValue } from '@/data/works';
+import { sendForm } from '@/utils/sendForm';
+import { payWithRazorpay } from '@/utils/razorpay';
 import { useBag } from '@/context/BagContext';
 import { gsap, canAnimate } from '@/motion/gsap';
 import { useMotionApi } from '@/motion/MotionContext';
@@ -11,45 +12,60 @@ import { Accent, Line } from '@/components/ui/Typography';
 import OrderSummary from './OrderSummary';
 import { ChooseStep, DetailsStep, OrderDone, ReviewStep } from './steps';
 
-const STEPS = ['Choose', 'Your details', 'Review'];
-const EMPTY_FORM = { name: '', email: '', phone: '', delivery: 'ship', address: '', city: '', state: '', pin: '', country: 'India', note: '' };
-
-function validate(f) {
-  const errors = {};
-  if (!f.name.trim()) errors.name = 'Add your full name.';
-  if (!f.email.trim()) errors.email = 'Add your email so I can confirm your order.';
-  else if (!EMAIL_PATTERN.test(f.email.trim())) errors.email = 'Add the rest of your email, like name@example.com.';
-  const ship = f.delivery !== 'collect';
-  if (ship || f.phone.trim()) {
-    if (!PHONE_PATTERN.test(cleanPhone(f.phone))) errors.phone = ship ? 'Add a 10-digit mobile number for the courier.' : 'Check the number: 10 digits, like 98765 43210.';
-  }
-  if (ship) {
-    if (!f.address.trim()) errors.address = 'Add the street address.';
-    if (!f.city.trim()) errors.city = 'Add the city.';
-    if (!f.state.trim()) errors.state = 'Add the state.';
-    if (!/^\d{6}$/.test(f.pin.trim())) errors.pin = 'Add a 6-digit PIN code.';
-  }
-  return errors;
-}
+const STEPS = ['Choose', 'Your details', 'Review & pay'];
+const EMPTY_FORM = { name: '', email: '', phone: '', address: '', city: '', state: '', pin: '', note: '' };
+const PAY_ERROR = `The payment couldn’t be started. Please try again in a minute, or write to me at ${CONTACT.email}.`;
 
 const PHONE_PATTERN = /^[6-9]\d{9}$/;
 /* "+91 98765-43210" → "9876543210" */
 const cleanPhone = (p) => p.replace(/\D/g, '').replace(/^(91|0)(?=\d{10}$)/, '');
 
-/* creates the shipping order in Shiprocket (via our /api/order function); never throws for Shiprocket trouble */
-async function createShipment(bag, form) {
+function validate(f) {
+  const errors = {};
+  if (!f.name.trim()) errors.name = 'Add your full name.';
+  if (!f.email.trim()) errors.email = 'Add your email for your order confirmation.';
+  else if (!EMAIL_PATTERN.test(f.email.trim())) errors.email = 'Add the rest of your email, like name@example.com.';
+  if (!PHONE_PATTERN.test(cleanPhone(f.phone))) errors.phone = 'Add a 10-digit mobile number for the courier.';
+  if (!f.address.trim()) errors.address = 'Add the street address.';
+  if (!f.city.trim()) errors.city = 'Add the city.';
+  if (!f.state.trim()) errors.state = 'Add the state.';
+  if (!/^\d{6}$/.test(f.pin.trim())) errors.pin = 'Add a 6-digit PIN code.';
+  return errors;
+}
+
+const userError = (message) => Object.assign(new Error(message), { userFacing: true });
+
+/* 1 · /api/order prices the works, holds them while you pay, and opens a Razorpay order */
+async function startCheckout(bag, form, replaces) {
   const res = await fetch('/api/order', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ works: bag, customer: { ...form, phone: cleanPhone(form.phone) } }),
+    body: JSON.stringify({ works: bag, customer: { ...form, phone: cleanPhone(form.phone) }, replaces }),
   }).catch(() => null);
-  const out = res ? await res.json().catch(() => ({})) : {};
-  if (res && (res.status === 409 || res.status === 422)) throw Object.assign(new Error(out.error), { userFacing: true });
-  if (!res?.ok || !out.orderId) return { orderId: null, shiprocket: { ok: false, error: `Order service unreachable (${res?.status ?? 'network'}).` } };
+  if (!res) throw userError('Couldn’t reach the shop. Check your connection and try again.');
+  const out = await res.json().catch(() => ({}));
+  if ([409, 422, 503].includes(res.status) && out.error) throw userError(out.error);
+  if (!res.ok || !out.razorpayOrderId) throw new Error(`checkout ${res.status}`);
   return out;
 }
 
-/* Choose → details → review → request sent. The selection is the bag, limited to available originals. */
+/* 3 · /api/verify checks the payment signature and confirms the order. If it can't be reached,
+   Razorpay's webhook confirms it on the server anyway, so this never throws. */
+async function confirmPayment(orderId, paid) {
+  try {
+    const res = await fetch('/api/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId, ...paid }),
+    });
+    const out = await res.json().catch(() => ({}));
+    return { confirmed: res.ok && out.status === 'paid', notified: Boolean(out.notified), shiprocket: out.shiprocket, problem: out.problem };
+  } catch {
+    return { confirmed: false, notified: false };
+  }
+}
+
+/* Choose → details → review & pay → paid. The selection is the bag, limited to works that can be bought online. */
 export default function OrderPage() {
   const { bag, setBag, toggle, remove } = useBag();
   const [params] = useSearchParams();
@@ -59,20 +75,21 @@ export default function OrderPage() {
   const [pickError, setPickError] = useState(false);
   const [ack, setAck] = useState(false);
   const [ackError, setAckError] = useState(false);
-  const [sending, setSending] = useState(false);
-  const [sendError, setSendError] = useState(null);
-  const [orderId, setOrderId] = useState(null);
+  const [phase, setPhase] = useState(null); // null · 'starting' · 'paying' · 'confirming'
+  const [payError, setPayError] = useState(null);
+  const [paid, setPaid] = useState(null); // { orderId, email, works, confirmed }
+  const checkout = useRef(null); // the open Razorpay order, reused if the buyer closes the window and tries again
   const panelRef = useRef(null);
   const alive = useRef(true);
   const motion = useMotionApi();
 
-  /* arrive with only what can still be ordered, plus the work picked on its page */
+  /* arrive with only what can still be bought, plus the work picked on its page */
   useEffect(() => {
-    const orderable = new Set(availableWorks().map((w) => w.id));
+    const buyable = new Set(WORKS.filter(isBuyable).map((w) => w.id));
     const picked = params.get('work');
     setBag((b) => {
-      const next = b.filter((id) => orderable.has(id));
-      if (picked && orderable.has(picked) && !next.includes(picked)) next.push(picked);
+      const next = b.filter((id) => buyable.has(id));
+      if (picked && buyable.has(picked) && !next.includes(picked)) next.push(picked);
       return next;
     });
   }, [params, setBag]);
@@ -113,55 +130,84 @@ export default function OrderPage() {
     setErrors(found);
     if (!Object.keys(found).length) setStep(3);
   };
-  const send = async (e) => {
+
+  const pay = async (e) => {
     e.preventDefault();
-    if (sending) return;
+    if (phase) return;
     if (!ack) return setAckError(true);
-    setSending(true);
-    setSendError(null);
+    setPayError(null);
     const botcheck = e.currentTarget.elements.botcheck?.checked;
     const works = bag.map(getWork).filter(Boolean);
-    const collect = form.delivery === 'collect';
-    const receiving = collect
-      ? 'Collect from the studio'
-      : [form.address, form.city, form.state, form.pin, form.country].map((s) => s.trim()).filter(Boolean).join(', ');
+    const total = works.reduce((s, w) => s + priceValue(w), 0);
+    const sig = JSON.stringify([bag, form]);
 
     try {
-      /* 1 · shipping order in Shiprocket (skipped for studio collection) */
-      const shipment = collect ? { orderId: null, shiprocket: null } : await createShipment(bag, form);
-      const orderId = shipment.orderId ?? `KALA-${Date.now().toString(36).toUpperCase()}`;
-      const sr = shipment.shiprocket;
+      /* 1 · start (or reopen) the checkout */
+      setPhase('starting');
+      let session = checkout.current?.sig === sig ? checkout.current : null;
+      if (!session) {
+        session = { sig, ...(await startCheckout(bag, form, checkout.current?.orderId)) };
+        checkout.current = session;
+      }
 
-      /* 2 · the order email to the artist (always) */
-      await sendForm({
-        subject: `New order ${orderId} from ${form.name.trim()}: ${works.map((w) => w.title).join(', ')}`,
-        name: form.name.trim(),
-        email: form.email.trim(),
-        botcheck,
-        fields: {
-          'Order': orderId,
-          'Works': works.map((w) => `${w.title} (${w.price})`).join('\n'),
-          'Phone': form.phone.trim(),
-          'Receiving': receiving,
-          'Shiprocket': collect ? 'Not needed (collecting from the studio)' : sr?.ok ? `Created: Shiprocket order ${sr.orderId}, shipment ${sr.shipmentId}` : `NOT created: ${sr?.error}. Add this order in Shiprocket by hand.`,
-          'Note': form.note.trim(),
-        },
-      });
+      /* 2 · Razorpay's window: UPI QR code, UPI apps, cards, netbanking */
+      setPhase('paying');
+      let payment;
+      try {
+        payment = await payWithRazorpay({
+          ...session,
+          description: works.map((w) => w.title).join(', '),
+          customer: { name: form.name.trim(), email: form.email.trim(), phone: cleanPhone(form.phone) },
+        });
+      } catch (err) {
+        if (!err.dismissed) throw userError(err.message);
+        if (alive.current && err.failure) setPayError(`${err.failure} Nothing was charged. You can try again.`);
+        return;
+      }
+
+      /* 3 · confirm it on the server */
+      setPhase('confirming');
+      const result = await confirmPayment(session.orderId, payment);
+
+      /* the artist's alert, if the server couldn't email it */
+      if (!result.notified) {
+        await sendForm({
+          subject: `Paid order ${session.orderId} from ${form.name.trim()}: ${works.map((w) => w.title).join(', ')}`,
+          name: form.name.trim(),
+          email: form.email.trim(),
+          botcheck,
+          fields: {
+            'Order': session.orderId,
+            'Paid': `${formatINR(total)} · Razorpay payment ${payment.razorpay_payment_id}`,
+            'Works': works.map((w) => `${w.title} (${w.price})`).join('\n'),
+            'Phone': cleanPhone(form.phone),
+            'Ship to': [form.address, form.city, form.state, form.pin, 'India'].map((s) => s.trim()).filter(Boolean).join(', '),
+            'Shiprocket': !result.confirmed ? 'Not confirmed yet: check the Razorpay dashboard, then Shiprocket.' : result.shiprocket?.ok ? 'Created automatically. Assign a courier and ship.' : `NOT created: ${result.shiprocket?.error || 'unknown'}. Add this order in Shiprocket by hand.`,
+            'Check': result.problem || '',
+            'Note': form.note.trim(),
+          },
+        }).catch((err) => console.error('Order alert failed:', err));
+      }
+
+      for (const w of works) w.status = 'sold';
+      checkout.current = null;
       if (!alive.current) return;
-      setOrderId(orderId);
+      setPaid({ orderId: session.orderId, email: form.email.trim(), works: [...bag], confirmed: result.confirmed });
+      setBag([]);
       setStep(4);
     } catch (err) {
-      console.error('Order send failed:', err);
-      if (alive.current) setSendError(err.userFacing ? err.message : SEND_ERROR);
+      console.error('Checkout failed:', err);
+      if (alive.current) setPayError(err.userFacing ? err.message : PAY_ERROR);
     } finally {
-      if (alive.current) setSending(false);
+      if (alive.current) setPhase(null);
     }
   };
+
   const restart = () => {
-    setBag([]);
     setForm(EMPTY_FORM);
     setErrors({});
     setAck(false);
+    setPaid(null);
     setStep(1);
   };
   const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
@@ -189,9 +235,9 @@ export default function OrderPage() {
         </div>
         <div data-intro className="col-[9/13] self-end max-lg:col-span-full max-lg:mt-7">
           <p className="lead">
-            Pick the originals you’d like, tell me where they’re going, and send an order request. I confirm availability and shipping, then send a secure payment link.
+            Pick the originals you’d like, tell me where they’re going, and pay securely with UPI, card or netbanking. I pack and send every painting myself.
           </p>
-          <p className="meta mt-3.5 font-semibold text-success!">Nothing is charged on this site.</p>
+          <p className="meta mt-3.5 font-semibold text-success!">Free shipping within India.</p>
         </div>
         <div data-intro className="relative col-span-full mt-14 mb-4">
           <span
@@ -224,21 +270,22 @@ export default function OrderPage() {
               {step === 3 && (
                 <ReviewStep
                   form={form}
+                  total={formatINR(bag.map(getWork).reduce((s, w) => s + priceValue(w), 0))}
                   ack={ack}
                   ackError={ackError}
-                  sending={sending}
-                  error={sendError}
+                  phase={phase}
+                  error={payError}
                   onAck={(checked) => {
                     setAck(checked);
                     setAckError(false);
                   }}
                   onEdit={() => setStep(2)}
-                  onSubmit={send}
+                  onSubmit={pay}
                 />
               )}
-              {step === 4 && <OrderDone firstName={form.name.trim().split(' ')[0]} orderId={orderId} onRestart={restart} />}
+              {step === 4 && paid && <OrderDone firstName={form.name.trim().split(' ')[0]} {...paid} onRestart={restart} />}
             </div>
-            <OrderSummary selection={bag} canEdit={step <= 2} onRemove={remove} collect={form.delivery === 'collect'} />
+            <OrderSummary selection={step === 4 && paid ? paid.works : bag} canEdit={step <= 2} onRemove={remove} paid={step === 4} />
           </div>
         </div>
       </section>

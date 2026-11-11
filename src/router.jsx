@@ -74,6 +74,11 @@ export const router = createBrowserRouter(
           lazy: page(() => import('@/pages/order/OrderPage')),
           handle: { title: 'Order', curtain: 'Order an original' },
         },
+        {
+          path: 'track',
+          lazy: page(() => import('@/pages/TrackPage')),
+          handle: { title: 'Track your order', curtain: 'Track your order' },
+        },
         { path: '*', element: <Navigate to="/" replace /> },
       ],
     },
