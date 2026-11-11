@@ -3,6 +3,7 @@
         SHIPROCKET_PICKUP_LOCATION             (the pickup address nickname, exactly as in Settings → Pickup Addresses)
    Optional: SHIPROCKET_CHANNEL_NAME (default "Kala") or SHIPROCKET_CHANNEL_ID */
 import { createRequire } from 'node:module';
+import { timedFetch } from './http.js';
 
 const require = createRequire(import.meta.url);
 const DATA = require('../../src/data/works.json');
@@ -12,16 +13,18 @@ const BASE = 'https://apiv2.shiprocket.in/v1/external';
 /* default box for a painting without its own `ship` details (kg, cm) */
 export const DEFAULT_BOX = { weight: 1, length: 50, breadth: 40, height: 6 };
 
-export const configured = () => Boolean(process.env.SHIPROCKET_EMAIL && process.env.SHIPROCKET_PASSWORD && process.env.SHIPROCKET_PICKUP_LOCATION);
+const env = (name) => (process.env[name] || '').trim();
+
+export const configured = () => Boolean(env('SHIPROCKET_EMAIL') && env('SHIPROCKET_PASSWORD') && env('SHIPROCKET_PICKUP_LOCATION'));
 
 /* tokens last 10 days; keep one per warm function instance and refresh after 9 */
 let cached = { token: null, at: 0 };
 async function token(force = false) {
   if (!force && cached.token && Date.now() - cached.at < 9 * 24 * 3600 * 1000) return cached.token;
-  const res = await fetch(`${BASE}/auth/login`, {
+  const res = await timedFetch(`${BASE}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: process.env.SHIPROCKET_EMAIL, password: process.env.SHIPROCKET_PASSWORD }),
+    body: JSON.stringify({ email: env('SHIPROCKET_EMAIL'), password: env('SHIPROCKET_PASSWORD') }),
   });
   const out = await res.json().catch(() => ({}));
   if (!res.ok || !out.token) throw new Error(`Shiprocket login failed: ${out.message || res.status}`);
@@ -31,7 +34,7 @@ async function token(force = false) {
 
 async function call(path, body) {
   for (const retry of [false, true]) {
-    const res = await fetch(`${BASE}${path}`, {
+    const res = await timedFetch(`${BASE}${path}`, {
       method: body ? 'POST' : 'GET',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${await token(retry)}` },
       ...(body ? { body: JSON.stringify(body) } : {}),
@@ -70,17 +73,35 @@ async function channel() {
 /* "₹ 12,000" → 12000 */
 export const rupees = (price) => Number(String(price ?? '').replace(/[^\d.]/g, '')) || 0;
 
-/* the works a customer may order, priced from our own data (never from the browser) */
+/* the works a customer may order, priced from our own data (never from the browser).
+   Throws an error with `taken` = the ids that can't be ordered, so the browser can drop them from the cart. */
+const orderError = (message, taken = []) => Object.assign(new Error(message), { taken });
+
 export function orderableWorks(ids) {
   const byId = new Map(DATA.works.map((w) => [w.id, w]));
-  const works = [...new Set(ids)].map((id) => byId.get(id));
-  if (!works.length || works.some((w) => !w)) throw new Error('Unknown painting in the order.');
+  const unique = [...new Set(ids)];
+  if (!unique.length) throw orderError('Your cart is empty. Choose at least one original.');
+  const unknown = unique.filter((id) => !byId.has(id));
+  if (unknown.length) throw orderError('A painting in your cart is no longer in the shop. It has been taken out; please check your order.', unknown);
+  const works = unique.map((id) => byId.get(id));
   const unavailable = works.filter((w) => String(w.status).trim().toLowerCase() !== 'available');
-  if (unavailable.length) throw new Error(`No longer available: ${unavailable.map((w) => w.title).join(', ')}.`);
+  if (unavailable.length) throw orderError(`No longer available: ${unavailable.map((w) => w.title).join(', ')}.`, unavailable.map((w) => w.id));
   const unpriced = works.filter((w) => rupees(w.price) < 1);
-  if (unpriced.length) throw new Error(`${unpriced.map((w) => w.title).join(', ')} can’t be bought online yet. Please write to me about ${unpriced.length > 1 ? 'them' : 'it'}.`);
+  if (unpriced.length) {
+    throw orderError(`${unpriced.map((w) => w.title).join(', ')} can’t be bought online yet. Please write to me about ${unpriced.length > 1 ? 'them' : 'it'}.`, unpriced.map((w) => w.id));
+  }
   return works;
 }
+
+/* only plain web links from Shiprocket reach the page */
+const safeUrl = (u) => {
+  try {
+    const url = new URL(String(u));
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : null;
+  } catch {
+    return null;
+  }
+};
 
 /* courier status for the "Track your order" page; null until a courier is assigned */
 export async function trackShipment(shipmentId) {
@@ -96,7 +117,7 @@ export async function trackShipment(shipmentId) {
     updated: latest?.date || null,
     eta: t.edd || data.etd || null,
     delivered: Boolean(t.delivered_date) || /delivered/i.test(t.current_status || ''),
-    url: data.track_url || null,
+    url: safeUrl(data.track_url),
   };
 }
 
@@ -120,7 +141,7 @@ export async function createOrder({ orderId, customer, works }) {
     order_id: orderId,
     order_date: today,
     ...(channel_id ? { channel_id } : {}),
-    pickup_location: process.env.SHIPROCKET_PICKUP_LOCATION,
+    pickup_location: env('SHIPROCKET_PICKUP_LOCATION'),
     comment: customer.note?.slice(0, 250) || '',
     billing_customer_name: first,
     billing_last_name: rest.join(' '),

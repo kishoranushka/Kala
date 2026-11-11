@@ -50,7 +50,7 @@ export const CONTACT = {
   reels: 'https://www.instagram.com/chaotic_kishor/reels/',
   youtube: 'https://www.youtube.com/@kishoranushka',
   youtubeHandle: '@kishoranushka',
-  location: '[Location]',
+  location: 'India',
 };
 
 /* Web3Forms access key: commission, contact and order forms are emailed to CONTACT.email.
@@ -58,6 +58,14 @@ export const CONTACT = {
    It's a public key, safe to commit. VITE_WEB3FORMS_KEY in .env.local overrides it. */
 export const FORM_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_KEY || '';
 
-export const LEGAL_LINKS = ['Shipping', 'Returns', 'Privacy', 'Terms'];
+/* footer policy links; the policies themselves are in src/data/policies.js */
+export const LEGAL_LINKS = [
+  { label: 'Shipping', to: '/shipping' },
+  { label: 'Returns', to: '/returns' },
+  { label: 'Terms', to: '/terms' },
+  { label: 'Privacy', to: '/privacy' },
+  { label: 'Cookies', to: '/cookies' },
+];
 
-export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/* same rule as the server (api/order.js) */
+export const EMAIL_PATTERN = /^[^\s@"'<>(),;:\\]+@[^\s@"'<>(),;:\\]+\.[^\s@"'<>(),;:\\]+$/;

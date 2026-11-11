@@ -11,7 +11,7 @@ import TextLink from '@/components/ui/TextLink';
 
 /* the cart slides in from the right; the originals inside settle one after another */
 export default function BagDrawer() {
-  const { bag, remove, drawerOpen, closeDrawer } = useBag();
+  const { bag, remove, drawerOpen, closeDrawer, dropped, clearDropped } = useBag();
   const drawerRef = useRef(null);
   const scrimRef = useRef(null);
   const closeRef = useRef(null);
@@ -34,12 +34,13 @@ export default function BagDrawer() {
   const close = useCallback(() => {
     const done = () => {
       closeDrawer();
+      clearDropped();
       document.querySelector('[data-bag-btn]')?.focus();
     };
     if (!canAnimate()) return done();
     gsap.to(drawerRef.current, { xPercent: 100, duration: 0.6, ease: 'expo.in' });
     gsap.to(scrimRef.current, { autoAlpha: 0, duration: 0.6, onComplete: done });
-  }, [closeDrawer]);
+  }, [closeDrawer, clearDropped]);
   const onKeyDown = useDialogKeys(close);
 
   if (!drawerOpen) return null;
@@ -71,6 +72,11 @@ export default function BagDrawer() {
           </button>
         </div>
 
+        {dropped.length > 0 && (
+          <Notice tone="warn" role="status" className="mx-6 mt-5">
+            {dropped.join(', ')} {dropped.length > 1 ? 'have' : 'has'} sold since you added {dropped.length > 1 ? 'them' : 'it'}, so I’ve taken {dropped.length > 1 ? 'them' : 'it'} out of your cart.
+          </Notice>
+        )}
         {items.length === 0 ? (
           <div className="flex flex-col items-start gap-4 px-6 py-12">
             <p className="font-display text-[30px]/9 font-light">

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import cx from '@/utils/cx';
 import { CONTACT, EMAIL_PATTERN } from '@/data/site';
 import { formatINR, getWork } from '@/data/works';
@@ -41,6 +41,12 @@ function Result({ order }) {
           {stage >= 2 && s && [s.status, s.updated && `updated ${s.updated}`].filter(Boolean).join(' · ')}
         </p>
       </div>
+
+      {order.works.some((w) => w.lost) && (
+        <Notice tone="warn">
+          {order.works.filter((w) => w.lost).map((w) => getWork(w.id)?.title ?? w.title).join(', ')} went to another buyer just before your payment came through. That part is refunded in full; write to me at {CONTACT.email} if you haven’t heard from me.
+        </Notice>
+      )}
 
       {stage > 0 && (
         <ol aria-label="Order progress" className="m-0 grid list-none grid-cols-4 gap-3 p-0">
@@ -98,27 +104,43 @@ function Result({ order }) {
   );
 }
 
+const UNAVAILABLE = 'Tracking is unavailable right now. Please try again shortly.';
+
 export default function TrackPage() {
   const [params] = useSearchParams();
-  const [values, setValues] = useState({ id: params.get('id') || '', email: params.get('email') || '' });
+  const location = useLocation();
+  const navigate = useNavigate();
+  /* the email comes from the thank-you screen (router state) or an older link (?email=) */
+  const [values, setValues] = useState({ id: params.get('id') || '', email: location.state?.email || params.get('email') || '' });
   const [errors, setErrors] = useState({});
   const [state, setState] = useState({ loading: false, order: null, error: null });
   const auto = useRef(Boolean(values.id && values.email));
+  const latest = useRef(0);
 
   const lookup = async ({ id, email }) => {
+    const ticket = ++latest.current; // only the newest lookup may update the page
     setState({ loading: true, order: null, error: null });
+    let res;
     try {
-      const res = await fetch(`/api/track?id=${encodeURIComponent(id.trim())}&email=${encodeURIComponent(email.trim())}`);
-      const out = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(out.error || 'Tracking is unavailable right now. Please try again shortly.');
-      setState({ loading: false, order: out, error: null });
-    } catch (err) {
-      setState({ loading: false, order: null, error: err.message === 'Failed to fetch' ? 'Couldn’t reach the shop. Check your connection.' : err.message });
+      res = await fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id.trim(), email: email.trim() }),
+        signal: AbortSignal.timeout ? AbortSignal.timeout(20000) : undefined,
+      });
+    } catch {
+      if (ticket === latest.current) setState({ loading: false, order: null, error: 'Couldn’t reach the shop. Check your connection and try again.' });
+      return;
     }
+    const out = await res.json().catch(() => ({}));
+    if (ticket !== latest.current) return;
+    if (!res.ok || !out.id) setState({ loading: false, order: null, error: out.error || UNAVAILABLE });
+    else setState({ loading: false, order: out, error: null });
   };
 
-  /* arriving from the confirmation link: look it up straight away */
+  /* arriving from the confirmation: look it up straight away, and drop the email from the address bar */
   useEffect(() => {
+    if (params.get('email')) navigate(`/track?id=${encodeURIComponent(values.id)}`, { replace: true, state: location.state });
     if (auto.current) {
       auto.current = false;
       lookup(values);
@@ -127,6 +149,7 @@ export default function TrackPage() {
 
   const submit = (e) => {
     e.preventDefault();
+    if (state.loading) return;
     const found = {};
     if (!/^\s*kala-[a-z0-9]{4,20}\s*$/i.test(values.id)) found.id = 'Add your order reference, like KALA-MH8K2Q1A.';
     if (!EMAIL_PATTERN.test(values.email.trim())) found.email = 'Add the email you ordered with.';

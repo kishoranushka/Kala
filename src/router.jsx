@@ -79,6 +79,17 @@ export const router = createBrowserRouter(
           lazy: page(() => import('@/pages/TrackPage')),
           handle: { title: 'Track your order', curtain: 'Track your order' },
         },
+        ...[
+          ['shipping', 'Shipping & delivery'],
+          ['returns', 'Returns & refunds'],
+          ['terms', 'Terms & conditions'],
+          ['privacy', 'Privacy policy'],
+          ['cookies', 'Cookie policy'],
+        ].map(([path, title]) => ({
+          path,
+          lazy: page(() => import('@/pages/PolicyPage')),
+          handle: { title, curtain: title },
+        })),
         { path: '*', element: <Navigate to="/" replace /> },
       ],
     },

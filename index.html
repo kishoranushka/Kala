@@ -1,20 +1,41 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-IN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="KALA by Anushka Kishor: hand-painted canvases, mandalas, murals and painted wearables." />
-    <title>KALA by Anushka Kishor</title>
+    <!--seo:head-->
+    <title>KALA by Anushka Kishor · Original Paintings, Mandalas & Murals</title>
+    <meta name="description" content="Hand-painted canvases, dot mandalas, devotional art, wall murals and painted wearables by Indian artist Anushka Kishor. Buy an original or commission one." />
+    <!--/seo:head-->
+    <meta name="author" content="Anushka Kishor" />
+    <meta name="theme-color" content="#f6f2eb" />
+    <meta property="og:site_name" content="KALA by Anushka Kishor" />
+    <meta property="og:locale" content="en_IN" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="alternate" type="text/plain" title="LLM summary" href="/llms.txt" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap"
     />
+    <!-- the pre-rendered page text (for crawlers) stays visually hidden; without JavaScript it shows -->
+    <style>
+      #seo-static { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    </style>
+    <noscript>
+      <style>
+        #seo-static { position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; max-width: 720px; margin: 0 auto; padding: 32px 16px; font-family: Manrope, sans-serif; color: #22211f; }
+        #seo-static img { max-width: 100%; height: auto; }
+      </style>
+    </noscript>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><!--seo:body--></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

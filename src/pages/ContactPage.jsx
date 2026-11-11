@@ -81,7 +81,7 @@ function MandalaO() {
 }
 
 function MessageForm() {
-  const { formRef, errors, sending, failed, done, result, submit, reset } = useFormFlow(validate, sendMessage);
+  const { formRef, errors, sending, failed, failMessage, done, result, submit, reset } = useFormFlow(validate, sendMessage);
 
   if (done) {
     return (
@@ -133,7 +133,7 @@ function MessageForm() {
       <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       {failed && (
         <Notice tone="error" role="alert">
-          {SEND_ERROR}
+          {failMessage || SEND_ERROR}
         </Notice>
       )}
       <div className="flex flex-wrap items-center gap-5">

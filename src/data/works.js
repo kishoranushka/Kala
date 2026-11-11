@@ -13,6 +13,8 @@ const img = (file) => {
   if (!IMAGES[file]) console.warn(`[works] missing image: src/assets/images/${file}`);
   return IMAGES[file];
 };
+/* built URL of an image by file name, or undefined (used by src/seo) */
+export const imageSrc = (file) => IMAGES[file];
 
 /* every status pairs a word with a shape, never colour alone (see StatusBadge) */
 export const STATUS = {

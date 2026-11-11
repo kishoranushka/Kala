@@ -9,11 +9,20 @@ The KALA website, built with React, Tailwind CSS v4 and GSAP from the KALA Websi
 ```bash
 npm install
 npm run dev       # http://localhost:5173
-npm run build     # production build in dist/
+npm run build     # production build in dist/ (+ SEO pre-render, see below)
 npm run preview   # serve the production build
+npm run og        # re-render social cards + app icons into public/ (needs Edge/Chrome)
 ```
 
 Add `?still` to any URL to see the page in its final, motionless state (handy for screenshots).
+
+## SEO
+
+- **Copy:** every page's, collection's and painting's title + description lives in `src/seo/copy.json`. A painting's description ends with a line generated from its status/price (e.g. "₹2,000, free shipping in India."), so it stays right when the price or status changes. A painting with no entry still gets a generated title and description.
+- **Logic:** `src/seo/meta.js` (titles, canonical, Open Graph/Twitter, robots, JSON-LD: Organization, Person, WebSite, Product + VisualArtwork with Offer, BreadcrumbList, CollectionPage/ItemList, Service). Used by the browser (`src/seo/useSeo.js`, updates `<head>` on navigation) and by the build.
+- **Build:** `scripts/seo/build.mjs` runs after `vite build` and writes `dist/<route>.html` for every route with its own head and the page text in a hidden `#seo-static` block (for crawlers that don't run JavaScript; React replaces it), plus `sitemap.xml` (with images), `llms.txt` and `llms-full.txt`. Vercel serves them via `cleanUrls`.
+- **Static:** `public/robots.txt` (AI crawlers allowed), `public/site.webmanifest`, icons, `public/og/*.jpg` (1200×630 cards: one per painting, collection and main page).
+- **After adding a painting:** add its copy to `src/seo/copy.json` (optional), run `npm run og -- <id>`, commit `public/og/<id>.jpg`, push.
 
 ## Changing colours and fonts
 

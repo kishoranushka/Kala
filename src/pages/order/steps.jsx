@@ -27,7 +27,7 @@ function StepHeading({ step, id, title, children }) {
 }
 
 /* ------------------------------------------------------------------ 1 · choose */
-export function ChooseStep({ selection, onToggle, onContinue, pickError }) {
+export function ChooseStep({ selection, onToggle, onContinue, pickError, notices = [] }) {
   /* worked out on each visit: a painting bought a moment ago is already Sold */
   const available = WORKS.filter(isBuyable);
   const unavailable = WORKS.filter((w) => w.status !== 'available');
@@ -37,6 +37,12 @@ export function ChooseStep({ selection, onToggle, onContinue, pickError }) {
         <StepHeading step={1} title="Choose your originals" />
         <p className="meta">Tap a work to add it. Tap again to remove it.</p>
       </div>
+      {notices.map((text) => (
+        <Notice key={text} tone="warn" role="status">
+          {text}
+        </Notice>
+      ))}
+      {available.length === 0 && <p className="meta">Every original is spoken for right now. Commission something, or check back soon.</p>}
 
       <div data-stagger className="grid grid-cols-3 items-start gap-x-6 gap-y-7 max-lg:grid-cols-2 max-sm:gap-x-3.5 max-sm:gap-y-5">
         {available.map((w) => {
@@ -180,6 +186,7 @@ const PAY_LABEL = { starting: 'Opening payment…', paying: 'Waiting for payment
 
 export function ReviewStep({ form, total, ack, ackError, phase, error, onAck, onEdit, onSubmit }) {
   const shipTo = [form.address, form.city, form.state, form.pin, 'India'].map((s) => s.trim()).filter(Boolean).join(', ');
+  const busy = Boolean(phase);
 
   return (
     <form noValidate onSubmit={onSubmit} aria-labelledby="rev-h" className="flex flex-col gap-6">
@@ -187,7 +194,7 @@ export function ReviewStep({ form, total, ack, ackError, phase, error, onAck, on
       <div className="bg-surface p-6">
         <div className="flex items-baseline justify-between gap-4">
           <p className="eyebrow">Your details</p>
-          <button type="button" onClick={onEdit} className="h-8 cursor-pointer border-0 bg-transparent p-0 font-sans text-[13px] font-semibold text-link">
+          <button type="button" onClick={onEdit} disabled={busy} className="h-8 cursor-pointer border-0 bg-transparent p-0 font-sans text-[13px] font-semibold text-link disabled:cursor-not-allowed disabled:opacity-50">
             Edit
           </button>
         </div>
@@ -212,8 +219,16 @@ export function ReviewStep({ form, total, ack, ackError, phase, error, onAck, on
           <li>I pack your painting with care and ship it. The courier’s tracking reaches you by SMS and email.</li>
         </ol>
       </div>
-      <Checkbox name="ack" checked={ack} onChange={(e) => onAck(e.target.checked)} aria-invalid={ackError || undefined} aria-describedby={ackError ? 'oe-ack' : undefined}>
-        My details are correct, and I understand each painting is a one-of-a-kind original.
+      <Checkbox name="ack" checked={ack} disabled={busy} onChange={(e) => onAck(e.target.checked)} aria-invalid={ackError || undefined} aria-describedby={ackError ? 'oe-ack' : undefined}>
+        My details are correct, I understand each painting is a one-of-a-kind original, and I agree to the{' '}
+        <a href="/terms" target="_blank" rel="noopener" className="font-semibold text-link">
+          Terms
+        </a>{' '}
+        and{' '}
+        <a href="/returns" target="_blank" rel="noopener" className="font-semibold text-link">
+          Returns policy
+        </a>
+        : once my order is confirmed it can’t be cancelled, returned or refunded.
       </Checkbox>
       {ackError && (
         <FieldError id="oe-ack" role="alert">
@@ -227,30 +242,54 @@ export function ReviewStep({ form, total, ack, ackError, phase, error, onAck, on
         </Notice>
       )}
       <div className={NAV_ROW}>
-        <TextLink onClick={onEdit}>Back to your details</TextLink>
-        <Button type="submit" data-magnetic aria-busy={Boolean(phase)}>
+        <TextLink onClick={onEdit} disabled={busy} className="disabled:cursor-not-allowed disabled:opacity-50">
+          Back to your details
+        </TextLink>
+        <Button type="submit" data-magnetic aria-busy={busy} aria-disabled={busy || undefined}>
           {PAY_LABEL[phase] ?? `Pay ${total}`}
         </Button>
       </div>
+      {phase === 'paying' && (
+        <p className="meta" role="status">
+          Finish paying in the Razorpay window. If you close it without paying, nothing is charged and you can try again.
+        </p>
+      )}
+      {phase === 'confirming' && (
+        <p className="meta" role="status">
+          Payment received. Please keep this page open for a moment while I confirm your order.
+        </p>
+      )}
     </form>
   );
 }
 
 /* ------------------------------------------------------------------ done */
-export function OrderDone({ firstName, orderId, email, confirmed, onRestart }) {
-  const track = `/track?id=${encodeURIComponent(orderId)}&email=${encodeURIComponent(email)}`;
+export function OrderDone({ firstName, orderId, email, confirmed, lost = [], works = [], onRestart }) {
+  /* the email travels in router state, not the URL (history, shared links) */
+  const track = `/track?id=${encodeURIComponent(orderId)}`;
+  const allLost = lost.length > 0 && lost.length >= works.length;
   return (
     <FormSuccess eyebrow="Payment received" name={firstName || 'there'} titleClassName="heading-2" className="gap-6">
+      {lost.length > 0 && (
+        <Notice tone="warn" role="alert">
+          I’m sorry: {lost.join(', ')} went to another buyer moments before your payment came through. You’ll get a full refund for{' '}
+          {allLost ? 'your payment' : 'that part'}, and I’ll write to you at {email} shortly.
+        </Notice>
+      )}
       <p className="lead">
-        {confirmed
-          ? 'Your order is confirmed. I’ll pack your painting with care and send it soon. Once it ships, the courier’s tracking reaches you by SMS and email.'
-          : 'Your payment went through and your order is being confirmed. That can take a few minutes; you don’t need to pay again.'}
+        {allLost
+          ? 'Nothing else is needed from you; the refund goes back the way you paid.'
+          : confirmed
+            ? 'Your order is confirmed. I’ll pack your painting with care and send it soon. Once it ships, the courier’s tracking reaches you by SMS and email.'
+            : 'Your payment went through and your order is being confirmed. That can take a few minutes; you don’t need to pay again.'}
       </p>
       <p className="meta">
         Your order reference is <b className="font-semibold text-primary">{orderId}</b>. With it and your email you can track your order any time. Razorpay also emails you a payment receipt.
       </p>
       <div className="flex flex-wrap gap-4">
-        <Button to={track}>Track Your Order</Button>
+        <Button to={track} state={{ email }}>
+          Track Your Order
+        </Button>
         <Button variant="secondary" to="/shop">
           Back to the Shop
         </Button>

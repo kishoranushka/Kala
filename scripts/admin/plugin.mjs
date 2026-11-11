@@ -61,6 +61,20 @@ async function usagesOf(id) {
   return hits;
 }
 
+/* the request comes from a page on this dev server, on this machine */
+function sameOrigin(req) {
+  const host = String(req.headers.host || '');
+  const origin = req.headers.origin;
+  if (!/^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i.test(host)) return false;
+  if (req.headers['sec-fetch-site'] && req.headers['sec-fetch-site'] !== 'same-origin') return false;
+  if (!origin) return false;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+}
+
 const FIELD_ORDER = ['id', 'plate', 'title', 'collection', 'status', 'price', 'medium', 'size', 'year', 'framing', 'archiveNo', 'image', 'w', 'h', 'crop', 'room', 'ship', 'alt', 'note', 'details'];
 
 function clean(work) {
@@ -127,6 +141,9 @@ export default function worksAdmin() {
     configureServer(server) {
       server.middlewares.use('/__admin', async (req, res) => {
         const url = new URL(req.url, 'http://local');
+        /* Only the editor itself may change files. Without this, any website open in the browser while
+           `npm run dev` runs could POST here (CSRF) and rewrite works.json, e.g. the prices. */
+        if (req.method !== 'GET' && !sameOrigin(req)) return send(res, 403, { error: 'Requests must come from the editor page.' });
         try {
           if (req.method === 'GET' && (url.pathname === '/' || url.pathname === '')) {
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -137,6 +154,7 @@ export default function worksAdmin() {
             return send(res, 200, { ...data, images: await listImages() });
           }
           if (req.method === 'POST' && url.pathname === '/api/works') {
+            if (!String(req.headers['content-type']).startsWith('application/json')) return send(res, 415, { error: 'Expected JSON.' });
             const { works } = JSON.parse((await readBody(req)).toString('utf8'));
             if (!Array.isArray(works)) return send(res, 400, { error: 'Expected a list of paintings.' });
             const data = await readData();

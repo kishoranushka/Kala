@@ -1,0 +1,218 @@
+{
+  "site": {
+    "url": "https://kala.anushkakishor.in",
+    "name": "KALA",
+    "brand": "KALA by Anushka Kishor",
+    "artist": "Anushka Kishor",
+    "tagline": "Colour, devotion and a little chaos.",
+    "summary": "KALA is the online studio of India-based artist Anushka Kishor: original hand-painted acrylic paintings (devotional art, dot-work mandalas, portraits and small works), hand-painted wall murals and custom painted wearables.",
+    "email": "kishoranushka96@gmail.com",
+    "sameAs": ["https://www.instagram.com/chaotic_kishor/", "https://www.youtube.com/@kishoranushka"],
+    "knowsAbout": ["Acrylic painting", "Mandala art", "Dot painting", "Devotional art", "Wall murals", "Portrait painting", "Hand-painted clothing"]
+  },
+
+  "pages": {
+    "/": {
+      "title": "Original Paintings, Mandalas & Murals",
+      "description": "Hand-painted canvases, dot mandalas, devotional art, wall murals and painted wearables by Indian artist Anushka Kishor. Buy an original or commission one.",
+      "h1": "Colour, devotion and a little chaos.",
+      "og": "default"
+    },
+    "/shop": {
+      "title": "Shop Original Paintings Online",
+      "description": "Buy original hand-painted acrylic paintings by Anushka Kishor: devotional art, mandalas and small canvases. One of each, packed by hand, free shipping in India.",
+      "h1": "Paintings to take home",
+      "og": "shop"
+    },
+    "/collections": {
+      "title": "Collections: Five Chapters of Original Art",
+      "description": "Explore KALA’s five chapters by Anushka Kishor: devotional paintings, mandala studies, portraits, wall murals and small works. Open a chapter to see every piece.",
+      "h1": "Five chapters of work",
+      "og": "collections"
+    },
+    "/archive": {
+      "title": "Archive: Sold Paintings & Past Murals",
+      "description": "Paintings that have found their walls and murals that stay where they were painted. Browse Anushka Kishor’s archive and commission something in the same spirit.",
+      "h1": "The uncollectable collection",
+      "og": "archive"
+    },
+    "/walls": {
+      "title": "Wall Mural Artist: Hand-Painted Murals",
+      "description": "Hire Anushka Kishor to hand-paint a wall mural for your home, office, café, school or studio: mandalas, florals and custom designs. Start a wall enquiry.",
+      "h1": "Your walls, painted by hand",
+      "og": "walls"
+    },
+    "/artist": {
+      "title": "About Anushka Kishor, Painter & Mural Artist",
+      "description": "Meet Anushka Kishor, the artist behind KALA, who builds software by day and paints by passion: devotional art, mandalas, murals and painted wearables.",
+      "h1": "Hello, I’m Anushka Kishor",
+      "og": "artist"
+    },
+    "/commission": {
+      "title": "Commission a Painting, Portrait or Mural",
+      "description": "Commission a custom hand-painted artwork from Anushka Kishor: a painting for a room, a portrait of someone you love, a wall mural or a painted wearable.",
+      "h1": "Begin with an idea",
+      "og": "commission"
+    },
+    "/contact": {
+      "title": "Contact Anushka Kishor",
+      "description": "A question about a painting, shipping, a collaboration or a commission? Write to Anushka Kishor, the artist behind KALA. Every message is read personally.",
+      "h1": "Say hello",
+      "og": "contact"
+    },
+    "/order": {
+      "title": "Order an Original Painting",
+      "description": "Order original paintings by Anushka Kishor and pay securely with UPI, card or netbanking. Every painting is packed by the artist; free shipping in India.",
+      "h1": "Choose a work",
+      "og": "order",
+      "noindex": true
+    },
+    "/track": {
+      "title": "Track Your Order",
+      "description": "Track a KALA order with the reference from your confirmation email and the email you ordered with. No account needed.",
+      "h1": "Where is my painting?",
+      "og": "track",
+      "noindex": true
+    },
+    "/shipping": {
+      "title": "Shipping & Delivery Policy",
+      "description": "KALA ships original paintings free within India. Each painting is packed by the artist and handed to a tracked courier within 7 working days of payment.",
+      "h1": "From my hands to your wall",
+      "og": "default"
+    },
+    "/returns": {
+      "title": "Returns, Refunds & Cancellations",
+      "description": "All sales of KALA original paintings are final: no cancellations, returns or refunds after order confirmation. Transit damage reported within 48 hours is repaired or replaced.",
+      "h1": "All sales are final",
+      "og": "default"
+    },
+    "/terms": {
+      "title": "Terms & Conditions",
+      "description": "The terms for buying original paintings and commissioning work from KALA by Anushka Kishor: orders, payment, shipping, final sales, copyright and disputes.",
+      "h1": "The terms of the shop",
+      "og": "default"
+    },
+    "/privacy": {
+      "title": "Privacy Policy",
+      "description": "How KALA by Anushka Kishor collects, uses, shares and protects your personal data under India’s Digital Personal Data Protection Act, 2023, and how to use your rights.",
+      "h1": "Your details, kept with care",
+      "og": "default"
+    },
+    "/cookies": {
+      "title": "Cookie Policy",
+      "description": "KALA sets no cookies of its own and uses no analytics or advertising trackers. Your cart lives in local storage on your device; Razorpay sets its own cookies at payment.",
+      "h1": "No tracking, just the essentials",
+      "og": "default"
+    }
+  },
+
+  "collections": {
+    "devotional": {
+      "title": "Devotional Paintings: Krishna, Radha, Ganesha & Buddha",
+      "description": "Hand-painted devotional art by Anushka Kishor: Krishna and Radha, Ganesha, Vitthal and Buddha in acrylic. Original paintings to buy, enquire about or commission."
+    },
+    "mandala": {
+      "title": "Mandala & Dot Art Paintings",
+      "description": "Dot-work mandala paintings by Anushka Kishor, from the Om Mandala on deep ultramarine to mandala wall murals. See the series or commission your own mandala."
+    },
+    "portraits": {
+      "title": "Portrait Paintings & Custom Portrait Commissions",
+      "description": "Acrylic portraits and personal pieces by Anushka Kishor. See the portraits chapter, then commission a hand-painted portrait of someone you love."
+    },
+    "murals": {
+      "title": "Wall Murals for Homes, Schools & Offices",
+      "description": "Hand-painted wall murals by Anushka Kishor: mandala murals for homes and chalkboard murals for schools and offices. See past walls and commission yours."
+    },
+    "small": {
+      "title": "Small Paintings: Little Canvases & Sketchbook Art",
+      "description": "Small, joyful originals by Anushka Kishor: a peacock, a happy cat, a little Buddha, sunflowers and sketchbook pages. Affordable original art to buy or enquire about."
+    }
+  },
+
+  "works": {
+    "krishna": {
+      "title": "Krishna and Radha, Original Acrylic Painting",
+      "lead": "Hand-painted Krishna and Radha, acrylic on A3 (2021) in a wooden frame: cobalt-blue Krishna and Radha on warm ochre."
+    },
+    "om": {
+      "title": "Om Mandala, Dot Art Acrylic Painting",
+      "lead": "A dot-work Om mandala glowing saffron on deep ultramarine, acrylic on A4 canvas (2022) by Anushka Kishor."
+    },
+    "child": {
+      "title": "Child Portrait, Original Acrylic Painting",
+      "lead": "A sleeping child in rose, vermilion and magenta over violet, with sculpted roses: acrylic on A3 canvas (2020)."
+    },
+    "ganesha": {
+      "title": "Ganesha, Framed Original Acrylic Painting",
+      "lead": "A stylised Ganesha in cobalt and periwinkle with saffron and vermilion curves on black: acrylic on A3 (2020), framed."
+    },
+    "mural": {
+      "title": "Mandala Wall Mural, Hand-Painted in a Home",
+      "lead": "A half-mandala mural in crimson, saffron, lilac and turquoise petals with teal leaves, hand-painted on a home wall (2020)."
+    },
+    "chalk": {
+      "title": "Think Out of the Box, Wall Mural in Bhopal",
+      "lead": "A chalkboard-black mural with a lightbulb full of gears and cascading squares, hand-painted on site in Bhopal (2022)."
+    },
+    "vitthal": {
+      "title": "Vitthal, Original Acrylic Painting on Indigo",
+      "lead": "Vitthal with closed eyes, a saffron-and-gold crown and sunburst earrings on deep indigo: acrylic on A3 (2021)."
+    },
+    "flute": {
+      "title": "Flute and Veena, Framed Krishna Painting",
+      "lead": "A serene face with gold-beaded hair, blue Krishna with his flute and a veena, in cobalt and sky blue: acrylic, A3 (2020)."
+    },
+    "krishnachild": {
+      "title": "Krishna and a Child, Small Acrylic Painting",
+      "lead": "Krishna and a child in a yellow dress lean on a railing, seen from behind on soft green: a small acrylic on A5 (2026)."
+    },
+    "escape": {
+      "title": "The Escape Key Exists for a Reason, Acrylic",
+      "lead": "A small figure climbs out of a keyboard, lifting the Esc key like a hatch: a witty acrylic painting on A4 canvas (2026)."
+    },
+    "bloom": {
+      "title": "Just Bloom, Painted Lotus Sketchbook Spread",
+      "lead": "A saffron sketchbook spread with white lotus line drawings and “Just Bloom” in red script, painted in acrylic (2019)."
+    },
+    "radhakrishna": {
+      "title": "Radha and Krishna in Blue, Framed Painting",
+      "lead": "Radha with a crown of golden dots and a small blue Krishna with his flute, on bright blue: acrylic, A3 (2020), exhibited."
+    },
+    "buddha": {
+      "title": "Buddha with Lotus, Original Acrylic on Canvas",
+      "lead": "Half of a serene green Buddha face above a coral lotus on shimmering dark green: acrylic on A3 canvas (2022), signed."
+    },
+    "sunflower": {
+      "title": "Sunflower, Original Acrylic Painting",
+      "lead": "A close-up sunflower, saffron and lemon petals around a dark seed head, on deep navy: acrylic on A4 (2019)."
+    },
+    "butterfly": {
+      "title": "Blue Butterfly, Original Acrylic Painting",
+      "lead": "A black butterfly with blue-and-white wing panels resting by blue tulips on bands of green: acrylic on A4 (2019)."
+    },
+    "elephant": {
+      "title": "Little Elephant, Watercolour Painting",
+      "lead": "A watercolour baby elephant in blue blowing three red hearts, under a sky melting from blue to orange and pink, A3."
+    },
+    "peacock": {
+      "title": "Peacock, Small Framed Acrylic Painting",
+      "lead": "A royal-blue peacock with a golden beak and swirling green tail feathers on yellow: a small acrylic (2022), framed."
+    },
+    "babybuddha": {
+      "title": "Little Buddha, Small Acrylic Painting",
+      "lead": "A smiling little monk in blue robes on a pink lotus, white rays on sky blue: a small, signed acrylic painting (2023)."
+    },
+    "cat": {
+      "title": "Happy Cat, Acrylic Painting on Wood",
+      "lead": "A grinning ginger cat with a red heart nose and long whiskers on speckled cobalt blue: acrylic on wood (2024), signed."
+    },
+    "lightning": {
+      "title": "Lightning, Watercolour Sketchbook Painting",
+      "lead": "Branching yellow-white lightning over a smoky orange and red sky: a watercolour in an A4 sketchbook (2021)."
+    },
+    "bicycle": {
+      "title": "Bicycle with Flowers, Acrylic Painting",
+      "lead": "A rust-orange bicycle with a basket of white and blue flowers against a deep blue wash: acrylic on A4 (2021)."
+    }
+  }
+}

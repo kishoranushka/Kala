@@ -55,7 +55,28 @@
 - Studio removed: no "collect from studio"; "Studio" labels → "Based in"; "studio updates" → "updates on new work"; Artist page eyebrow "The work as a landscape"; shop "works in all". Client spaces ("schools, studios" for murals) kept.
 - Tested with a mocked Supabase/Razorpay/Shiprocket/Resend (scratchpad paytest.mjs): all flows OK. SQL itself not run yet.
 
+### 2026-11-11 — SEO + LLM files (uncommitted)
+- `src/seo/copy.json` (hand-written titles/descriptions for all pages, 5 collections, 21 paintings), `src/seo/meta.js` (shared browser/Node: meta, canonical, OG/Twitter, robots, JSON-LD graph), `src/seo/useSeo.js` (replaces the old `document.title` effect in SiteLayout).
+- `npm run build` = vite build + `scripts/seo/build.mjs`: `dist/<route>.html` per route (36) with head + hidden `#seo-static` text, `sitemap.xml`, `llms.txt`, `llms-full.txt`. `vercel.json`: `cleanUrls`, `trailingSlash:false`, noindex header on /order, /track.
+- `npm run og` (`scripts/seo/og.mjs`): Edge-rendered 1200×630 cards → `public/og/` (36: every route has its own) + icons (favicon-32, 192, 512, maskable, apple-touch). `public/robots.txt`, `site.webmanifest`. README has an SEO section.
+
+### 2026-11-11 — Security / cart / error-handling audit (uncommitted)
+- **API:** all outbound calls time out (`timedFetch`, 8 s); JSON answers `no-store`; body cap 64 KB; order ids use crypto random; `/api/order` rate-limited (8 checkouts/15 min per hashed IP stored as `customer.client`, 6 per email → 429); empty/unknown/sold/unpriced works → 409 with `taken` ids; holds released on any failure after insert; `/api/verify` + `/api/track` return `lost` (works another order sold first) via `db.lostWorks`; `/api/track` is POST (GET kept for old links); Shiprocket `track_url` only http(s); webhook 503 (Razorpay retries) when DB not configured, flags underpayment. Customer email names lost works; its track link no longer carries the email.
+- **Cart:** `BagContext` → localStorage + cross-tab `storage` sync, every change sanitised (known + `isBuyable` only), `dropped` titles shown in drawer / order page. Unpriced "available" works (Ganesha…) can't be added to cart → "Price on request" + Ask About This Work.
+- **Order page:** guards empty cart on every step; 409 removes taken works and keeps going; 422 maps to fields on step 2; checkout reuse capped at 15 min; verify retried 3×; Web3Forms fallback alert not awaited (keepalive) and flagged "check payment in Razorpay" when unconfirmed; edit/ack disabled while paying; done screen explains lost works; track link passes email in router state.
+- **Forms:** `sendForm` 20 s timeout + error codes; `useFormFlow` returns `failMessage` (says "form isn't connected yet" when the Web3Forms key is missing). EMAIL_PATTERN = server rule.
+- **Other:** `SmartLink` never renders `javascript:`/`data:` links; `vercel.json` security headers (nosniff, DENY framing, HSTS, referrer, permissions); dev editor `/__admin` POSTs require same-origin localhost + JSON (was CSRF-able).
+- Mocked API test (20 checks) in that session's scratchpad `apitest.mjs`: all pass.
+
+### 2026-11-11 — Policy pages (uncommitted)
+- `/shipping`, `/returns`, `/terms`, `/privacy`, `/cookies`: one `PolicyPage.jsx`, text in `src/data/policies.js` (plain JS, also read by the SEO build → full text in `#seo-static`; `UPDATED` date). Footer legal links live (`LEGAL_LINKS` objects) + "Cookies"; footer year now dynamic.
+- Policy decisions (user, 2026-11-11): all sales final from confirmation (payment success): no cancellation/return/refund. Refund only for duplicate charge, painting can't be sent (sold at same moment / damaged before dispatch), clear pricing error, started within 7 working days. Transit damage: report within 48 h with unboxing video → repair or replacement, no refund. Dispatch within 7 working days. Location = "India" only (courts in India); `CONTACT.location` = 'India'. Grievance officer = Anushka, email.
+- Checkout ack checkbox now agrees to Terms + Returns (links open new tab). Artwork page Shipping/Returns disclosures filled. Offer JSON-LD has `MerchantReturnNotPermitted`.
+- If data handling changes (new service, analytics, storage), update `policies.js` (privacy/cookies) and `UPDATED`.
+
 ## Open / Next up
+
+- **SEO after deploy:** add the site to Google Search Console + Bing Webmaster Tools, submit `/sitemap.xml`, test a painting URL in Rich Results Test. Pre-rendered Product schema reflects works.json at build time — a painting sold online still shows InStock until the next deploy (update status in the editor + push).
 
 - **Payment flow:** Supabase project set up, schema run, `SUPABASE_URL`/`SUPABASE_SECRET_KEY` in `.env.local` + Vercel (verified 2026-11-11: insert, hold_works, update and delete all work). Code committed + pushed (`5f875a8`…`71c1e0b`), live: `/api/availability` 200 from production Supabase, `/track` 200. Still to do: Razorpay webhook + `RAZORPAY_WEBHOOK_SECRET`, confirm Razorpay keys in Vercel, one test purchase (cancel the Shiprocket order after). Test with Razorpay test keys first, then switch to live keys.
 - Set real prices for Ganesha, Vitthal, Happy Cat (and any "₹ 00,000" placeholders) in the editor.
@@ -63,10 +84,11 @@
 - **Shiprocket:** env vars are set (Vercel + `.env.local`); place one real test order, confirm it shows under the Kala channel, then cancel it.
 
 - **Paste the Web3Forms access key** (from web3forms.com, made with kishoranushka96@gmail.com) into `FORM_ACCESS_KEY` in `src/data/site.js`, then test each form once. Without it, forms show the "couldn't be sent" error.
-- Placeholder content (`[Medium]`, `[Size]`, `[Location]`, reel titles/links, bios) — needs real values from the artist.
+- Placeholder content (`[Medium]`, `[Size]`, artwork "Framing & care" note, commission budget `[Range A/B/C]`, reel titles/links, bios) — needs real values from the artist.
 
 ## Decisions & gotchas
 
+- Shiprocket API login must be a separate **API user** (Settings → API → Configure → Create API user) with an email different from the main account (kishoranushka96@gmail.com). Main-account login → 403 "login detail incorrect" (cause of the first paid order KALA-MWCEBLHA2PS not reaching Shiprocket, 2026-11-11). Env values are trimmed in code. Fixed with a new API user; KALA-MWCEBLHA2PS re-pushed by hand (Shiprocket order 1722298468, test — cancel it). Shiprocket's `/channels` only lists "CUSTOM" (id 12903893, shown in the panel as "KALA (CUSTOM)") — that's the Kala channel; set `SHIPROCKET_CHANNEL_ID=12903893` to skip the name lookup.
 - "Flute and Veena" and "Radha and Krishna in Blue" look alike but are different paintings (confirmed by user) — keep both.
 - Faithful to the canvas; keep motion data attributes (`data-reveal`, `data-words`, `data-spin`…). Page choreography via `usePageMotion(fn)`.
 - Colours/fonts: change only in the THEME block of `src/styles/index.css`; use role classes (`bg-primary`, `text-secondary`…), never raw hex in JSX.
@@ -75,10 +97,13 @@
 - Visual check: `npx vite preview --port 4173`, then Edge headless screenshot with `?still` (freezes motion; GSAP doesn't advance under headless virtual time). Edge min window ≈500px → for phone, load page in a 390px iframe.
 - Canvas files: Artifact read with `path` = `project/X.dc.html`; images: `path` = bare 32-hex blob id, one per call.
 - Windows PowerShell 5.1: no `&&`; `Get-Content` shows UTF-8 as mojibake (files are fine). Don't rewrite files via `Get-Content | Set-Content` — it corrupts UTF-8; use Edit/Write. Start the preview with `Start-Process cmd.exe -ArgumentList '/c','npx vite preview …'`.
+- SEO copy is in `src/seo/copy.json`, not works.json; new painting → optional copy entry + `npm run og -- <id>`. Don't remove the `<!--seo:head-->`/`<!--seo:body-->` markers in `index.html` (build fails without them).
 - New paintings: use the editor (`npm run admin`). Other photos: drop JPG in `src/assets/images/`, run `node scripts/optimize-images.mjs`, reference the `.webp` via `img('name.webp')` in `works.js`, delete the JPG.
 
 ## Session log
 
+- 2026-11-11 — Audit: API hardening (timeouts, rate limit, lost-race handling), cart sanitise + cross-tab sync, order-page error recovery, form error messages, security headers, editor CSRF. Builds clean; mocked API tests pass; uncommitted.
+- 2026-11-11 — SEO: per-route pre-rendered HTML, JSON-LD, sitemap, robots, llms.txt/llms-full.txt, 34 OG cards, icons, manifest. Builds clean, verified in preview; uncommitted.
 - 2026-11-11 — Razorpay + Supabase checkout, /track page, studio text removed. Builds clean; mocked tests pass; uncommitted, not deployed (needs env + schema first).
 - 2026-11-11 — Editor, logo, Shiprocket; committed in 6 commits, pushed, deployed to kala.anushkakishor.in. Next: Web3Forms key, Shiprocket test order.
 - 2026-11-11 — Painting data → works.json + local editor at /__admin (npm run admin). Builds clean.

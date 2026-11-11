@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "admin": "vite --open /__admin",
-    "build": "vite build",
+    "build": "vite build && node scripts/seo/build.mjs",
+    "og": "node scripts/seo/og.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

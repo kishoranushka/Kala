@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import cx from '@/utils/cx';
 import { CONTACT } from '@/data/site';
-import { WORKS, getWork, isAvailable, plateLabel, ratioOf } from '@/data/works';
+import { WORKS, getWork, isAvailable, isBuyable, plateLabel, ratioOf } from '@/data/works';
 import { useBag } from '@/context/BagContext';
 import { cartOffLabel } from '@/components/art/CartButton';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
@@ -53,6 +53,18 @@ function CartOff({ work }) {
 }
 
 function StatusActions({ work, inBag, adding, onAdd, onOpenBag }) {
+  /* available, but no price set yet: it can't be paid for online */
+  if (work.status === 'available' && !isBuyable(work)) {
+    return (
+      <>
+        <CartOff work={work} />
+        <p className="meta">This original is for sale. Write to me for the price and I’ll arrange everything with you.</p>
+        <Button block to="/contact" data-magnetic data-cursor="talk">
+          Ask About This Work
+        </Button>
+      </>
+    );
+  }
   if (work.status === 'available') {
     return (
       <>
@@ -145,10 +157,11 @@ function ArtworkView({ work }) {
   const current = views[viewIndex] ?? views[0];
   const story = work.details[0] ?? { origin: '50% 50%', scale: 1.6 };
   const available = isAvailable(work);
-  const inBag = available && bag.includes(work.id);
+  const buyable = isBuyable(work);
+  const inBag = buyable && bag.includes(work.id);
 
   const addToBag = () => {
-    if (adding || inBag) return;
+    if (adding || inBag || !buyable) return;
     setAdding(true);
     timers.current.add = setTimeout(() => {
       add(work.id);
@@ -263,9 +276,13 @@ function ArtworkView({ work }) {
               </div>
 
               <div data-intro className="mt-8">
-                <Disclosure title="Shipping & delivery">[Shipping details to be supplied: where you ship, how paintings are packed, and how long it usually takes.]</Disclosure>
+                <Disclosure title="Shipping & delivery">
+                  Free shipping within India. I pack every painting myself and hand it to a tracked courier within 7 working days of payment; tracking reaches you by SMS and email. Ordering from abroad? <Link to="/contact" className="font-semibold text-link">Write to me</Link>. <Link to="/shipping" className="font-semibold text-link">Shipping policy</Link>
+                </Disclosure>
                 <Disclosure title="Framing & care">[Framing and care notes to be supplied.]</Disclosure>
-                <Disclosure title="Returns">[Returns policy to be supplied.]</Disclosure>
+                <Disclosure title="Returns">
+                  Each painting is a one-of-a-kind original, so all sales are final: no cancellations, returns or refunds once your order is confirmed. If it arrives damaged in transit, tell me within 48 hours with an unboxing video and I’ll repair or replace it. <Link to="/returns" className="font-semibold text-link">Returns policy</Link>
+                </Disclosure>
               </div>
             </aside>
           </div>
@@ -353,7 +370,7 @@ function ArtworkView({ work }) {
       </InverseSection>
 
       {/* ============================== MOBILE BUY BAR */}
-      {available && !inBag && (
+      {buyable && !inBag && (
         <div className="fixed right-0 bottom-0 left-0 z-55 hidden items-center justify-between gap-4 bg-surface px-5 py-3 shadow-[0_-12px_32px_-16px_rgba(34,33,31,.3)] max-lg:flex">
           <span className="flex min-w-0 flex-col">
             <span className="truncate font-display text-xl/6 font-medium">{work.title}</span>

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { CONTACT, EMAIL_PATTERN } from '@/data/site';
-import { WORKS, formatINR, getWork, isBuyable, priceValue } from '@/data/works';
+import { formatINR, getWork, isBuyable, priceValue } from '@/data/works';
 import { sendForm } from '@/utils/sendForm';
 import { payWithRazorpay } from '@/utils/razorpay';
 import { useBag } from '@/context/BagContext';
@@ -15,59 +15,83 @@ import { ChooseStep, DetailsStep, OrderDone, ReviewStep } from './steps';
 const STEPS = ['Choose', 'Your details', 'Review & pay'];
 const EMPTY_FORM = { name: '', email: '', phone: '', address: '', city: '', state: '', pin: '', note: '' };
 const PAY_ERROR = `The payment couldn’t be started. Please try again in a minute, or write to me at ${CONTACT.email}.`;
+/* a Razorpay order is reused if the buyer closes the window and tries again, but only while
+   the paintings are still held for them (20 min on the server) */
+const SESSION_MINUTES = 15;
 
 const PHONE_PATTERN = /^[6-9]\d{9}$/;
 /* "+91 98765-43210" → "9876543210" */
 const cleanPhone = (p) => p.replace(/\D/g, '').replace(/^(91|0)(?=\d{10}$)/, '');
 
+const FIELD_MESSAGES = {
+  name: 'Add your full name.',
+  email: 'Add a valid email, like name@example.com.',
+  phone: 'Add a 10-digit mobile number for the courier.',
+  address: 'Add the street address.',
+  city: 'Add the city.',
+  state: 'Add the state.',
+  pin: 'Add a 6-digit PIN code.',
+};
+
 function validate(f) {
   const errors = {};
-  if (!f.name.trim()) errors.name = 'Add your full name.';
+  if (!f.name.trim()) errors.name = FIELD_MESSAGES.name;
   if (!f.email.trim()) errors.email = 'Add your email for your order confirmation.';
   else if (!EMAIL_PATTERN.test(f.email.trim())) errors.email = 'Add the rest of your email, like name@example.com.';
-  if (!PHONE_PATTERN.test(cleanPhone(f.phone))) errors.phone = 'Add a 10-digit mobile number for the courier.';
-  if (!f.address.trim()) errors.address = 'Add the street address.';
-  if (!f.city.trim()) errors.city = 'Add the city.';
-  if (!f.state.trim()) errors.state = 'Add the state.';
-  if (!/^\d{6}$/.test(f.pin.trim())) errors.pin = 'Add a 6-digit PIN code.';
+  if (!PHONE_PATTERN.test(cleanPhone(f.phone))) errors.phone = FIELD_MESSAGES.phone;
+  if (!f.address.trim()) errors.address = FIELD_MESSAGES.address;
+  if (!f.city.trim()) errors.city = FIELD_MESSAGES.city;
+  if (!f.state.trim()) errors.state = FIELD_MESSAGES.state;
+  if (!/^[1-9]\d{5}$/.test(f.pin.trim())) errors.pin = FIELD_MESSAGES.pin;
   return errors;
 }
 
-const userError = (message) => Object.assign(new Error(message), { userFacing: true });
+/* an error whose message is written for the buyer; `taken` / `fields` say what to fix */
+const userError = (message, extra = {}) => Object.assign(new Error(message), { userFacing: true, ...extra });
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/* fetch JSON with a time limit; resolves to { res, out } or { res: null } when the network fails */
+async function postJson(url, body, ms = 20000) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: ctrl.signal });
+    return { res, out: await res.json().catch(() => ({})) };
+  } catch {
+    return { res: null, out: {} };
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 /* 1 · /api/order prices the works, holds them while you pay, and opens a Razorpay order */
 async function startCheckout(bag, form, replaces) {
-  const res = await fetch('/api/order', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ works: bag, customer: { ...form, phone: cleanPhone(form.phone) }, replaces }),
-  }).catch(() => null);
+  const { res, out } = await postJson('/api/order', { works: bag, customer: { ...form, phone: cleanPhone(form.phone) }, replaces });
   if (!res) throw userError('Couldn’t reach the shop. Check your connection and try again.');
-  const out = await res.json().catch(() => ({}));
-  if ([409, 422, 503].includes(res.status) && out.error) throw userError(out.error);
+  if (res.status === 409) throw userError(out.error || 'Something in your order is no longer available.', { taken: out.taken || [] });
+  if (res.status === 422) throw userError(out.error || 'Please check your details.', { fields: out.fields || [] });
+  if ([429, 503].includes(res.status) && out.error) throw userError(out.error);
   if (!res.ok || !out.razorpayOrderId) throw new Error(`checkout ${res.status}`);
   return out;
 }
 
-/* 3 · /api/verify checks the payment signature and confirms the order. If it can't be reached,
-   Razorpay's webhook confirms it on the server anyway, so this never throws. */
+/* 3 · /api/verify checks the payment signature and confirms the order. Retries a few times if the
+   network or server hiccups; Razorpay's webhook confirms it on the server anyway, so this never throws. */
 async function confirmPayment(orderId, paid) {
-  try {
-    const res = await fetch('/api/verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ orderId, ...paid }),
-    });
-    const out = await res.json().catch(() => ({}));
-    return { confirmed: res.ok && out.status === 'paid', notified: Boolean(out.notified), shiprocket: out.shiprocket, problem: out.problem };
-  } catch {
-    return { confirmed: false, notified: false };
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt) await wait(1500 * attempt);
+    const { res, out } = await postJson('/api/verify', { orderId, ...paid }, 30000);
+    if (res?.ok) {
+      return { confirmed: out.status === 'paid', notified: Boolean(out.notified), shiprocket: out.shiprocket, problem: out.problem, lost: out.lost || [] };
+    }
+    if (res && res.status < 500) break; // a real "no", not a hiccup
   }
+  return { confirmed: false, notified: false, lost: [] };
 }
 
 /* Choose → details → review & pay → paid. The selection is the bag, limited to works that can be bought online. */
 export default function OrderPage() {
-  const { bag, setBag, toggle, remove } = useBag();
+  const { bag, add, toggle, remove, removeMany, dropped, clearDropped } = useBag();
   const [params] = useSearchParams();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -77,22 +101,28 @@ export default function OrderPage() {
   const [ackError, setAckError] = useState(false);
   const [phase, setPhase] = useState(null); // null · 'starting' · 'paying' · 'confirming'
   const [payError, setPayError] = useState(null);
-  const [paid, setPaid] = useState(null); // { orderId, email, works, confirmed }
+  const [notice, setNotice] = useState(null); // why something left the order (shown on step 1)
+  const [paid, setPaid] = useState(null); // { orderId, email, works, confirmed, lost }
   const checkout = useRef(null); // the open Razorpay order, reused if the buyer closes the window and tries again
   const panelRef = useRef(null);
   const alive = useRef(true);
   const motion = useMotionApi();
 
-  /* arrive with only what can still be bought, plus the work picked on its page */
+  /* arrive with the work picked on its page (the cart itself only ever holds buyable works) */
+  const picked = params.get('work');
+  const [pickedOff, setPickedOff] = useState(null);
   useEffect(() => {
-    const buyable = new Set(WORKS.filter(isBuyable).map((w) => w.id));
-    const picked = params.get('work');
-    setBag((b) => {
-      const next = b.filter((id) => buyable.has(id));
-      if (picked && buyable.has(picked) && !next.includes(picked)) next.push(picked);
-      return next;
-    });
-  }, [params, setBag]);
+    if (!picked) return;
+    const w = getWork(picked);
+    if (w && isBuyable(w)) add(picked);
+    else if (w) setPickedOff(w.title);
+  }, [picked, add]);
+
+  /* works that sold since they were added left the cart: say so here, once */
+  const [soldOff] = useState(dropped);
+  useEffect(() => {
+    clearDropped();
+  }, [clearDropped]);
 
   useEffect(() => {
     alive.current = true;
@@ -100,6 +130,14 @@ export default function OrderPage() {
       alive.current = false;
     };
   }, []);
+
+  /* the cart emptied while on a later step (removed here or in another tab): back to choosing */
+  useEffect(() => {
+    if (!bag.length && (step === 2 || step === 3) && !phase) {
+      setStep(1);
+      setPickError(true);
+    }
+  }, [bag.length, step, phase]);
 
   /* each step settles in where the last one stood */
   const firstStep = useRef(true);
@@ -126,27 +164,40 @@ export default function OrderPage() {
   };
   const toReview = (e) => {
     e.preventDefault();
+    if (!bag.length) {
+      setPickError(true);
+      return setStep(1);
+    }
     const found = validate(form);
     setErrors(found);
-    if (!Object.keys(found).length) setStep(3);
+    if (!Object.keys(found).length) {
+      setPayError(null);
+      setStep(3);
+    }
   };
 
   const pay = async (e) => {
     e.preventDefault();
     if (phase) return;
+    if (!bag.length) {
+      setPickError(true);
+      return setStep(1);
+    }
     if (!ack) return setAckError(true);
     setPayError(null);
     const botcheck = e.currentTarget.elements.botcheck?.checked;
-    const works = bag.map(getWork).filter(Boolean);
+    const ids = [...bag];
+    const works = ids.map(getWork).filter(Boolean);
     const total = works.reduce((s, w) => s + priceValue(w), 0);
-    const sig = JSON.stringify([bag, form]);
+    const sig = JSON.stringify([ids, form]);
 
     try {
       /* 1 · start (or reopen) the checkout */
       setPhase('starting');
-      let session = checkout.current?.sig === sig ? checkout.current : null;
+      const open = checkout.current;
+      let session = open?.sig === sig && Date.now() - open.at < SESSION_MINUTES * 60 * 1000 ? open : null;
       if (!session) {
-        session = { sig, ...(await startCheckout(bag, form, checkout.current?.orderId)) };
+        session = { sig, at: Date.now(), ...(await startCheckout(ids, form, open?.orderId)) };
         checkout.current = session;
       }
 
@@ -169,16 +220,18 @@ export default function OrderPage() {
       setPhase('confirming');
       const result = await confirmPayment(session.orderId, payment);
 
-      /* the artist's alert, if the server couldn't email it */
+      /* The artist's alert, if the server couldn't email it. Sent in the background: the buyer has
+         paid, so a slow or failing email service must never hold up their confirmation. The browser
+         can't prove a payment, so an unconfirmed one says to check Razorpay first. */
       if (!result.notified) {
-        await sendForm({
-          subject: `Paid order ${session.orderId} from ${form.name.trim()}: ${works.map((w) => w.title).join(', ')}`,
+        sendForm({
+          subject: `${result.confirmed ? 'Paid order' : 'Order (check payment in Razorpay)'} ${session.orderId} from ${form.name.trim()}: ${works.map((w) => w.title).join(', ')}`,
           name: form.name.trim(),
           email: form.email.trim(),
           botcheck,
           fields: {
             'Order': session.orderId,
-            'Paid': `${formatINR(total)} · Razorpay payment ${payment.razorpay_payment_id}`,
+            'Paid': `${formatINR(total)} · Razorpay payment ${payment.razorpay_payment_id}${result.confirmed ? '' : ' (not yet verified by the server)'}`,
             'Works': works.map((w) => `${w.title} (${w.price})`).join('\n'),
             'Phone': cleanPhone(form.phone),
             'Ship to': [form.address, form.city, form.state, form.pin, 'India'].map((s) => s.trim()).filter(Boolean).join(', '),
@@ -186,18 +239,39 @@ export default function OrderPage() {
             'Check': result.problem || '',
             'Note': form.note.trim(),
           },
+          keepalive: true,
         }).catch((err) => console.error('Order alert failed:', err));
       }
 
       for (const w of works) w.status = 'sold';
       checkout.current = null;
+      removeMany(ids);
       if (!alive.current) return;
-      setPaid({ orderId: session.orderId, email: form.email.trim(), works: [...bag], confirmed: result.confirmed });
-      setBag([]);
+      setPaid({ orderId: session.orderId, email: form.email.trim(), works: ids, confirmed: result.confirmed, lost: result.lost.map((w) => w.title) });
       setStep(4);
     } catch (err) {
       console.error('Checkout failed:', err);
-      if (alive.current) setPayError(err.userFacing ? err.message : PAY_ERROR);
+      if (!alive.current) return;
+      /* something was sold or held meanwhile: take it out, so the buyer can carry on with the rest */
+      if (err.taken?.length) {
+        checkout.current = null;
+        removeMany(err.taken);
+        const left = ids.filter((id) => !err.taken.includes(id));
+        if (!left.length) {
+          setNotice(`${err.message} It has been taken out of your order.`);
+          setStep(1);
+          return;
+        }
+        setPayError(`${err.message} I’ve taken ${err.taken.length > 1 ? 'them' : 'it'} out of your order: check the new total and pay again.`);
+        return;
+      }
+      /* the server didn't accept a detail: show it on the field */
+      if (err.fields?.length) {
+        setErrors(Object.fromEntries(err.fields.map((f) => [f, FIELD_MESSAGES[f] || 'Please check this.'])));
+        setStep(2);
+        return;
+      }
+      setPayError(err.userFacing ? err.message : PAY_ERROR);
     } finally {
       if (alive.current) setPhase(null);
     }
@@ -207,12 +281,17 @@ export default function OrderPage() {
     setForm(EMPTY_FORM);
     setErrors({});
     setAck(false);
+    setAckError(false);
+    setPayError(null);
+    setNotice(null);
+    setPickError(false);
     setPaid(null);
     setStep(1);
   };
   const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
   const onToggle = (id) => {
     setPickError(false);
+    setNotice(null);
     toggle(id);
   };
 
@@ -265,7 +344,19 @@ export default function OrderPage() {
         <div className="wrap">
           <div className="grid grid-cols-12 items-start gap-x-8">
             <div ref={panelRef} className="col-[1/9] max-lg:col-span-full">
-              {step === 1 && <ChooseStep selection={bag} onToggle={onToggle} onContinue={toDetails} pickError={pickError} />}
+              {step === 1 && (
+                <ChooseStep
+                  selection={bag}
+                  onToggle={onToggle}
+                  onContinue={toDetails}
+                  pickError={pickError}
+                  notices={[
+                    notice,
+                    soldOff.length > 0 && `${soldOff.join(', ')} ${soldOff.length > 1 ? 'have' : 'has'} sold since you added ${soldOff.length > 1 ? 'them' : 'it'}, so ${soldOff.length > 1 ? 'they’re' : 'it’s'} no longer in your order.`,
+                    pickedOff && `${pickedOff} can’t be ordered online. Write to me about it, or choose another original.`,
+                  ].filter(Boolean)}
+                />
+              )}
               {step === 2 && <DetailsStep form={form} errors={errors} onChange={onChange} onBack={() => setStep(1)} onSubmit={toReview} />}
               {step === 3 && (
                 <ReviewStep
@@ -279,7 +370,7 @@ export default function OrderPage() {
                     setAck(checked);
                     setAckError(false);
                   }}
-                  onEdit={() => setStep(2)}
+                  onEdit={() => !phase && setStep(2)}
                   onSubmit={pay}
                 />
               )}

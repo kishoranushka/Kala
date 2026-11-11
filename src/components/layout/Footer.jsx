@@ -43,14 +43,14 @@ export default function Footer({ isHome = false }) {
         </div>
 
         <div className="mt-10 flex flex-wrap justify-between gap-4 border-t border-hairline pt-6 text-xs/[18px] text-on-primary-muted">
-          <span>© [Year] {CONTACT.artist}. All artwork © the artist.</span>
-          <span className="flex flex-wrap gap-6">
-            {LEGAL_LINKS.map((label) => (
-              <a key={label} href="#top" className="!text-on-primary-muted no-underline hover:!text-on-primary">
-                {label}
-              </a>
+          <span>© {new Date().getFullYear()} {CONTACT.artist}. All artwork © the artist.</span>
+          <nav aria-label="Policies" className="flex flex-wrap gap-6">
+            {LEGAL_LINKS.map((link) => (
+              <SmartLink key={link.to} to={link.to} className="!text-on-primary-muted no-underline hover:!text-on-primary">
+                {link.label}
+              </SmartLink>
             ))}
-          </span>
+          </nav>
         </div>
       </div>
     </footer>

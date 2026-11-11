@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Outlet, useMatches, useParams } from 'react-router-dom';
 import { MotionProvider } from '@/motion/MotionContext';
 import { useSiteMotion } from '@/motion/useSiteMotion';
+import { useSeo } from '@/seo/useSeo';
 import Header from './Header';
 import Footer from './Footer';
 import MenuOverlay from './MenuOverlay';
@@ -38,9 +39,8 @@ export default function SiteLayout() {
   });
   const motion = useMemo(() => ({ apiRef, extraRef }), [apiRef, extraRef]);
 
-  useEffect(() => {
-    document.title = page.title ? `KALA by Anushka Kishor — ${page.title}` : 'KALA by Anushka Kishor';
-  }, [page.title]);
+  /* title, description, canonical, social card and structured data for the current route */
+  useSeo();
 
   return (
     <MotionProvider value={motion}>

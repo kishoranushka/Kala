@@ -3,6 +3,7 @@
         RAZORPAY_KEY_SECRET      (shown once when the key is generated)
         RAZORPAY_WEBHOOK_SECRET  (the secret you type when adding the webhook; see README) */
 import { createHmac, timingSafeEqual } from 'node:crypto';
+import { timedFetch } from './http.js';
 
 const API = 'https://api.razorpay.com/v1';
 
@@ -18,7 +19,7 @@ const auth = () => 'Basic ' + Buffer.from(`${keyId()}:${keySecret()}`).toString(
 
 /* amount in paise */
 export async function createRazorpayOrder({ amount, receipt, notes }) {
-  const res = await fetch(`${API}/orders`, {
+  const res = await timedFetch(`${API}/orders`, {
     method: 'POST',
     headers: { Authorization: auth(), 'Content-Type': 'application/json' },
     body: JSON.stringify({ amount, currency: 'INR', receipt, notes }),
@@ -36,6 +37,7 @@ function same(expected, given) {
 
 /* the checkout's success response is genuine only if this matches */
 export function validPaymentSignature({ razorpayOrderId, paymentId, signature }) {
+  if (!razorpayOrderId || !paymentId || !signature || !keySecret()) return false;
   const expected = createHmac('sha256', keySecret()).update(`${razorpayOrderId}|${paymentId}`).digest('hex');
   return same(expected, signature);
 }

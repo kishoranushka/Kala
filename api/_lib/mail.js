@@ -5,6 +5,7 @@
                          Without it, Resend's test sender is used, which can only email the Resend account's
                          own address: the artist still gets alerts, but customers get no confirmation email
                          (they still get Razorpay's payment receipt). */
+import { timedFetch } from './http.js';
 
 const ARTIST = 'kishoranushka96@gmail.com';
 const SITE = process.env.SITE_URL || 'https://kala.anushkakishor.in';
@@ -13,7 +14,7 @@ export const mailConfigured = () => Boolean(process.env.RESEND_API_KEY);
 export const customerMailConfigured = () => mailConfigured() && Boolean(process.env.MAIL_FROM);
 
 async function send({ to, subject, text, replyTo }) {
-  const res = await fetch('https://api.resend.com/emails', {
+  const res = await timedFetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -64,22 +65,27 @@ export function artistAlert(order) {
 
 export function customerConfirmation(order) {
   const c = order.customer;
-  const track = `${SITE}/track?id=${encodeURIComponent(order.id)}&email=${encodeURIComponent(c.email)}`;
+  const track = `${SITE}/track?id=${encodeURIComponent(order.id)}`;
+  const lost = order.works.filter((w) => order.lost?.includes(w.id));
+  const allLost = lost.length > 0 && lost.length === order.works.length;
   return send({
     to: c.email,
     replyTo: process.env.ORDER_EMAIL_TO || ARTIST,
-    subject: `Your KALA order ${order.id} is confirmed`,
+    subject: allLost ? `About your KALA order ${order.id}` : `Your KALA order ${order.id} is confirmed`,
     text: [
       `Hi ${c.name.split(' ')[0]},`,
       '',
-      `Thank you! Your payment is received and your order ${order.id} is confirmed.`,
+      allLost
+        ? `Thank you for your payment for order ${order.id}. I’m sorry: ${lost.map((w) => w.title).join(', ')} went to another buyer moments before your payment came through. I’ll refund you in full and write to you shortly.`
+        : `Thank you! Your payment is received and your order ${order.id} is confirmed.`,
+      ...(lost.length && !allLost ? ['', `I’m sorry: ${lost.map((w) => w.title).join(', ')} went to another buyer moments before your payment came through. I’ll refund that part in full and write to you shortly.`] : []),
       '',
       workLines(order),
       `Total paid: ${inr(order.amount / 100)}`,
       '',
       `Shipping to: ${address(c)}`,
       '',
-      'I’ll pack your painting with care and send it soon. You’ll get courier tracking by SMS and email once it ships.',
+      ...(allLost ? [] : ['I’ll pack your painting with care and send it soon. You’ll get courier tracking by SMS and email once it ships.']),
       `Track your order any time: ${track}`,
       '',
       'Questions? Just reply to this email.',

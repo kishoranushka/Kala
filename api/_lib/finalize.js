@@ -44,7 +44,7 @@ export async function finalizeOrder(orderId, paymentId) {
     }
   }
 
-  const done = { ...order, shiprocket, problem: problems.join(' ') || null };
+  const done = { ...order, shiprocket, problem: problems.join(' ') || null, lost: clash };
 
   /* 3 · emails (the browser falls back to Web3Forms for the artist alert if these aren't set up) */
   let notified = false;
@@ -58,5 +58,10 @@ export async function finalizeOrder(orderId, paymentId) {
     if (customerMailConfigured()) await customerConfirmation(done).catch((err) => console.error('[finalize] customer email', err));
   }
 
-  return (await updateOrder(order.id, { shiprocket, notified, problem: done.problem }).catch(() => null)) ?? { ...done, notified };
+  const saved = await updateOrder(order.id, { shiprocket, notified, problem: done.problem }).catch((err) => {
+    console.error('[finalize] save', err);
+    return null;
+  });
+  const { lost, ...row } = done;
+  return saved ?? { ...row, notified };
 }

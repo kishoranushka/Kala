@@ -65,7 +65,7 @@ const sendEnquiry = (v) =>
 const FORM_HEADING ='mt-3 font-display text-[clamp(32px,3.4vw,48px)] leading-[1.06] font-light tracking-[-.01em]';
 
 function EnquiryForm() {
-  const { formRef, errors, sending, failed, done, result, submit, reset } = useFormFlow(validate, sendEnquiry);
+  const { formRef, errors, sending, failed, failMessage, done, result, submit, reset } = useFormFlow(validate, sendEnquiry);
   const [more, setMore] = useState(false);
   const [files, setFiles] = useState([]);
 
@@ -222,7 +222,7 @@ function EnquiryForm() {
 
       {failed && (
         <Notice tone="error" role="alert">
-          {SEND_ERROR}
+          {failMessage || SEND_ERROR}
         </Notice>
       )}
 

@@ -1,11 +1,12 @@
 import cx from '@/utils/cx';
 import { useBag } from '@/context/BagContext';
 import { gsap, canAnimate } from '@/motion/gsap';
-import { isAvailable } from '@/data/works';
+import { isBuyable } from '@/data/works';
 import Icon from '@/components/ui/Icon';
 
-/* why a work can't go in the cart */
-export const cartOffLabel = (w) => (w.status === 'sold' ? 'Sold out' : w.status === 'archived' ? 'Not for sale' : 'Enquire only');
+/* why a work can't go in the cart (an available work without a price yet is sold by enquiry) */
+export const cartOffLabel = (w) =>
+  w.status === 'sold' ? 'Sold out' : w.status === 'archived' ? 'Not for sale' : w.status === 'available' ? 'Price on request' : 'Enquire only';
 
 const BASE =
   'mt-3.5 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-ui border px-4 font-sans text-sm font-semibold tracking-[.02em] ' +
@@ -16,7 +17,7 @@ const BASE =
 export default function CartButton({ work, className }) {
   const { bag, add } = useBag();
 
-  if (!isAvailable(work)) {
+  if (!isBuyable(work)) {
     return (
       <button
         type="button"
