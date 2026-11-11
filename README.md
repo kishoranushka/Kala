@@ -54,7 +54,8 @@ src/
   router.jsx               routes; each route's `handle` configures the page chrome
   styles/index.css         THEME tokens (@theme), base styles, type presets (eyebrow, heading-*, lead…)
   data/
-    works.js               artworks, collections, photos, reels + helpers  ← edit content here
+    works.json             the paintings + collections  ← edit with the painting editor (npm run admin)
+    works.js               loads works.json; photos, reels, studio images + helpers
     site.js                navigation, menu, footer links, contact details
   assets/images            artwork and studio photographs
   motion/                  shared GSAP choreography (data-attribute hooks), per-route mounting
@@ -78,5 +79,7 @@ src/
 
 - **Breakpoints** are desktop-first, used as `max-lg:`, `max-sm:` and so on. Named text sizes (`text-sm`) set only the size; line height is inherited unless given (`text-sm/[22px]`).
 - **Motion** is driven by data attributes in the markup: `data-reveal`, `data-words`, `data-cap`, `data-stagger`, `data-spin`, `data-cursor`, `data-magnetic` and others. Add one to an element and the shared choreography picks it up. A page with its own choreography registers it with `usePageMotion(fn)`; see `pages/home/homeMotion.js`. Visitors who prefer reduced motion get a quiet fade instead.
-- **Content** comes from `data/works.js` and `data/site.js`. Bracketed text such as `[Medium]` or `[Location]` is a placeholder for the artist to replace.
-- **Forms** (commission, contact, order) validate and confirm, but they aren't connected to a backend yet, and each says so on screen.
+- **Content** comes from `data/works.json`, `data/works.js` and `data/site.js`. Bracketed text such as `[Medium]` or `[Location]` is a placeholder for the artist to replace.
+- **Painting editor** (local only): `npm run admin` opens http://localhost:5173/__admin. Add paintings, upload photos (auto-converted to WebP), set the tag (Available / Inquiry only / Sold / Archived), price and details, and pick close-up points. It writes `src/data/works.json` and `src/assets/images/`; commit and push to publish. It's a dev-server plugin (`scripts/admin/`), so it never ships with `vite build`. Paintings the site shows by ID (home hero, shop strip…) can't be deleted; mark them Sold or Archived instead.
+- **Forms** (commission, contact, order) are emailed to the artist via Web3Forms; the access key is `FORM_ACCESS_KEY` in `data/site.js`.
+- **Shiprocket:** orders to be shipped also go to `api/order.js` (a Vercel function), which creates the order in Shiprocket under the "Kala" channel. Set `SHIPROCKET_EMAIL`, `SHIPROCKET_PASSWORD` (a Shiprocket API user) and `SHIPROCKET_PICKUP_LOCATION` in Vercel → Settings → Environment Variables, and in `.env.local` for local testing (`npm run dev` runs `/api` too). Parcel size per painting: "Shipping box" in the painting editor.
