@@ -8,6 +8,7 @@ import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
 import StatusBadge from '@/components/ui/StatusBadge';
 import TextLink from '@/components/ui/TextLink';
+import Notice from '@/components/ui/Notice';
 import { REVIEW_LIST } from './OrderSummary';
 
 const STEP_HEADING = 'mt-2 font-display text-[clamp(30px,3vw,44px)] leading-[1.06] font-light tracking-[-.01em]';
@@ -136,8 +137,14 @@ export function DetailsStep({ form, errors, onChange, onBack, onSubmit }) {
           <Input type="email" autoComplete="email" {...field('email', 'o-email')} />
         </Field>
       </FieldRow>
-      <Field id="o-phone" label="Phone" hint="Helpful for delivery. Optional." className="max-w-[360px]">
-        <Input type="tel" autoComplete="tel" name="phone" value={form.phone} onChange={onChange} {...describe('o-phone', { hint: true })} />
+      <Field
+        id="o-phone"
+        label={collect ? 'Phone' : 'Mobile number *'}
+        hint={collect ? 'So I can arrange the pickup. Optional.' : 'The courier calls this number on delivery.'}
+        error={errors.phone}
+        className="max-w-[360px]"
+      >
+        <Input type="tel" inputMode="tel" autoComplete="tel" name="phone" value={form.phone} onChange={onChange} {...describe('o-phone', { hint: true, error: errors.phone })} />
       </Field>
 
       <fieldset className="m-0 border-0 p-0">
@@ -161,7 +168,7 @@ export function DetailsStep({ form, errors, onChange, onBack, onSubmit }) {
             <Field id="o-city" label="City *" error={errors.city}>
               <Input type="text" autoComplete="address-level2" {...field('city', 'o-city')} />
             </Field>
-            <Field id="o-state" label="State">
+            <Field id="o-state" label="State *" error={errors.state}>
               <Input type="text" autoComplete="address-level1" {...field('state', 'o-state')} />
             </Field>
             <Field id="o-pin" label="PIN code *" error={errors.pin}>
@@ -189,7 +196,7 @@ export function DetailsStep({ form, errors, onChange, onBack, onSubmit }) {
 }
 
 /* ------------------------------------------------------------------ 3 · review */
-export function ReviewStep({ form, ack, ackError, sending, onAck, onEdit, onSubmit }) {
+export function ReviewStep({ form, ack, ackError, sending, error, onAck, onEdit, onSubmit }) {
   const receiving =
     form.delivery === 'collect'
       ? `Collect from the studio, ${CONTACT.location}`
@@ -234,10 +241,16 @@ export function ReviewStep({ form, ack, ackError, sending, onAck, onEdit, onSubm
           Tick the box above to send your request.
         </FieldError>
       )}
+      <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+      {error && (
+        <Notice tone="error" role="alert">
+          {error}
+        </Notice>
+      )}
       <div className={NAV_ROW}>
         <TextLink onClick={onEdit}>Back to your details</TextLink>
         <Button type="submit" data-magnetic aria-busy={sending}>
-          {sending ? 'Preparing…' : 'Send Order Request'}
+          {sending ? 'Sending…' : 'Send Order Request'}
         </Button>
       </div>
     </form>
@@ -245,18 +258,22 @@ export function ReviewStep({ form, ack, ackError, sending, onAck, onEdit, onSubm
 }
 
 /* ------------------------------------------------------------------ done */
-export function OrderDone({ firstName, onRestart }) {
+export function OrderDone({ firstName, orderId, onRestart }) {
   return (
     <FormSuccess
-      eyebrow="Order request ready"
+      eyebrow="Order request sent"
       name={firstName || 'there'}
       titleClassName="heading-2"
       className="gap-6"
-      notConnected="This order page isn’t connected yet, so nothing has been sent or charged. When it’s live, your request comes straight to me and you’ll get a confirmation email with a secure payment link."
     >
       <p className="lead">
-        For now, you can write to <Link to="/contact" className="underline">{CONTACT.email}</Link> with the works you chose.
+        Your request is with me. I’ll check availability and shipping, then email you a confirmation and a secure payment link. Nothing has been charged.
       </p>
+      {orderId && (
+        <p className="meta">
+          Your order reference is <b className="font-semibold text-primary">{orderId}</b>. Keep it handy if you write to me.
+        </p>
+      )}
       <div className="flex flex-wrap gap-4">
         <Button variant="secondary" to="/shop">
           Back to the Shop

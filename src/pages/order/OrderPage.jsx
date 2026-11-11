@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { EMAIL_PATTERN } from '@/data/site';
-import { availableWorks } from '@/data/works';
+import { availableWorks, getWork } from '@/data/works';
+import { SEND_ERROR, sendForm } from '@/utils/sendForm';
 import { useBag } from '@/context/BagContext';
 import { gsap, canAnimate } from '@/motion/gsap';
 import { useMotionApi } from '@/motion/MotionContext';
@@ -18,12 +19,34 @@ function validate(f) {
   if (!f.name.trim()) errors.name = 'Add your full name.';
   if (!f.email.trim()) errors.email = 'Add your email so I can confirm your order.';
   else if (!EMAIL_PATTERN.test(f.email.trim())) errors.email = 'Add the rest of your email, like name@example.com.';
-  if (f.delivery !== 'collect') {
+  const ship = f.delivery !== 'collect';
+  if (ship || f.phone.trim()) {
+    if (!PHONE_PATTERN.test(cleanPhone(f.phone))) errors.phone = ship ? 'Add a 10-digit mobile number for the courier.' : 'Check the number: 10 digits, like 98765 43210.';
+  }
+  if (ship) {
     if (!f.address.trim()) errors.address = 'Add the street address.';
     if (!f.city.trim()) errors.city = 'Add the city.';
+    if (!f.state.trim()) errors.state = 'Add the state.';
     if (!/^\d{6}$/.test(f.pin.trim())) errors.pin = 'Add a 6-digit PIN code.';
   }
   return errors;
+}
+
+const PHONE_PATTERN = /^[6-9]\d{9}$/;
+/* "+91 98765-43210" → "9876543210" */
+const cleanPhone = (p) => p.replace(/\D/g, '').replace(/^(91|0)(?=\d{10}$)/, '');
+
+/* creates the shipping order in Shiprocket (via our /api/order function); never throws for Shiprocket trouble */
+async function createShipment(bag, form) {
+  const res = await fetch('/api/order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ works: bag, customer: { ...form, phone: cleanPhone(form.phone) } }),
+  }).catch(() => null);
+  const out = res ? await res.json().catch(() => ({})) : {};
+  if (res && (res.status === 409 || res.status === 422)) throw Object.assign(new Error(out.error), { userFacing: true });
+  if (!res?.ok || !out.orderId) return { orderId: null, shiprocket: { ok: false, error: `Order service unreachable (${res?.status ?? 'network'}).` } };
+  return out;
 }
 
 /* Choose → details → review → request sent. The selection is the bag, limited to available originals. */
@@ -37,8 +60,10 @@ export default function OrderPage() {
   const [ack, setAck] = useState(false);
   const [ackError, setAckError] = useState(false);
   const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState(null);
+  const [orderId, setOrderId] = useState(null);
   const panelRef = useRef(null);
-  const sendTimer = useRef(null);
+  const alive = useRef(true);
   const motion = useMotionApi();
 
   /* arrive with only what can still be ordered, plus the work picked on its page */
@@ -50,8 +75,14 @@ export default function OrderPage() {
       if (picked && orderable.has(picked) && !next.includes(picked)) next.push(picked);
       return next;
     });
-    return () => clearTimeout(sendTimer.current);
   }, [params, setBag]);
+
+  useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
 
   /* each step settles in where the last one stood */
   const firstStep = useRef(true);
@@ -82,15 +113,49 @@ export default function OrderPage() {
     setErrors(found);
     if (!Object.keys(found).length) setStep(3);
   };
-  const send = (e) => {
+  const send = async (e) => {
     e.preventDefault();
     if (sending) return;
     if (!ack) return setAckError(true);
     setSending(true);
-    sendTimer.current = setTimeout(() => {
-      setSending(false);
+    setSendError(null);
+    const botcheck = e.currentTarget.elements.botcheck?.checked;
+    const works = bag.map(getWork).filter(Boolean);
+    const collect = form.delivery === 'collect';
+    const receiving = collect
+      ? 'Collect from the studio'
+      : [form.address, form.city, form.state, form.pin, form.country].map((s) => s.trim()).filter(Boolean).join(', ');
+
+    try {
+      /* 1 · shipping order in Shiprocket (skipped for studio collection) */
+      const shipment = collect ? { orderId: null, shiprocket: null } : await createShipment(bag, form);
+      const orderId = shipment.orderId ?? `KALA-${Date.now().toString(36).toUpperCase()}`;
+      const sr = shipment.shiprocket;
+
+      /* 2 · the order email to the artist (always) */
+      await sendForm({
+        subject: `New order ${orderId} from ${form.name.trim()}: ${works.map((w) => w.title).join(', ')}`,
+        name: form.name.trim(),
+        email: form.email.trim(),
+        botcheck,
+        fields: {
+          'Order': orderId,
+          'Works': works.map((w) => `${w.title} (${w.price})`).join('\n'),
+          'Phone': form.phone.trim(),
+          'Receiving': receiving,
+          'Shiprocket': collect ? 'Not needed (collecting from the studio)' : sr?.ok ? `Created: Shiprocket order ${sr.orderId}, shipment ${sr.shipmentId}` : `NOT created: ${sr?.error}. Add this order in Shiprocket by hand.`,
+          'Note': form.note.trim(),
+        },
+      });
+      if (!alive.current) return;
+      setOrderId(orderId);
       setStep(4);
-    }, 900);
+    } catch (err) {
+      console.error('Order send failed:', err);
+      if (alive.current) setSendError(err.userFacing ? err.message : SEND_ERROR);
+    } finally {
+      if (alive.current) setSending(false);
+    }
   };
   const restart = () => {
     setBag([]);
@@ -162,6 +227,7 @@ export default function OrderPage() {
                   ack={ack}
                   ackError={ackError}
                   sending={sending}
+                  error={sendError}
                   onAck={(checked) => {
                     setAck(checked);
                     setAckError(false);
@@ -170,7 +236,7 @@ export default function OrderPage() {
                   onSubmit={send}
                 />
               )}
-              {step === 4 && <OrderDone firstName={form.name.trim().split(' ')[0]} onRestart={restart} />}
+              {step === 4 && <OrderDone firstName={form.name.trim().split(' ')[0]} orderId={orderId} onRestart={restart} />}
             </div>
             <OrderSummary selection={bag} canEdit={step <= 2} onRemove={remove} collect={form.delivery === 'collect'} />
           </div>
