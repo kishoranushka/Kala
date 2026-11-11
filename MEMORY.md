@@ -97,6 +97,7 @@
 - Visual check: `npx vite preview --port 4173`, then Edge headless screenshot with `?still` (freezes motion; GSAP doesn't advance under headless virtual time). Edge min window ≈500px → for phone, load page in a 390px iframe.
 - Canvas files: Artifact read with `path` = `project/X.dc.html`; images: `path` = bare 32-hex blob id, one per call.
 - Windows PowerShell 5.1: no `&&`; `Get-Content` shows UTF-8 as mojibake (files are fine). Don't rewrite files via `Get-Content | Set-Content` — it corrupts UTF-8; use Edit/Write. Start the preview with `Start-Process cmd.exe -ArgumentList '/c','npx vite preview …'`.
+- **Soft 404 (GSC, 2026-11-11):** Google's renderer doesn't advance GSAP frames → entrance animations left every page blank → homepage "Soft 404". Fix in `src/motion/gsap.js`: crawlers/headless/`navigator.webdriver` (UA regex `CRAWLER`) get `stillFrames` (same as `?still`): final state, no motion. Real browsers unaffected. Never let content depend on an animation finishing to become visible for bots.
 - SEO copy is in `src/seo/copy.json`, not works.json; new painting → optional copy entry + `npm run og -- <id>`. Don't remove the `<!--seo:head-->`/`<!--seo:body-->` markers in `index.html` (build fails without them).
 - New paintings: use the editor (`npm run admin`). Other photos: drop JPG in `src/assets/images/`, run `node scripts/optimize-images.mjs`, reference the `.webp` via `img('name.webp')` in `works.js`, delete the JPG.
 
