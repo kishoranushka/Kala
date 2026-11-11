@@ -86,7 +86,7 @@ export default function BagDrawer() {
             {items.map((w) => (
               <div key={w.id} data-bag-item className="grid grid-cols-[72px_1fr_auto] items-start gap-4 border-b border-divider px-6 py-5">
                 <span className="relative h-[90px] w-[72px] overflow-hidden rounded-ui bg-wall">
-                  <img src={w.img} alt="" className={w.crop ? 'crop-ig object-cover' : 'block size-full object-cover'} />
+                  <img src={w.img} alt="" loading="lazy" className={w.crop ? 'crop-ig object-cover' : 'block size-full object-cover'} />
                 </span>
                 <span className="flex flex-col gap-1">
                   <span className="font-display text-xl/6 font-medium">{w.title}</span>

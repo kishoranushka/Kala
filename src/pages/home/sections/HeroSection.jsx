@@ -11,7 +11,7 @@ const PIECE_IMG =
   'block h-auto w-full rounded-ui bg-surface p-2.5 shadow-[0_2px_4px_rgba(34,33,31,.08),0_50px_80px_-36px_rgba(34,33,31,.55)] transition-transform duration-900 ease-gallery';
 
 /* a painting floating in front of the mandala; data-float makes it bob, data-piece makes it rise in */
-function Piece({ work, className, imgClassName, children, label = true }) {
+function Piece({ work, className, imgClassName, children, label = true, priority = false }) {
   return (
     <Link
       to={`/artwork/${work.id}`}
@@ -21,7 +21,7 @@ function Piece({ work, className, imgClassName, children, label = true }) {
       className={cx('group block text-inherit no-underline hover:text-inherit', className)}
     >
       <div data-float>
-        <img src={work.img} alt={work.alt} className={cx(PIECE_IMG, imgClassName)} />
+        <img src={work.img} alt={work.alt} fetchpriority={priority ? 'high' : undefined} decoding={priority ? undefined : 'async'} className={cx(PIECE_IMG, imgClassName)} />
       </div>
       {children}
     </Link>
@@ -110,7 +110,7 @@ export default function HeroSection() {
               className="absolute top-[-8%] right-[-30%] -z-1 w-[40%] rotate-9 max-sm:right-[-36%] max-sm:w-[44%]"
               imgClassName="group-hover:scale-105"
             />
-            <Piece work={hero} label={false} className="relative -rotate-3" imgClassName="group-hover:scale-[1.02] group-hover:rotate-2">
+            <Piece work={hero} label={false} priority className="relative -rotate-3" imgClassName="group-hover:scale-[1.02] group-hover:rotate-2">
               <span className="absolute bottom-[-22px] left-1/2 inline-flex -translate-x-1/2 rotate-3 items-center gap-2 rounded-ui bg-surface px-4 py-[9px] text-[13px]/[18px] font-semibold whitespace-nowrap text-primary shadow-[0_14px_30px_-16px_rgba(34,33,31,.45)] max-sm:px-3.5 max-sm:py-2 max-sm:text-xs">
                 <b className="font-display text-[17px] font-medium italic">{hero.title}</b> · View
               </span>

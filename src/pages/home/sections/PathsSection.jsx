@@ -50,6 +50,7 @@ function Fan() {
           key={w.id}
           src={w.img}
           alt=""
+          loading="lazy"
           className={cx(
             'absolute top-0 left-1/2 h-full w-auto max-w-[56%] rounded-ui bg-surface object-cover p-2 shadow-[0_30px_50px_-24px_rgba(0,0,0,.7)] transition-transform duration-1000 ease-gallery',
             FAN[i]

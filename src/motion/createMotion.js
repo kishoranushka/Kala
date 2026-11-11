@@ -25,8 +25,7 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
     }
     api.busy = true;
     if (label) setDest(label);
-    gsap
-      .timeline({ onComplete: () => { api.busy = false; } })
+    quick(gsap.timeline({ onComplete: () => { api.busy = false; } }))
       .set(curtain, { autoAlpha: 1, yPercent: 100 })
       .set(lab, { autoAlpha: label ? 1 : 0 })
       .set(inner, { autoAlpha: 0, yPercent: 40 })
@@ -44,8 +43,7 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
     const curtain = one('[data-curtain]');
     if (!curtain || api.busy) return;
     api.busy = true;
-    gsap
-      .timeline()
+    quick(gsap.timeline())
       .set(curtain, { autoAlpha: 1, yPercent: 100 })
       .set(one('[data-curtain-label]'), { autoAlpha: 0 })
       .set(one('[data-curtain-inner]'), { autoAlpha: 0, yPercent: 30 })
@@ -64,6 +62,10 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
 
   api.refresh = () => ScrollTrigger.refresh();
 
+  /* phones and tablets: the curtain moves a little quicker so taps feel responsive */
+  const quick = (tl) => (window.matchMedia('(max-width: 1023px)').matches ? tl.timeScale(1.35) : tl);
+  api.quick = quick;
+
   const mm = gsap.matchMedia();
   mm.add(
     {
@@ -73,6 +75,10 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
     },
     (c) => {
       const d = c.conditions;
+      /* small screens: shorter travel, quicker reveals that start sooner, no heavy inner zooms */
+      const small = !d.desktop;
+      const touch = !d.fine;
+      const k = small ? 0.7 : 1;
       const offs = [];
       const on = (el, ev, fn, o) => {
         if (!el) return;
@@ -96,6 +102,7 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
 
       /* 1 · arrival: a short curtain lift after a page change, the full drawing on first load */
       const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+      if (small) tl.timeScale(1.25);
       let H = 0.3;
       api.busy = true;
       if (gentle && !arriving) {
@@ -149,12 +156,38 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
       }
 
       /* 3 · living mandalas */
+      /* each SVG turns only while it is on screen; on touch screens it also rests while the page
+         is scrolling, so phones spend their frames on the scroll (the turn is too slow to notice) */
+      const spins = [];
       all('[data-spin]').forEach((g) => {
         const s = parseFloat(g.getAttribute('data-spin')) || 120;
-        gsap.to(g, { rotation: s > 0 ? 360 : -360, svgOrigin: '0 0', duration: Math.abs(s), repeat: -1, ease: 'none' });
+        const tw = gsap.to(g, { rotation: s > 0 ? 360 : -360, svgOrigin: '0 0', duration: Math.abs(s), repeat: -1, ease: 'none' });
+        const svg = g.ownerSVGElement || g;
+        let seen = true;
+        spins.push({ tw, isSeen: () => seen });
+        if (inFixedLayer(svg)) return; /* menu overlay etc. stay in view whatever the scroll */
+        ScrollTrigger.create({
+          trigger: svg,
+          start: 'top bottom',
+          end: 'bottom top',
+          onToggle: (st) => {
+            seen = st.isActive;
+            tw.paused(!seen);
+          },
+        });
       });
+      if (touch && spins.length) {
+        const rest = () => spins.forEach((s) => s.tw.pause());
+        const wake = () => spins.forEach((s) => s.isSeen() && s.tw.play());
+        ScrollTrigger.addEventListener('scrollStart', rest);
+        ScrollTrigger.addEventListener('scrollEnd', wake);
+        offs.push(() => {
+          ScrollTrigger.removeEventListener('scrollStart', rest);
+          ScrollTrigger.removeEventListener('scrollEnd', wake);
+        });
+      }
       const track = one('[data-marquee]');
-      const mq = track ? gsap.to(track, { xPercent: -50, duration: 42, repeat: -1, ease: 'none' }) : null;
+      const mq = track ? gsap.to(track, { xPercent: -50, duration: small ? 30 : 42, repeat: -1, ease: 'none' }) : null;
 
       /* 4 · pointer: cursor, magnetic controls, tilting canvases */
       if (d.fine) {
@@ -230,7 +263,9 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
       /* 6 · scroll storytelling */
       const header = one('[data-header]');
       let headerShown = true;
-      const skewTo = track ? gsap.quickTo(track, 'skewX', { duration: 0.5, ease: 'power3' }) : null;
+      /* touch scrolling reports spiky velocities: no skew there, and a gentler speed-up */
+      const skewTo = track && !touch ? gsap.quickTo(track, 'skewX', { duration: 0.5, ease: 'power3' }) : null;
+      const boost = touch ? 3 : 7;
       let settle = null;
       ScrollTrigger.create({
         start: 0,
@@ -246,7 +281,7 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
           }
           if (mq) {
             const v = s.getVelocity();
-            mq.timeScale(s.direction * gsap.utils.clamp(1, 7, 1 + Math.abs(v) / 300));
+            mq.timeScale(s.direction * gsap.utils.clamp(1, boost, 1 + Math.abs(v) / 300));
             gsap.to(mq, { timeScale: s.direction, duration: 1.4, ease: 'power2.out', overwrite: true });
             if (skewTo) {
               skewTo(gsap.utils.clamp(-10, 10, -v / 180));
@@ -258,26 +293,29 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
       });
       offs.push(() => clearTimeout(settle));
 
+      /* on phones reveals start a little earlier, so a quick flick never lands on empty space */
+      const at = (desk) => (small ? 'top 97%' : desk);
       all('[data-eyebrow]').forEach((el) => {
-        gsap.from(el, { autoAlpha: 0, letterSpacing: '.45em', duration: 1.5, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
+        gsap.from(el, { autoAlpha: 0, letterSpacing: small ? '.3em' : '.45em', duration: 1.5 * k, ease: 'expo.out', scrollTrigger: { trigger: el, start: at('top 90%'), once: true } });
       });
       all('[data-words]').forEach((h) => {
-        gsap.from(h.querySelectorAll('.wi'), { yPercent: 115, rotation: 6, transformOrigin: '0% 100%', duration: 1.4, stagger: 0.05, ease: 'expo.out', scrollTrigger: { trigger: h, start: 'top 88%', once: true } });
+        gsap.from(h.querySelectorAll('.wi'), { yPercent: 115, rotation: small ? 3 : 6, transformOrigin: '0% 100%', duration: 1.4 * k, stagger: 0.05 * k, ease: 'expo.out', scrollTrigger: { trigger: h, start: at('top 88%'), once: true } });
       });
       all('[data-cap]').forEach((el) => {
-        gsap.from(el, { y: 28, autoAlpha: 0, duration: 1.3, delay: 0.15, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
+        gsap.from(el, { y: small ? 16 : 28, autoAlpha: 0, duration: 1.3 * k, delay: 0.15 * k, ease: 'expo.out', scrollTrigger: { trigger: el, start: at('top 92%'), once: true } });
       });
       all('[data-stagger]').forEach((list) => {
-        gsap.from(list.children, { y: 34, autoAlpha: 0, duration: 1.2, stagger: 0.08, ease: 'expo.out', scrollTrigger: { trigger: list, start: 'top 88%', once: true } });
+        gsap.from(list.children, { y: small ? 20 : 34, autoAlpha: 0, duration: 1.2 * k, stagger: 0.08 * k, ease: 'expo.out', scrollTrigger: { trigger: list, start: at('top 88%'), once: true } });
       });
       all('[data-reveal]').forEach((el) => {
-        const t = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
-        t.fromTo(el, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.5, ease: 'expo.inOut', clearProps: 'clipPath' });
+        const t = gsap.timeline({ scrollTrigger: { trigger: el, start: at('top 90%'), once: true } });
+        t.fromTo(el, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.5 * k, ease: 'expo.inOut', clearProps: 'clipPath' });
         const art = el.querySelector('img, svg');
-        if (art && !el.hasAttribute('data-noinner')) t.from(art, { scale: 1.3, duration: 2, ease: 'expo.out', clearProps: 'scale' }, 0.1);
+        /* the inner zoom repaints a large image every frame: desktop only, a softer one on phones */
+        if (art && !el.hasAttribute('data-noinner')) t.from(art, { scale: small ? 1.1 : 1.3, duration: 2 * k, ease: 'expo.out', clearProps: 'scale' }, 0.1);
       });
       all('[data-line]').forEach((el) => {
-        gsap.from(el, { scaleX: 0, transformOrigin: '0% 50%', duration: 1.4, ease: 'expo.inOut', scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
+        gsap.from(el, { scaleX: 0, transformOrigin: '0% 50%', duration: 1.4 * k, ease: 'expo.inOut', scrollTrigger: { trigger: el, start: at('top 92%'), once: true } });
       });
       all('[data-scrub-rotate]').forEach((el) => {
         const deg = parseFloat(el.getAttribute('data-scrub-rotate')) || 90;
@@ -294,7 +332,7 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
         });
       }
       const fl = all('[data-fl]');
-      if (fl.length) gsap.from(fl, { yPercent: 105, duration: 1.6, stagger: 0.09, ease: 'expo.out', scrollTrigger: { trigger: fl[0].parentNode, start: 'top 95%', once: true } });
+      if (fl.length) gsap.from(fl, { yPercent: 105, duration: 1.6 * k, stagger: 0.09 * k, ease: 'expo.out', scrollTrigger: { trigger: fl[0].parentNode, start: at('top 95%'), once: true } });
 
       /* progress mandala: fills and turns with the scroll */
       const prog = one('[data-prog]');
@@ -313,7 +351,16 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
       }
 
       extra?.(ctx);
-      document.fonts?.ready.then(() => ScrollTrigger.refresh());
+      /* lazy images arrive after the triggers are measured: re-measure once things settle */
+      let rt = null;
+      const remeasure = () => {
+        clearTimeout(rt);
+        rt = setTimeout(() => ScrollTrigger.refresh(), 200);
+      };
+      document.fonts?.ready.then(remeasure);
+      on(window, 'load', remeasure);
+      on(root, 'load', (e) => { if (e.target.tagName === 'IMG') remeasure(); }, true);
+      offs.push(() => clearTimeout(rt));
       return cleanup;
     }
   );
@@ -323,6 +370,13 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
     html.classList.remove('kala-cursor');
   };
   return api;
+}
+
+function inFixedLayer(el) {
+  for (let n = el; n && n !== document.body; n = n.parentElement) {
+    if (getComputedStyle(n).position === 'fixed') return true;
+  }
+  return false;
 }
 
 /* the gallery cursor: a ring that grows into a label over art and calls to action */

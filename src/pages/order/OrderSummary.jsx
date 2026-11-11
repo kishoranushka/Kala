@@ -24,7 +24,7 @@ export default function OrderSummary({ selection, canEdit, onRemove, collect }) 
         {picked.map((w) => (
           <div key={w.id} className="grid grid-cols-[56px_1fr_auto] items-center gap-3 border-b border-divider py-3.5">
             <span className="relative h-[70px] w-14 overflow-hidden rounded-ui bg-wall">
-              <img src={w.img} alt="" className={w.crop ? 'crop-ig object-cover' : 'block size-full object-cover'} />
+              <img src={w.img} alt="" loading="lazy" className={w.crop ? 'crop-ig object-cover' : 'block size-full object-cover'} />
             </span>
             <span className="flex min-w-0 flex-col gap-0.5">
               <span className="font-display text-lg/[22px] font-medium">{w.title}</span>

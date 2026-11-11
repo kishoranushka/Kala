@@ -209,6 +209,7 @@ function ArtworkView({ work }) {
                         <img
                           src={v.img}
                           alt=""
+                          loading="lazy"
                           className={cx('block size-full object-cover', v.crop && 'crop-ig')}
                           style={{ transform: `scale(${v.scale})`, transformOrigin: v.origin }}
                         />

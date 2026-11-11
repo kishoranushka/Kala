@@ -64,7 +64,7 @@ export default function WallsPage() {
                 <img src={mural.img} alt="A half-mandala painted on a pale wall in crimson, saffron, yellow, lilac and turquoise, with large teal leaves" fetchpriority="high" className="block size-full object-cover" />
               </figure>
               <figure data-intro className="absolute right-0 bottom-0 m-0 aspect-[720/1280] w-[30%] rotate-3 overflow-hidden rounded-ui border-6 border-surface shadow-float max-sm:w-[34%]">
-                <img src={PHOTOS.paintingMural.img} alt={PHOTOS.paintingMural.alt} className="block size-full object-cover" />
+                <img src={PHOTOS.paintingMural.img} alt={PHOTOS.paintingMural.alt} loading="lazy" className="block size-full object-cover" />
               </figure>
             </div>
           </div>
