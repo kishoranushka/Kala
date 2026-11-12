@@ -40,8 +40,9 @@ function AdjacentChapter({ chapter, direction }) {
 
 export default function CollectionPage() {
   const { id } = useParams();
-  const index = COLLECTIONS.findIndex((c) => c.id === id);
+  const index = COLLECTIONS.findIndex((c) => c.id === String(id).trim().toLowerCase());
   if (index === -1) return <Navigate to="/collections" replace />;
+  if (COLLECTIONS[index].id !== id) return <Navigate to={`/collections/${COLLECTIONS[index].id}`} replace />;
 
   const chapter = COLLECTIONS[index];
   const prev = COLLECTIONS[(index - 1 + COLLECTIONS.length) % COLLECTIONS.length];

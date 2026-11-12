@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import SiteLayout from '@/components/layout/SiteLayout';
+import RouteError from '@/components/layout/RouteError';
 import { getCollection } from '@/data/works';
 
 /* pages load on demand; the router waits for them before the curtain lifts */
@@ -10,6 +11,7 @@ export const router = createBrowserRouter(
     {
       path: '/',
       element: <SiteLayout />,
+      errorElement: <RouteError />,
       children: [
         {
           index: true,
@@ -21,7 +23,7 @@ export const router = createBrowserRouter(
           lazy: page(() => import('@/pages/ShopPage')),
           handle: { title: 'Shop', curtain: 'The shop · All works', nav: 'shop' },
         },
-        { path: 'artwork', element: <Navigate to="/artwork/krishna" replace /> },
+        { path: 'artwork', element: <Navigate to="/shop" replace /> },
         {
           path: 'artwork/:id',
           lazy: page(() => import('@/pages/artwork/ArtworkPage')),

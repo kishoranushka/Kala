@@ -137,6 +137,19 @@ for (const path of paths) {
   writeFileSync(file, render(m));
 }
 
+/* Any URL that isn't a file above (a mistyped or old link, /artwork with no id…) gets dist/404.html
+   from Vercel: the same app, so the router shows the right page or redirects, but with a 404 status
+   and noindex so search engines don't index it. Never leave visitors on Vercel's own NOT_FOUND page. */
+writeFileSync(
+  join(DIST, '404.html'),
+  template
+    .replace(
+      /<!--seo:head-->[\s\S]*?<!--\/seo:head-->/,
+      [`<title>${esc(S.brand)}</title>`, `<meta name="robots" content="noindex, follow" />`].join('\n    ')
+    )
+    .replace('<!--seo:body-->', '')
+);
+
 /* ------------------------------------------------------------------ sitemap */
 const indexable = paths.map((p) => seo.meta(p)).filter((m) => !m.noindex);
 const priority = (p) => (p === '/' ? '1.0' : p === '/shop' ? '0.9' : p.startsWith('/artwork/') ? '0.8' : p.startsWith('/collections') ? '0.7' : POLICIES[p] ? '0.3' : '0.6');

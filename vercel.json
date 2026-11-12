@@ -3,7 +3,7 @@
   "framework": "vite",
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
+  "redirects": [{ "source": "/artwork", "destination": "/shop", "permanent": false }],
   "headers": [
     {
       "source": "/(.*)",

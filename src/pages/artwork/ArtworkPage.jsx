@@ -449,7 +449,8 @@ function ArtworkView({ work }) {
 
 export default function ArtworkPage() {
   const { id } = useParams();
-  const work = getWork(id);
+  const work = getWork(id) ?? getWork(String(id).trim().toLowerCase());
   if (!work) return <Navigate to="/shop" replace />;
+  if (work.id !== id) return <Navigate to={`/artwork/${work.id}`} replace />;
   return <ArtworkView key={work.id} work={work} />;
 }
