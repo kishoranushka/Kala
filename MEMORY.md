@@ -105,7 +105,28 @@
 - Sale bar + header share one sticky wrapper in `SiteLayout` (bar pinned; header still hides on scroll-down, behind the bar). `SaleBar` sets `--sale-h` on `<html>`; shop filter bar, artwork/order/policy sticky asides offset by it.
 - Sweep (all main routes, 390px + 1440px): nothing left hidden/clipped/shifted after scrolling. Probe scripts were in that session's scratchpad (`mobtest.mjs*`).
 
+### 2026-11-12 — 8 new paintings + Contact portrait (uncommitted)
+- New works in works.json (plates 22–29, all `available`): risingmandala, cactus, ganeshablue, dragonfly, devilotus, shiva, ganeshacolour, buddhagreen. Photos perspective-corrected + cropped to the painted area (paper border/bubble wrap/frame removed), Shiva rotated upright; WebP in `src/assets/images/`. OG cards made. img23 = same painting as img25 (Buddha in Green) — only img25 used.
+- Contact image → `PHOTOS.cutout` (`artist-white-top-cutout.webp`): the old white-top photo with background removed (transparent WebP, bottom fades out), no card — no aspect box/rounded/shadow/bg, sits straight on the page (`data-intro-img` circle reveal kept). Made with rembg (isnet + human-seg masks) in a scratchpad venv, not in repo. User rejected a line-art "nest" version (card look) — don't put the artist photo back in a card here.
+- **Artist to fill:** prices for devilotus, shiva, ganeshacolour, buddhagreen (show "Price on request" until set); sizes (guessed A4/"Custom"); missing years; mediums are guesses (mandala/cactus "Ink and colour").
+
+### 2026-11-12 — Brand SEO + Q&A (uncommitted)
+- `src/data/faq.js` (plain JS): HOME_FAQ (what is KALA / what "Kala" means / who is Anushka Kishor / where to buy / commissions / no prints), SHOP_FAQ (originals, payment, shipping, returns), CONTACT_FAQ (moved from ContactPage). Rendered by new `components/sections/FaqSection.jsx` (same look as the old Contact block) on Home (after Meet), Shop (before CtaBand), Contact. Same text → FAQPage JSON-LD (`meta.js`), `#seo-static`, and llms.txt. Keep Q&A visible: schema must match the page.
+- `copy.json` site: `aliases` (Kala, Kala by Anushka…), `artistAliases` (handles), `keywords` → Org/WebSite `alternateName`, Org `keywords`/`slogan`, Person given/family name, jobTitle list, `brand`. Brand name now leads home/shop/walls/commission/artist descriptions. Copy + OG cards for the 8 new paintings (risingmandala … buddhagreen).
+- IndexNow: key file `public/046dc7b6709a8f1aff26d4806e698522.txt`; `npm run indexnow` (after deploy) pings Bing/Yandex with every sitemap URL, or `-- /path …` for some.
+
+### 2026-11-12 — Instagram handle → @kala.anushkakishor.in (uncommitted)
+- `site.js` (instagram, instagramHandle, reels), `REEL_URL` in works.js, faq.js, policies.js (credit line), copy.json `sameAs` (old `chaotic_kishor` kept in `artistAliases`). Commission page handle wraps on phones.
+- Home reels → 6 real reels (links from the artist). Covers = the reel's poster still, taken from the public embed page `instagram.com/reel/<code>/embed/captioned/` (works without login; profile/reels listing doesn't) → `src/assets/images/reel-*.webp` (Minion trimmed of white letterbox). Titles from captions, tidied. To add a reel: get its link from the artist, same embed trick.
+
+### 2026-11-12 — Contact page: form first (uncommitted)
+- User asked for this change: the artist photo is removed from Contact, and the message form now sits in the hero, on the right on desktop (`lg:row-[1/span_2]`). The intro and the Email/Instagram/YouTube/Based-in list are on the left. On phones the order is intro → form → ways list, so the form shows on the first screen. The "Looking for something specific?" cards are now their own row of 3 under the hero (stacked on screens <1024px). `PHOTOS.cutout` is no longer used anywhere.
+- "Say hello." heading: no wrapping (the "." used to drop to its own line); smaller sizes (`clamp(56px,17vw,150px)`, lg `clamp(88px,9.5vw,160px)`); its `.lm` masks get `pb/-mb-[.26em]` so the "y" descender isn't clipped (default mask leaves only .1em).
+- Home Wearables: the line mandala was drawn over the 3 jacket photos on phones (the photo grid had no stacking) → grid now `relative z-1`. Rule: any content next to a `PageMandala` needs `relative z-1`, or the absolute mandala paints over it.
+
 ## Open / Next up
+
+- **After deploying the SEO change:** `npm run indexnow`; in Google Search Console request indexing for `/`, `/artist`, `/shop` and resubmit the sitemap; link the site from the Instagram + YouTube bios (strongest brand-entity signal).
 
 - **SEO after deploy:** add the site to Google Search Console + Bing Webmaster Tools, submit `/sitemap.xml`, test a painting URL in Rich Results Test. Pre-rendered Product schema reflects works.json at build time — a painting sold online still shows InStock until the next deploy (update status in the editor + push).
 
@@ -135,6 +156,9 @@
 
 ## Session log
 
+- 2026-11-12 — Brand SEO: visible Q&A + FAQPage schema (home/shop/contact), brand aliases in schema, copy + OG for 8 new works, IndexNow script. Builds clean; uncommitted.
+
+- 2026-11-12 — Added 8 cropped/straightened paintings to the shop; Contact photo → background-removed cut-out, no card, blends with the page. Builds clean; uncommitted.
 - 2026-11-12 — Phones had zero motion (gsap.matchMedia needs one matching condition) → fixed; stuck-card/refresh fix; sticky sale bar. Verified with emulated iPhone; uncommitted.
 
 - 2026-11-11 — Audit: API hardening (timeouts, rate limit, lost-race handling), cart sanitise + cross-tab sync, order-page error recovery, form error messages, security headers, editor CSRF. Builds clean; mocked API tests pass; uncommitted.

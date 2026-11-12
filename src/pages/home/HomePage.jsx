@@ -10,6 +10,8 @@ import WearablesSection from './sections/WearablesSection';
 import ReelsSection from './sections/ReelsSection';
 import MeetSection from './sections/MeetSection';
 import BandSection from './sections/BandSection';
+import FaqSection from '@/components/sections/FaqSection';
+import { HOME_FAQ } from '@/data/faq';
 
 export default function HomePage() {
   usePageMotion(homeMotion);
@@ -24,6 +26,7 @@ export default function HomePage() {
       <WearablesSection />
       <ReelsSection />
       <MeetSection />
+      <FaqSection id="home-faq-h" eyebrow="About KALA" title="Questions, *answered.*" items={HOME_FAQ} />
       <BandSection />
     </>
   );

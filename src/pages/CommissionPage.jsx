@@ -314,7 +314,7 @@ export default function CommissionPage() {
               <ul className="mt-5 list-none border-t border-divider p-0">
                 {[
                   ['Email', <a key="e" href={`mailto:${CONTACT.email}`} className="font-display text-2xl/[30px] break-words text-primary no-underline hover:text-link">{CONTACT.email}</a>],
-                  ['Instagram', <a key="i" href={CONTACT.instagram} target="_blank" rel="noopener" className="font-display text-2xl/[30px] text-primary no-underline hover:text-link">{CONTACT.instagramHandle}</a>],
+                  ['Instagram', <a key="i" href={CONTACT.instagram} target="_blank" rel="noopener" className="font-display text-2xl/[30px] break-words text-primary no-underline hover:text-link">{CONTACT.instagramHandle}</a>],
                   ['Based in', <span key="s" className="font-display text-2xl/[30px]">{CONTACT.location}</span>],
                 ].map(([label, value]) => (
                   <li key={label} className="flex flex-col gap-0.5 border-b border-divider py-4">

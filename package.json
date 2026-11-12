@@ -8,6 +8,7 @@
     "admin": "vite --open /__admin",
     "build": "vite build && node scripts/seo/build.mjs",
     "og": "node scripts/seo/og.mjs",
+    "indexnow": "node scripts/seo/indexnow.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -7,6 +7,7 @@
    title/description generated from works.json, so new works added in the editor are covered. */
 
 import { SALE, discounted } from '../data/sale.js';
+import { FAQ_BY_PATH } from '../data/faq.js';
 
 const STATUS = ['available', 'inquiry', 'sold', 'archived'];
 export const normalizeStatus = (s) => {
@@ -69,8 +70,10 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
     '@type': ['Organization', 'OnlineStore'],
     '@id': ID.org,
     name: S.name,
-    alternateName: S.brand,
+    alternateName: [S.brand, ...(S.aliases || [])],
     url: `${BASE}/`,
+    slogan: S.tagline,
+    keywords: (S.keywords || []).join(', '),
     logo: { '@type': 'ImageObject', url: abs('/icon-512.png'), width: 512, height: 512 },
     image: abs(ogImage('default')),
     description: S.summary,
@@ -84,10 +87,15 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
     '@type': 'Person',
     '@id': ID.artist,
     name: S.artist,
+    givenName: S.artist.split(' ')[0],
+    familyName: S.artist.split(' ').slice(1).join(' '),
+    alternateName: S.artistAliases || [],
     url: abs('/artist'),
     image: abs(ogImage('artist')),
-    jobTitle: 'Artist',
-    description: `${S.artist} is an India-based painter and mural artist, the artist behind KALA.`,
+    jobTitle: ['Artist', 'Painter', 'Mural artist'],
+    nationality: { '@type': 'Country', name: 'India' },
+    description: `${S.artist} is an India-based painter and mural artist, the artist behind ${S.brand} (KALA): original acrylic paintings, dot-work mandalas, devotional art, portraits, wall murals and painted wearables.`,
+    brand: { '@id': ID.org },
     knowsAbout: S.knowsAbout,
     worksFor: { '@id': ID.org },
     sameAs: S.sameAs,
@@ -97,9 +105,10 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
     '@id': ID.site,
     url: `${BASE}/`,
     name: S.brand,
-    alternateName: S.name,
+    alternateName: [S.name, ...(S.aliases || [])],
     description: S.summary,
     inLanguage: 'en-IN',
+    author: { '@id': ID.artist },
     publisher: { '@id': ID.org },
   };
 
@@ -301,6 +310,19 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
       graph.push(crumbs([['Home', '/'], ['Contact', '/contact']]));
     } else {
       page('WebPage');
+    }
+    /* the questions shown on the page (src/data/faq.js) → FAQPage, also printed in #seo-static */
+    const faq = FAQ_BY_PATH[path];
+    if (faq?.length) {
+      m.faq = faq;
+      graph.push({
+        '@type': 'FAQPage',
+        '@id': `${m.canonical}#faq`,
+        url: m.canonical,
+        isPartOf: { '@id': ID.site },
+        inLanguage: 'en-IN',
+        mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+      });
     }
     m.graph = graph;
     return m;

@@ -65,20 +65,20 @@ export const PHOTOS = {
   park: { img: img('artist-park.webp'), alt: 'Anushka sitting on a stone post in a park, in a black top and wide blue jeans, smiling, with an ivy-covered slope behind her' },
   pot: { img: img('artist-painted-pot.webp'), alt: 'Anushka holding a hand-painted pot in red, yellow and black, in front of a geometric wall painted in pink, sky blue, grey and black' },
   cobalt: { img: img('artist-cobalt-wall.webp'), alt: 'Anushka smiling in front of a cobalt-blue wall, a marigold tucked behind her ear, wearing her hand-painted olive jacket' },
+  /* same photo as whiteTop with the background removed (transparent WebP) — sits straight on the page */
+  cutout: { img: img('artist-white-top-cutout.webp'), w: 781, h: 1105, alt: 'Anushka smiling at the camera in a white top, owl earrings' },
   whiteTop: { img: img('artist-white-top.webp'), alt: 'Anushka smiling at the camera in a white top, owl earrings, against a pale wall' },
 };
 
-/* Instagram reels — swap each url for the reel's own link (instagram.com/reel/…) */
-const REEL_URL = 'https://www.instagram.com/chaotic_kishor/reels/';
+/* Instagram reels from @kala.anushkakishor.in — cover = a still from the reel (src/assets/images/reel-*.webp) */
+const reel = (code) => `https://www.instagram.com/reel/${code}/`;
 export const REELS = [
-  { cover: img('little-buddha-outdoors.webp'), title: 'Little Buddha, painted outdoors', url: REEL_URL, alt: 'Anushka outdoors holding a small painting of a smiling monk on a lotus' },
-  { cover: img('child-sketch.webp'), title: 'A portrait begins with a line', url: REEL_URL, alt: 'A red line sketch of a child with hands on cheeks on a white canvas, brushes and paints on the desk' },
-  { cover: img('face-paint-closeup.webp'), title: 'Face paint, up close', url: REEL_URL, alt: 'Close-up of Anushka in face paint: blue glitter on one cheek, bold black liner and lips' },
-  { cover: img('little-elephant.webp'), title: 'Little Elephant in watercolour', url: REEL_URL, alt: 'Watercolour of a little blue elephant blowing hearts' },
-  { cover: img('painting-mural.webp'), title: 'Painting a mandala wall', url: REEL_URL, alt: 'Anushka in a red jacket painting a colourful mandala mural high on a white wall' },
-  { cover: img('costume-rose-gown.webp'), title: 'The black rose gown', url: REEL_URL, alt: 'Anushka in a corridor in a black gown with a long sheer train covered in black roses' },
-  { cover: img('jacket-worn.webp'), title: 'The butterfly jacket', url: REEL_URL, alt: 'Anushka wearing an olive jacket with a hand-painted monarch butterfly on the sleeve' },
-  { cover: img('buddha-with-lotus.webp'), title: 'Buddha with Lotus', url: REEL_URL, alt: 'Green Buddha with a coral lotus' },
+  { cover: img('reel-taping-wall.webp'), title: 'Work in progress: taping out a wall', url: reel('CUE2ShOJUc4'), alt: 'Anushka taping out shapes on a white wall beside painted red and yellow hexagons, her shadow on the wall' },
+  { cover: img('reel-mandala-wall.webp'), title: 'A mandala wall, finished', url: reel('CTcf5PZq3h-'), alt: 'Corner of a painted wall mandala in orange, red, green and yellow petals above a blue ledge' },
+  { cover: img('reel-minion-wall.webp'), title: 'A Minion on the wall', url: reel('CNcmxe0J_lc'), alt: 'Anushka beside a waving Minion she painted on her wall, above blue hanging shelves' },
+  { cover: img('reel-bicycle.webp'), title: 'Relishing old memories', url: reel('CUZ_tleJ__5'), alt: 'A painting of a rust-brown bicycle with a basket of white flowers on a blue background, foam roses beside it' },
+  { cover: img('reel-varnishing.webp'), title: 'Varnishing a new piece', url: reel('CU7poELps4x'), alt: 'Close-up of a red and pink painted face with closed eyes, freshly varnished, flowers on the canvas edge' },
+  { cover: img('reel-jagannath-sketch.webp'), title: 'Sketching Lord Jagannath', url: reel('C5D3EdHSb1v'), alt: 'Hands sketching Lord Jagannath in black marker, with small colourful paintings and markers on the table' },
 ];
 
 /* studio photographs (real, not artworks) */

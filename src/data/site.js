@@ -47,9 +47,9 @@ export const FOOTER_GROUPS = [
 export const CONTACT = {
   artist: 'Anushka Kishor',
   email: 'kishoranushka96@gmail.com',
-  instagram: 'https://www.instagram.com/chaotic_kishor/',
-  instagramHandle: '@chaotic_kishor',
-  reels: 'https://www.instagram.com/chaotic_kishor/reels/',
+  instagram: 'https://www.instagram.com/kala.anushkakishor.in/',
+  instagramHandle: '@kala.anushkakishor.in',
+  reels: 'https://www.instagram.com/kala.anushkakishor.in/reels/',
   youtube: 'https://www.youtube.com/@kishoranushka',
   youtubeHandle: '@kishoranushka',
   location: 'India',

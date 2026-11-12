@@ -279,7 +279,7 @@ export const POLICIES = {
         title: 'Copyright and images',
         body: [
           'All paintings, photographs, designs, text and the KALA name and mark on this site are the work of Anushka Kishor and protected by copyright and other laws. Buying a painting transfers ownership of that physical painting only. The copyright stays with the artist.',
-          'You may photograph and share the painting you own, for example on social media, ideally crediting @chaotic_kishor. You may not reproduce it, print it, sell copies, use it in products or advertising, or use the site’s images to train or prompt AI image models without my written permission.',
+          'You may photograph and share the painting you own, for example on social media, ideally crediting @kala.anushkakishor.in. You may not reproduce it, print it, sell copies, use it in products or advertising, or use the site’s images to train or prompt AI image models without my written permission.',
           'I may photograph and show work I’ve made, including commissions and murals, in my portfolio and on social media. If you’d prefer a commission or mural not be shown, tell me when we agree it.',
         ],
       },

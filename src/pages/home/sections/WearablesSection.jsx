@@ -28,7 +28,7 @@ export default function WearablesSection() {
             </Button>
           </div>
         </div>
-        <div data-stagger className="col-[7/13] grid grid-cols-3 items-start gap-4 max-lg:col-span-full max-lg:mt-6 max-sm:gap-2.5">
+        <div data-stagger className="relative z-1 col-[7/13] grid grid-cols-3 items-start gap-4 max-lg:col-span-full max-lg:mt-6 max-sm:gap-2.5">
           {LOOKS.map((p, i) => (
             <figure key={p.alt} className={cx('m-0 aspect-[3/4] overflow-hidden rounded-ui bg-mat', i === 1 && 'mt-14 max-sm:mt-7')}>
               <img src={p.img} alt={p.alt} loading="lazy" className="block size-full object-cover" />

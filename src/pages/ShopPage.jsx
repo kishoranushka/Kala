@@ -6,6 +6,8 @@ import { SALE, saleEndsLabel } from '@/data/sale';
 import { useMotionApi } from '@/motion/MotionContext';
 import ShopCard from '@/components/art/ShopCard';
 import CtaBand from '@/components/sections/CtaBand';
+import FaqSection from '@/components/sections/FaqSection';
+import { SHOP_FAQ } from '@/data/faq';
 import { PageMandala } from '@/components/mandala/Mandala';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Button from '@/components/ui/Button';
@@ -181,6 +183,8 @@ export default function ShopPage() {
           </div>
         </div>
       </section>
+
+      <FaqSection id="shop-faq-h" eyebrow="Buying an original" title="Good to *know.*" items={SHOP_FAQ} />
 
       <CtaBand
         id="shop-cta-h"

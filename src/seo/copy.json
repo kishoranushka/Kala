@@ -7,20 +7,23 @@
     "tagline": "Colour, devotion and a little chaos.",
     "summary": "KALA is the online studio of India-based artist Anushka Kishor: original hand-painted acrylic paintings (devotional art, dot-work mandalas, portraits and small works), hand-painted wall murals and custom painted wearables.",
     "email": "kishoranushka96@gmail.com",
-    "sameAs": ["https://www.instagram.com/chaotic_kishor/", "https://www.youtube.com/@kishoranushka"],
-    "knowsAbout": ["Acrylic painting", "Mandala art", "Dot painting", "Devotional art", "Wall murals", "Portrait painting", "Hand-painted clothing"]
+    "sameAs": ["https://www.instagram.com/kala.anushkakishor.in/", "https://www.youtube.com/@kishoranushka"],
+    "knowsAbout": ["Acrylic painting", "Mandala art", "Dot painting", "Devotional art", "Wall murals", "Portrait painting", "Hand-painted clothing"],
+    "aliases": ["Kala", "Kala by Anushka", "Kala by Anushka Kishor", "Kala Art by Anushka Kishor", "Anushka Kishor Art"],
+    "artistAliases": ["kala.anushkakishor.in", "chaotic_kishor", "kishoranushka"],
+    "keywords": ["KALA", "Kala by Anushka", "Kala by Anushka Kishor", "Anushka Kishor", "Anushka Kishor artist", "original paintings India", "mandala art", "dot mandala painting", "devotional paintings", "Krishna painting", "Ganesha painting", "Shiva painting", "Buddha painting", "wall mural artist India", "custom portrait painting", "hand-painted clothing"]
   },
 
   "pages": {
     "/": {
       "title": "Original Paintings, Mandalas & Murals",
-      "description": "Hand-painted canvases, dot mandalas, devotional art, wall murals and painted wearables by Indian artist Anushka Kishor. Buy an original or commission one.",
+      "description": "KALA by Anushka Kishor: original hand-painted paintings, dot mandalas, devotional art, wall murals and painted wearables. Buy an original or commission one.",
       "h1": "Colour, devotion and a little chaos.",
       "og": "default"
     },
     "/shop": {
       "title": "Shop Original Paintings Online",
-      "description": "Buy original hand-painted acrylic paintings by Anushka Kishor: devotional art, mandalas and small canvases. One of each, packed by hand, free shipping in India.",
+      "description": "Shop KALA by Anushka Kishor: original hand-painted paintings, devotional art, mandalas and small canvases. One of each, packed by hand, free shipping in India.",
       "h1": "Paintings to take home",
       "og": "shop"
     },
@@ -38,19 +41,19 @@
     },
     "/walls": {
       "title": "Wall Mural Artist: Hand-Painted Murals",
-      "description": "Hire Anushka Kishor to hand-paint a wall mural for your home, office, café, school or studio: mandalas, florals and custom designs. Start a wall enquiry.",
+      "description": "KALA wall murals: hire Anushka Kishor to hand-paint a mural for your home, office, café or school in India. Mandalas, florals and custom designs.",
       "h1": "Your walls, painted by hand",
       "og": "walls"
     },
     "/artist": {
       "title": "About Anushka Kishor, Painter & Mural Artist",
-      "description": "Meet Anushka Kishor, the artist behind KALA, who builds software by day and paints by passion: devotional art, mandalas, murals and painted wearables.",
+      "description": "Anushka Kishor is the India-based artist behind KALA. She builds software by day and paints by passion: devotional art, mandalas, murals and wearables.",
       "h1": "Hello, I’m Anushka Kishor",
       "og": "artist"
     },
     "/commission": {
       "title": "Commission a Painting, Portrait or Mural",
-      "description": "Commission a custom hand-painted artwork from Anushka Kishor: a painting for a room, a portrait of someone you love, a wall mural or a painted wearable.",
+      "description": "Commission KALA by Anushka Kishor: a custom hand-painted painting for a room, a portrait of someone you love, a wall mural or a painted wearable.",
       "h1": "Begin with an idea",
       "og": "commission"
     },
@@ -109,7 +112,7 @@
   "collections": {
     "devotional": {
       "title": "Devotional Paintings: Krishna, Radha, Ganesha & Buddha",
-      "description": "Hand-painted devotional art by Anushka Kishor: Krishna and Radha, Ganesha, Vitthal and Buddha in acrylic. Original paintings to buy, enquire about or commission."
+      "description": "Hand-painted devotional art by Anushka Kishor: Krishna and Radha, Ganesha, Shiva, Devi, Vitthal and Buddha. Original paintings to buy, enquire about or commission."
     },
     "mandala": {
       "title": "Mandala & Dot Art Paintings",
@@ -213,6 +216,38 @@
     "bicycle": {
       "title": "Bicycle with Flowers, Acrylic Painting",
       "lead": "A rust-orange bicycle with a basket of white and blue flowers against a deep blue wash: acrylic on A4 (2021)."
+    },
+    "risingmandala": {
+      "title": "Rising Mandala, Ink and Colour Mandala Art",
+      "lead": "Half a mandala rising into a black sky, petals washed in coral, green, teal and blue with black ink and white dots: ink and colour on A4 paper."
+    },
+    "cactus": {
+      "title": "Desert Cactus, Patterned Ink Painting",
+      "lead": "A patterned green-and-blue cactus on yellow and orange dunes under a huge orange sun and a magenta sky, painted in ink and colour."
+    },
+    "ganeshablue": {
+      "title": "Little Ganesha in Blue, Acrylic Painting",
+      "lead": "A pink-and-crimson Ganesha with a yellow crown, a blessing hand and a modak, on swirling sky-blue brushstrokes: acrylic on paper (2024)."
+    },
+    "dragonfly": {
+      "title": "Dragonfly, Original Acrylic Painting",
+      "lead": "A green dragonfly with pale pink wings on a tall strip fading from red and orange into teal and yellow: acrylic on paper by Anushka Kishor."
+    },
+    "devilotus": {
+      "title": "Devi with Lotus, Devotional Acrylic Painting",
+      "lead": "A serene goddess in a red sari and gold jewellery rising behind a pink lotus, on a red-and-gold glow and deep blue night: acrylic on A4 (2021)."
+    },
+    "shiva": {
+      "title": "Shiva in Blue, Original Acrylic on Canvas",
+      "lead": "Shiva in blues and violets, eyes closed, with a third eye, a crescent moon, a rudraksha mala and a serpent: acrylic on canvas by Anushka Kishor."
+    },
+    "ganeshacolour": {
+      "title": "Ganesha in Colour, Abstract Acrylic Painting",
+      "lead": "An abstract Ganesha in bold blocks of colour, a blue trunk, a yellow crown and a dotted yellow belly on orange and red: acrylic by Anushka Kishor."
+    },
+    "buddhagreen": {
+      "title": "Buddha in Green, Original Acrylic on Canvas",
+      "lead": "A grey Buddha head with closed eyes behind a green lotus, white lotuses either side, on streaks of green, ochre and teal: acrylic on canvas (2023)."
     }
   }
 }

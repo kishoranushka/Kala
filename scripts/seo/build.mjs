@@ -113,6 +113,9 @@ function body(m) {
   if (m.links.length) {
     out.push(`<ul>${m.links.map((l) => `<li><a href="${esc(l.href)}">${esc(l.text)}</a>${l.note ? ` — ${esc(l.note)}` : ''}</li>`).join('')}</ul>`);
   }
+  if (m.faq?.length) {
+    out.push(`<section><h2>Questions &amp; answers</h2>${m.faq.map(({ q, a }) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>`);
+  }
   out.push(`</main>`, `<footer><p>${esc(S.brand)} · <a href="mailto:${S.email}">${S.email}</a> · ${S.sameAs.map((u) => `<a href="${u}">${esc(u.replace(/^https:\/\/(www\.)?/, ''))}</a>`).join(' · ')}</p></footer>`, `</div>`);
   return out.join('');
 }
@@ -176,6 +179,9 @@ const llms = [
   `- Commissions: custom paintings, portraits, hand-painted wall murals (homes, offices, cafés, schools) and painted wearables (t-shirts, jackets, shoes). Contact: ${S.email}`,
   '- Orders can be tracked at /track with the order reference and email.',
   '',
+  '## Questions & answers',
+  '',
+  ...seo.meta('/').faq.flatMap(({ q, a }) => [`### ${q}`, '', a, '']),
   '## Main pages',
   '',
   ...['/shop', '/collections', '/commission', '/walls', '/artist', '/archive', '/contact'].map((p) => {

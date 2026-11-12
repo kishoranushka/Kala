@@ -679,6 +679,238 @@
           "scale": 2.2
         }
       ]
+    },
+    {
+      "id": "risingmandala",
+      "plate": "22",
+      "title": "Rising Mandala",
+      "collection": "mandala",
+      "status": "available",
+      "price": "399",
+      "medium": "Ink and colour on paper",
+      "size": "A4",
+      "year": "",
+      "framing": "Glass",
+      "image": "rising-mandala.webp",
+      "w": 752,
+      "h": 1005,
+      "alt": "Half a mandala rising from the bottom edge, its petals and leaves washed in coral, green, teal and blue, outlined in black ink with white dots, against a black sky",
+      "note": "Half a mandala, rising like the sun from the bottom edge. The petals and leaves are washed in soft coral, green and blue, then outlined in black and finished with white dots, ring by ring. The black sky at the top keeps the colours glowing.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 85%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "30% 40%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "cactus",
+      "plate": "23",
+      "title": "Desert Cactus",
+      "collection": "small",
+      "status": "available",
+      "price": "299",
+      "medium": "Ink and colour",
+      "size": "Custom",
+      "year": "",
+      "framing": "Unframed",
+      "image": "desert-cactus.webp",
+      "w": 700,
+      "h": 1133,
+      "alt": "A green-and-blue patterned cactus standing on yellow and orange dunes under a huge orange sun and a magenta sky, every band filled with black line patterns",
+      "note": "A cactus standing tall in the desert, under a sun that fills half the sky. Every band of sky, dune and cactus is filled with its own little pattern in black ink: scales, waves, zigzags and dots. The brightest colours I own, all on one small card.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "70% 15%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "45% 55%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "ganeshablue",
+      "plate": "24",
+      "title": "Little Ganesha in Blue",
+      "collection": "small",
+      "status": "available",
+      "price": "199",
+      "medium": "Acrylic on paper",
+      "size": "Custom",
+      "year": "2024",
+      "framing": "Unframed",
+      "image": "little-ganesha-in-blue.webp",
+      "w": 1400,
+      "h": 1338,
+      "alt": "A simple pink-and-crimson Ganesha with a yellow crown, a raised blessing hand and a modak, seated against swirling sky-blue brushstrokes with white lines and dots",
+      "note": "A small, simple Ganesha: a crimson trunk, pink ears, a yellow crown, one hand raised in blessing and a modak held close. The blue around him is painted in loose swirls so he feels light, with a few white lines and dots for rhythm.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "45% 35%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "30% 55%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "dragonfly",
+      "plate": "25",
+      "title": "Dragonfly",
+      "collection": "small",
+      "status": "available",
+      "price": "199",
+      "medium": "Acrylic on paper",
+      "size": "Custom",
+      "year": "",
+      "framing": "Unframed",
+      "image": "dragonfly.webp",
+      "w": 328,
+      "h": 938,
+      "alt": "A green dragonfly with pale pink wings flying across a tall, narrow strip that fades from red and orange into teal and yellow, with white bubbles floating around it",
+      "note": "A dragonfly crossing a sky that melts from red and orange into teal and yellow. It is a tall, narrow piece, a little like a bookmark, with white bubbles drifting around the wings.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "55% 50%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 80%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "devilotus",
+      "plate": "26",
+      "title": "Devi with Lotus",
+      "collection": "small",
+      "status": "available",
+      "price": "599",
+      "medium": "Acrylic on paper",
+      "size": "Custom",
+      "year": "2024",
+      "framing": "Unframed",
+      "image": "devi-with-lotus.webp",
+      "w": 785,
+      "h": 1058,
+      "alt": "A serene goddess with closed eyes, gold jewellery and long dark hair, in a red sari, rising behind a large pink lotus against a red-and-gold glow and a deep blue night",
+      "note": "A goddess with her eyes closed, gold at her ears and throat, her long hair falling around a red sari. She rises behind a big pink lotus, with a red-and-gold glow behind her and deep blue at the edges.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 25%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 75%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "shiva",
+      "plate": "27",
+      "title": "Shiva in Blue",
+      "collection": "devotional",
+      "status": "available",
+      "price": "1499",
+      "medium": "Acrylic on canvas",
+      "size": "25 * 30",
+      "year": "2020",
+      "framing": "Canvas",
+      "image": "shiva-in-blue.webp",
+      "w": 912,
+      "h": 1105,
+      "alt": "Shiva painted entirely in blues and violets: eyes closed, three ash lines and a third eye on his forehead, a crescent moon in his hair, a rudraksha mala and a serpent at his neck",
+      "note": "Shiva in meditation, painted only in blues and violets. Eyes closed, the three lines and the third eye on his forehead, the crescent moon caught in his hair, a rudraksha mala and a serpent at his neck. I wanted the stillness to come from the colour as much as the face.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 35%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 85%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "ganeshacolour",
+      "plate": "28",
+      "title": "Ganesha in Colour",
+      "collection": "devotional",
+      "status": "available",
+      "price": "1999",
+      "medium": "Acrylic",
+      "size": "A3",
+      "year": "2021",
+      "framing": "Framed, wooden frame with glass",
+      "image": "ganesha-in-colour.webp",
+      "w": 990,
+      "h": 670,
+      "alt": "An abstract Ganesha in bold blocks of colour: a blue trunk and yellow crown, dark green ears, a big yellow belly ringed with dots, against orange, red and a yellow side panel",
+      "note": "Ganesha reduced to a few bold shapes: a blue trunk, a yellow crown, dark green ears and a round yellow belly ringed with dots. Orange and red behind him, and a yellow panel on the side. It comes framed in a dark wooden frame with glass.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "40% 35%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "35% 75%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "buddhagreen",
+      "plate": "29",
+      "title": "Buddha in Green",
+      "collection": "devotional",
+      "status": "available",
+      "price": "2999",
+      "medium": "Acrylic on canvas",
+      "size": "A3",
+      "year": "2023",
+      "framing": "Canvas",
+      "image": "buddha-in-green.webp",
+      "w": 1069,
+      "h": 1400,
+      "alt": "A grey Buddha head with closed eyes, the lower face hidden behind a green lotus and leaves, with white lotuses on either side, against streaks of green, ochre and teal",
+      "note": "A grey stone-like Buddha, eyes closed, his face half hidden behind a green lotus and its leaves. White lotuses float on either side, and the background is pulled down in long streaks of green, ochre and teal, like light through water.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 30%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 50%",
+          "scale": 2.2
+        }
+      ]
     }
   ]
 }

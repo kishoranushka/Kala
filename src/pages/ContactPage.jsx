@@ -1,16 +1,15 @@
 import { Link } from 'react-router-dom';
 import { CONTACT, EMAIL_PATTERN } from '@/data/site';
-import { PHOTOS } from '@/data/works';
 import { useFormFlow } from '@/hooks/useFormFlow';
 import { SEND_ERROR, sendForm } from '@/utils/sendForm';
 import Notice from '@/components/ui/Notice';
 import FormSuccess from '@/components/form/FormSuccess';
 import { Checkbox, ErrorSummary, Field, FieldRow, Input, SUBMIT_ROW, Select, Textarea, describe } from '@/components/form/Fields';
+import { CONTACT_FAQ } from '@/data/faq';
+import FaqSection from '@/components/sections/FaqSection';
 import PageTop from '@/components/sections/PageTop';
 import Button from '@/components/ui/Button';
-import Disclosure from '@/components/ui/Disclosure';
 import Icon from '@/components/ui/Icon';
-import { SplitWords } from '@/components/ui/Typography';
 
 const WAYS = [
   { icon: 'mail', label: 'Email', value: CONTACT.email, href: `mailto:${CONTACT.email}` },
@@ -23,13 +22,6 @@ const ROUTES = [
   { to: '/commission', cursor: 'talk', label: 'Commission', tone: 'text-secondary!', title: 'A painting or wall, made for you', note: 'The commission form asks the right questions: space, size, timeline.' },
   { to: '/order', cursor: 'explore', label: 'Order', tone: 'text-success!', title: 'Buy an available original', note: 'Choose works, add your details, pay securely online.' },
   { to: '/shop', cursor: 'explore', label: 'Shop', title: 'Browse every work', note: 'Available, sold and in private collections, all marked clearly.' },
-];
-
-const FAQ = [
-  { q: 'Do you ship outside India?', a: 'Paintings ordered on this site ship free anywhere in India. I pack each one myself, wrapped and protected at the corners, and send it with a tracked courier. For delivery abroad, write to me first and we’ll work out shipping and customs together.' },
-  { q: 'How long does a commission take?', a: 'It depends on the size and the detail: a small canvas takes far less time than a large portrait or a wall. Once we’ve talked it through, I’ll give you a clear timeline along with the quote, before any paint goes on.' },
-  { q: 'Can I see a painting in person?', a: 'Most of my work lives online, so I’m happy to send more photographs, close-ups in daylight, or a short video of a painting before you decide. Just ask on the work’s page or write to me.' },
-  { q: 'Do you paint walls outside your city?', a: 'Yes. I travel for murals within India. Tell me your city and the size of the wall, and travel and stay are included in the quote so there are no surprises.' },
 ];
 
 const ROW = 'grid min-h-[72px] grid-cols-[40px_120px_1fr_auto] items-center gap-4 text-primary max-sm:grid-cols-[28px_1fr] max-sm:gap-y-0.5 max-sm:py-3';
@@ -150,8 +142,10 @@ export default function ContactPage() {
   return (
     <>
       {/* ============================== SAY HELLO */}
-      <PageTop labelledBy="hi-h" crumbs={[{ label: 'Contact' }]} bodyClassName="mt-8 grid-12">
-        <div className="col-[1/7] max-lg:col-span-full">
+      {/* desktop: intro + ways on the left, form on the right.
+          phones: intro → form → ways (DOM order), so the form shows on the first screen. */}
+      <PageTop labelledBy="hi-h" crumbs={[{ label: 'Contact' }]} bodyClassName="mt-8 grid-12 items-start lg:grid-rows-[auto_1fr]">
+        <div className="col-[1/7] lg:row-start-1 max-lg:col-span-full">
           <p data-intro className="eyebrow">
             Contact
           </p>
@@ -159,20 +153,32 @@ export default function ContactPage() {
             id="hi-h"
             data-intro-line
             aria-label="Say hello."
-            className="mt-5 flex flex-wrap items-baseline font-display text-[clamp(72px,11vw,176px)] leading-[.9] font-light tracking-[-.02em]"
+            className="mt-5 flex flex-nowrap items-baseline font-display text-[clamp(56px,17vw,150px)] leading-[.9] font-light tracking-[-.02em] whitespace-nowrap lg:text-[clamp(88px,9.5vw,160px)]"
           >
-            <span className="lm" aria-hidden="true">
+            {/* extra bottom room in the mask so the "y" descender isn't clipped */}
+            <span className="lm pb-[.26em] -mb-[.26em]" aria-hidden="true">
               <span className="li">Say&nbsp;hell</span>
             </span>
             <MandalaO />
-            <span className="lm" aria-hidden="true">
+            <span className="lm pb-[.26em] -mb-[.26em]" aria-hidden="true">
               <span className="li">.</span>
             </span>
           </h1>
-          <p data-intro className="lead mt-8">
+          <p data-intro className="lead mt-8 max-sm:mt-5">
             A question about a painting, shipping, a collaboration, or simply a hello. I read every message personally and reply as soon as I can.
           </p>
-          <ul data-intro className="m-0 mt-10 list-none border-t border-line p-0">
+        </div>
+
+        <div
+          id="message"
+          data-intro
+          className="col-[7/13] min-w-0 bg-surface p-[clamp(28px,4vw,56px)] lg:row-[1/span_2] max-lg:col-span-full max-lg:mt-10 max-sm:-mx-5 max-sm:mt-8 max-sm:px-5 max-sm:py-9"
+        >
+          <MessageForm />
+        </div>
+
+        <div className="col-[1/7] lg:row-start-2 max-lg:col-span-full max-lg:mt-12">
+          <ul data-intro className="m-0 mt-10 list-none border-t border-line p-0 max-lg:mt-0">
             {WAYS.map((way) => {
               const content = (
                 <>
@@ -196,63 +202,31 @@ export default function ContactPage() {
             })}
           </ul>
         </div>
-        <div className="col-[8/13] self-end max-lg:col-span-full max-lg:mt-12 max-lg:max-w-[460px]">
-          <div data-intro-img className="relative ml-auto aspect-[4/5] max-w-[460px] overflow-hidden rounded-ui bg-wall shadow-float">
-            <img src={PHOTOS.whiteTop.img} alt={PHOTOS.whiteTop.alt} fetchpriority="high" className="block size-full object-cover object-[50%_30%]" />
-          </div>
-          <p data-intro className="meta mt-3.5 mb-0 text-right">
-            Hi, it’s me. Say hello any time.
-          </p>
-        </div>
       </PageTop>
 
-      {/* ============================== WRITE TO ME */}
-      <section id="message" aria-labelledby="msg-h" className="pt-[clamp(48px,6vw,88px)] pb-[clamp(96px,11vw,160px)]">
+      {/* ============================== LOOKING FOR SOMETHING SPECIFIC */}
+      <section aria-label="Looking for something specific?" className="pt-[clamp(24px,3vw,48px)] pb-[clamp(96px,11vw,160px)]">
         <div className="wrap">
-          <div className="grid-12 items-start">
-            <div data-cap className="col-[1/8] min-w-0 bg-surface p-[clamp(28px,4vw,56px)] max-lg:col-span-full max-sm:-mx-5 max-sm:px-5 max-sm:py-9">
-              <MessageForm />
-            </div>
-
-            <aside data-stagger aria-label="Looking for something specific?" className="col-[9/13] flex flex-col gap-5 max-lg:col-span-full max-lg:mt-10">
-              <p className="eyebrow">Looking for something specific?</p>
-              {ROUTES.map((r) => (
-                <Link
-                  key={r.to}
-                  to={r.to}
-                  data-cursor={r.cursor}
-                  className="flex flex-col gap-2.5 rounded-ui border border-divider bg-page p-7 text-primary max-sm:p-5 no-underline transition-[border-color,transform] duration-600 ease-gallery hover:-translate-y-1 hover:border-primary hover:text-primary"
-                >
-                  <span className={`eyebrow ${r.tone ?? ''}`}>{r.label}</span>
-                  <b className="font-display text-[28px]/8 font-normal">{r.title}</b>
-                  <span className="meta">{r.note}</span>
-                </Link>
-              ))}
-            </aside>
+          <p className="eyebrow">Looking for something specific?</p>
+          <div data-stagger className="mt-6 grid grid-cols-3 gap-5 max-lg:grid-cols-1">
+            {ROUTES.map((r) => (
+              <Link
+                key={r.to}
+                to={r.to}
+                data-cursor={r.cursor}
+                className="flex flex-col gap-2.5 rounded-ui border border-divider bg-page p-7 text-primary max-sm:p-5 no-underline transition-[border-color,transform] duration-600 ease-gallery hover:-translate-y-1 hover:border-primary hover:text-primary"
+              >
+                <span className={`eyebrow ${r.tone ?? ''}`}>{r.label}</span>
+                <b className="font-display text-[28px]/8 font-normal">{r.title}</b>
+                <span className="meta">{r.note}</span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ============================== BEFORE YOU WRITE */}
-      <section aria-labelledby="faq-h" className="pb-[clamp(96px,11vw,160px)]">
-        <div className="wrap">
-          <div className="grid-12">
-            <div className="col-[3/11] max-lg:col-span-full">
-              <p data-eyebrow className="eyebrow">
-                Before you write
-              </p>
-              <SplitWords id="faq-h" text="A few *quick* answers." className="heading-2 mt-5 font-light" />
-              <div data-cap className="mt-10">
-                {FAQ.map((item) => (
-                  <Disclosure key={item.q} title={item.q}>
-                    {item.a}
-                  </Disclosure>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <FaqSection id="faq-h" eyebrow="Before you write" title="A few *quick* answers." items={CONTACT_FAQ} />
     </>
   );
 }
