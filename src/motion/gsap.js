@@ -6,9 +6,11 @@ ScrollTrigger.config({ ignoreMobileResize: true });
 
 /* Crawlers and headless renderers (Googlebot's renderer, Bing, link previews, Lighthouse) don't advance
    animation frames, so entrance animations would leave the page blank for them — Google then reports
-   a "Soft 404". They get the final, motionless state instead: same content, no motion. */
+   a "Soft 404". They get the final, motionless state instead: same content, no motion.
+   Only names that never appear in a real phone browser: the Pinterest and DuckDuckGo apps' own browsers
+   carry "Pinterest" / "DuckDuckGo" in their user agent (their bots are caught by "bot"). */
 const CRAWLER =
-  /bot\b|bot\/|crawl|spider|slurp|google-inspectiontool|googleother|google-extended|lighthouse|headlesschrome|pagespeed|preview|facebookexternalhit|whatsapp|telegram|embedly|quora link|outbrain|pinterest|vkshare|w3c_validator|redditbot|applebot|yandex|baiduspider|duckduck|perplexity|claude|gptbot|chatgpt|anthropic|ccbot|bytespider/i;
+  /bot\b|bot\/|crawl|spider|slurp|google-inspectiontool|googleother|google-extended|lighthouse|headlesschrome|pagespeed|facebookexternalhit|embedly|quora link|outbrain|vkshare|w3c_validator|yandex|baiduspider|gptbot|ccbot|bytespider/i;
 const isCrawler = () =>
   typeof navigator !== 'undefined' && (navigator.webdriver === true || CRAWLER.test(navigator.userAgent || ''));
 

@@ -101,7 +101,7 @@ export default function PolicyPage() {
         <div className="wrap">
           <div className="grid-12 items-start">
             {/* contents + the other policies */}
-            <aside className="sticky top-28 col-[1/4] flex flex-col gap-8 max-lg:static max-lg:col-span-full max-lg:mb-10">
+            <aside className="sticky top-[calc(7rem+var(--sale-h,0px))] col-[1/4] flex flex-col gap-8 max-lg:static max-lg:col-span-full max-lg:mb-10">
               <nav aria-label="On this page" className="max-lg:hidden">
                 <p className="eyebrow mb-3">On this page</p>
                 <ol className="m-0 flex list-none flex-col gap-1 p-0">
@@ -143,7 +143,7 @@ export default function PolicyPage() {
               </div>
 
               {policy.sections.map((s, i) => (
-                <article key={s.id} id={s.id} aria-labelledby={`${s.id}-h`} data-reveal className="grid scroll-mt-32 grid-cols-[auto_1fr] gap-x-6 border-t border-divider pt-8 max-sm:grid-cols-1">
+                <article key={s.id} id={s.id} aria-labelledby={`${s.id}-h`} data-reveal className="grid scroll-mt-[calc(8rem+var(--sale-h,0px))] grid-cols-[auto_1fr] gap-x-6 border-t border-divider pt-8 max-sm:grid-cols-1">
                   <span aria-hidden="true" className="font-display text-[28px] leading-none text-secondary italic max-sm:mb-3">
                     {String(i + 1).padStart(2, '0')}
                   </span>

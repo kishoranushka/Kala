@@ -46,14 +46,17 @@ export default function SiteLayout() {
   return (
     <MotionProvider value={motion}>
       <div ref={rootRef} data-kala className="overflow-x-clip bg-page font-sans text-base/[26px] text-primary antialiased">
-        <SaleBar />
-        <Header
-          ref={menuButtonRef}
-          current={page.nav}
-          isHome={page.isHome}
-          menuOpen={menuOpen}
-          onMenu={() => setMenuOpen(true)}
-        />
+        {/* the sale bar stays pinned; the header under it slides away on scroll-down and tucks behind it */}
+        <div className="pointer-events-none sticky top-0 z-50 *:pointer-events-auto">
+          <SaleBar />
+          <Header
+            ref={menuButtonRef}
+            current={page.nav}
+            isHome={page.isHome}
+            menuOpen={menuOpen}
+            onMenu={() => setMenuOpen(true)}
+          />
+        </div>
         <main id="top" data-chapter={page.isHome ? 'Home' : undefined}>
           <Outlet />
         </main>

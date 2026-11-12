@@ -7,7 +7,7 @@ import Icon from '@/components/ui/Icon';
 import Wordmark from './Wordmark';
 
 const NAV_LINK =
-  'py-3 text-primary no-underline hover:text-primary bg-[image:linear-gradient(currentColor,currentColor)] bg-no-repeat bg-[position:100%_100%] bg-[length:0%_1px] ' +
+  'py-3 whitespace-nowrap text-primary no-underline hover:text-primary bg-[image:linear-gradient(currentColor,currentColor)] bg-no-repeat bg-[position:100%_100%] bg-[length:0%_1px] ' +
   'transition-[background-size] duration-600 ease-gallery hover:bg-[position:0%_100%] hover:bg-[length:100%_1px] ' +
   'aria-[current=page]:bg-[position:0%_100%] aria-[current=page]:bg-[length:100%_1px]';
 
@@ -31,10 +31,10 @@ function CartCount({ count }) {
 const Header = forwardRef(function Header({ current, isHome = false, menuOpen, onMenu }, menuButtonRef) {
   const { bag } = useBag();
   return (
-    <header data-header className="sticky top-0 z-50 bg-page shadow-[0_1px_0_transparent] transition-shadow duration-500 [&.is-scrolled]:shadow-[0_1px_0_var(--color-divider)]">
-      <div className="wrap flex h-[76px] items-center justify-between gap-8 max-sm:h-[60px] max-sm:gap-3">
+    <header data-header className="relative z-50 bg-page shadow-[0_1px_0_transparent] transition-shadow duration-500 [&.is-scrolled]:shadow-[0_1px_0_var(--color-divider)]">
+      <div className="wrap flex h-[76px] items-center justify-between gap-8 max-[960px]:gap-5 max-sm:h-[60px] max-sm:gap-3">
         <Wordmark to={isHome ? '#top' : '/'} withName />
-        <nav aria-label="Primary" className="flex gap-8 text-sm/5 font-medium tracking-[.01em] max-wide:gap-5 max-nav:hidden">
+        <nav aria-label="Primary" className="flex gap-8 text-sm/5 font-medium tracking-[.01em] max-wide:gap-5 max-[1000px]:gap-4 max-[960px]:gap-3 max-nav:hidden">
           {NAV_LINKS.map((link) => (
             <Link key={link.key} to={link.to} aria-current={current === link.key ? 'page' : undefined} className={NAV_LINK}>
               {link.label}

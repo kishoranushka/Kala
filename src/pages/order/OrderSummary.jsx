@@ -40,7 +40,7 @@ export default function OrderSummary({ selection, canEdit, onRemove, paid = fals
   return (
     <aside
       aria-labelledby="sum-h"
-      className={cx('sticky top-24 col-[9/13] min-w-0 bg-surface p-7 shadow-[0_1px_0_var(--color-divider)] max-lg:static max-lg:col-span-full max-lg:mt-12 max-sm:p-5', className)}
+      className={cx('sticky top-[calc(6rem+var(--sale-h,0px))] col-[9/13] min-w-0 bg-surface p-7 shadow-[0_1px_0_var(--color-divider)] max-lg:static max-lg:col-span-full max-lg:mt-12 max-sm:p-5', className)}
     >
       <div className="flex items-baseline justify-between gap-3">
         <h2 id="sum-h" className="art-title">

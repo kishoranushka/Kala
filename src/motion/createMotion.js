@@ -62,6 +62,17 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
 
   api.refresh = () => ScrollTrigger.refresh();
 
+  /* Cards with a CSS hover transition on transform/opacity fight GSAP: ScrollTrigger.refresh() (after lazy
+     images load) then reads a half-finished CSS transition as the end state and the card stays shifted.
+     Switch CSS transitions off on those elements until their entrance is done; returns the undo. */
+  const hush = (targets) => {
+    const els = gsap.utils.toArray(targets).filter((el) => getComputedStyle(el).transitionDuration.split(',').some((s) => parseFloat(s) > 0));
+    els.forEach((el) => { el.style.transition = 'none'; });
+    return () => els.forEach((el) => { el.style.transition = ''; });
+  };
+  /* once an entrance is over, hand the element back to CSS (hover lifts use translate/scale) */
+  const RESET = 'transform,translate,rotate,scale,opacity,visibility';
+
   /* phones and tablets: the curtain moves a little quicker so taps feel responsive */
   const quick = (tl) => (window.matchMedia('(max-width: 1023px)').matches ? tl.timeScale(1.35) : tl);
   api.quick = quick;
@@ -69,6 +80,9 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
   const mm = gsap.matchMedia();
   mm.add(
     {
+      /* gsap only runs this when at least one condition matches: on a phone (narrow, touch, motion welcome)
+         none of the others do, so without `any` nothing at all would animate there */
+      any: 'all',
       desktop: '(min-width: 1024px)',
       reduce: '(prefers-reduced-motion: reduce)',
       fine: '(hover: hover) and (pointer: fine)',
@@ -302,17 +316,17 @@ export function createMotion(root, { arriving, gentle, extra, navigate, closeMen
         gsap.from(h.querySelectorAll('.wi'), { yPercent: 115, rotation: small ? 3 : 6, transformOrigin: '0% 100%', duration: 1.4 * k, stagger: 0.05 * k, ease: 'expo.out', scrollTrigger: { trigger: h, start: at('top 88%'), once: true } });
       });
       all('[data-cap]').forEach((el) => {
-        gsap.from(el, { y: small ? 16 : 28, autoAlpha: 0, duration: 1.3 * k, delay: 0.15 * k, ease: 'expo.out', scrollTrigger: { trigger: el, start: at('top 92%'), once: true } });
+        gsap.from(el, { y: small ? 16 : 28, autoAlpha: 0, duration: 1.3 * k, delay: 0.15 * k, ease: 'expo.out', clearProps: RESET, onComplete: hush(el), scrollTrigger: { trigger: el, start: at('top 92%'), once: true } });
       });
       all('[data-stagger]').forEach((list) => {
-        gsap.from(list.children, { y: small ? 20 : 34, autoAlpha: 0, duration: 1.2 * k, stagger: 0.08 * k, ease: 'expo.out', scrollTrigger: { trigger: list, start: at('top 88%'), once: true } });
+        gsap.from(list.children, { y: small ? 20 : 34, autoAlpha: 0, duration: 1.2 * k, stagger: 0.08 * k, ease: 'expo.out', clearProps: RESET, onComplete: hush(list.children), scrollTrigger: { trigger: list, start: at('top 88%'), once: true } });
       });
       all('[data-reveal]').forEach((el) => {
         const t = gsap.timeline({ scrollTrigger: { trigger: el, start: at('top 90%'), once: true } });
         t.fromTo(el, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.5 * k, ease: 'expo.inOut', clearProps: 'clipPath' });
         const art = el.querySelector('img, svg');
-        /* the inner zoom repaints a large image every frame: desktop only, a softer one on phones */
-        if (art && !el.hasAttribute('data-noinner')) t.from(art, { scale: small ? 1.1 : 1.3, duration: 2 * k, ease: 'expo.out', clearProps: 'scale' }, 0.1);
+        /* the inner zoom repaints a large image every frame: a softer one on phones */
+        if (art && !el.hasAttribute('data-noinner')) t.from(art, { scale: small ? 1.1 : 1.3, duration: 2 * k, ease: 'expo.out', clearProps: RESET, onComplete: hush(art) }, 0.1);
       });
       all('[data-line]').forEach((el) => {
         gsap.from(el, { scaleX: 0, transformOrigin: '0% 50%', duration: 1.4 * k, ease: 'expo.inOut', scrollTrigger: { trigger: el, start: at('top 92%'), once: true } });

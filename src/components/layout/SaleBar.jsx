@@ -1,15 +1,36 @@
+import { useLayoutEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { SALE, saleActive, saleEndsLabel } from '@/data/sale';
 import { WORKS, onSale } from '@/data/works';
 import Icon from '@/components/ui/Icon';
 
 /* The thin announcement strip above the header on every page while the sale runs (VITE_SALE_ON).
+   It stays pinned to the top (sticky, with the header, in SiteLayout) and publishes its height as
+   --sale-h, so other sticky bars (shop filters, side panels) sit below it.
    Renders nothing when the sale is off or nothing is on sale. */
 export default function SaleBar() {
-  if (!saleActive() || !WORKS.some(onSale)) return null;
+  const show = saleActive() && WORKS.some(onSale);
+  const ref = useRef(null);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const html = document.documentElement;
+    const set = () => html.style.setProperty('--sale-h', `${el.offsetHeight}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      html.style.removeProperty('--sale-h');
+    };
+  }, [show]);
+
+  if (!show) return null;
   const ends = saleEndsLabel();
   return (
     <Link
+      ref={ref}
       to="/shop?available"
       data-sale-bar
       className="group relative z-51 block bg-sale text-on-primary no-underline hover:text-on-primary"

@@ -290,7 +290,7 @@ function ArtworkView({ work }) {
               </p>
             </div>
 
-            <aside aria-label="About this work" className="sticky top-24 col-[9/13] max-lg:static max-lg:col-span-full max-lg:mt-12">
+            <aside aria-label="About this work" className="sticky top-[calc(6rem+var(--sale-h,0px))] col-[9/13] max-lg:static max-lg:col-span-full max-lg:mt-12">
               <p data-intro className="eyebrow">
                 {plateLabel(work)}
               </p>

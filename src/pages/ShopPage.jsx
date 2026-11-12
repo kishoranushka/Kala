@@ -141,7 +141,7 @@ export default function ShopPage() {
         </div>
       </section>
 
-      <div data-intro className="sticky top-0 z-40 border-y border-divider bg-page/96 backdrop-blur-sm">
+      <div data-intro className="sticky top-[var(--sale-h,0px)] z-40 border-y border-divider bg-page/96 backdrop-blur-sm">
         <div className="wrap flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-3.5 max-sm:py-2.5">
           <div role="group" aria-label="Filter by collection" className="no-scrollbar flex gap-2 overflow-x-auto p-0.5">
             {CHIPS.map((c) => (

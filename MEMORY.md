@@ -90,12 +90,20 @@
 - Cause of the phone overflow on /order and /artwork: `grid grid-cols-12 gap-x-8` = 11×32px of gaps (352px), wider than a phone → now `max-lg:grid-cols-1` (artwork-page 360px overflow fixed by this).
 - `Fields.jsx`: all grids use `minmax(0,…)`; Field/inputs `min-w-0`; form Select is `w-full` and 16px on phones (no iOS zoom); FieldRow three → city full width, then state + PIN on phones; compact ChoiceCards on phones; new `SUBMIT_ROW` (full-width button on phones). Order NAV_ROW: full-width next button with back link under it on phones. Long emails wrap (Notice, FormSuccess, review `dl`). Styled file input. Form panels `px-5` on phones. Header gap shrinks on phones (overflowed at 320px).
 - Verified in headless Edge at 320/360/390/768/1024 (commission, contact, order details with errors, track, artwork, home): no element past the viewport edge.
+- "Track order" (/track) added as 6th `NAV_LINKS` item (header + menu, `MENU_LINKS` uses `NAV_LINKS[5]`); route handle `nav: 'track'`. Nav links `whitespace-nowrap`; gaps shrink at ≤1000/≤960px so 6 links fit from 901px (measured 901–1440).
 - "Archived" no longer shown: `statusLabel(w)` → murals "Painted on a wall", others "Private collection", or a per-work `badge` in works.json. `StatusBadge` takes `work`. User wanted archived works to look bought for social proof — declined labelling unsold work "Sold"/"Collected"; only truthful labels (Om, Flute and Veena are the real Sold ones).
 
 ### 2026-11-12 — Shop page mobile: paintings first (uncommitted)
 - User asked for this change: on phones (<640px) the Shop intro is just breadcrumbs, title (38px) and a compact sale line. Eyebrow, lead and stats are hidden there, and the 3 "featured" thumbnails are hidden below 1024px. Less padding above the grid. Paintings show on the first screen at 390px. Desktop is unchanged.
 - Artwork page mobile (<1024px): `MobileBar` in ArtworkPage.jsx is now shown for every work with its main action (Add to Cart / View Cart / Ask About It / Commission Similar / Enquire / Commission a Wall). `body.has-action-bar` pads the footer. ProgressMandala `raised` was being overridden by `max-sm:bottom-4` (it covered the bar's button); it now sits at bottom 88px.
 - Phone overflow check (390px iframe, all routes): no page scrolls sideways. To re-run, put a helper iframe page in `dist/` and point Edge `--dump-dom` at it.
+
+### 2026-11-12 — Mobile motion fixed + sticky sale bar (uncommitted)
+- **Root cause, phones had no motion at all:** `gsap.matchMedia().add({desktop, reduce, fine}, fn)` only runs `fn` when at least one condition matches; on a phone none did. Added `any: 'all'` condition in `createMotion.js`. Verified via CDP-driven Edge (iPhone UA, touch, 390px): intro, reveals, words, staggers all animate.
+- Cards with CSS `transition` on transform (PathCard) got stuck at `translateY(20px)`: `ScrollTrigger.refresh()` read the half-done CSS transition as the end state. `hush()` turns CSS transitions off until the entrance ends; cap/stagger/reveal-art tweens now `clearProps` (incl. `translate`, which GSAP set to none and killed Tailwind hover lifts).
+- Crawler regex no longer matches in-app browsers (Pinterest app, DuckDuckGo browser…); real bots still caught by `bot`.
+- Sale bar + header share one sticky wrapper in `SiteLayout` (bar pinned; header still hides on scroll-down, behind the bar). `SaleBar` sets `--sale-h` on `<html>`; shop filter bar, artwork/order/policy sticky asides offset by it.
+- Sweep (all main routes, 390px + 1440px): nothing left hidden/clipped/shifted after scrolling. Probe scripts were in that session's scratchpad (`mobtest.mjs*`).
 
 ## Open / Next up
 
@@ -126,6 +134,8 @@
 - New paintings: use the editor (`npm run admin`). Other photos: drop JPG in `src/assets/images/`, run `node scripts/optimize-images.mjs`, reference the `.webp` via `img('name.webp')` in `works.js`, delete the JPG.
 
 ## Session log
+
+- 2026-11-12 — Phones had zero motion (gsap.matchMedia needs one matching condition) → fixed; stuck-card/refresh fix; sticky sale bar. Verified with emulated iPhone; uncommitted.
 
 - 2026-11-11 — Audit: API hardening (timeouts, rate limit, lost-race handling), cart sanitise + cross-tab sync, order-page error recovery, form error messages, security headers, editor CSRF. Builds clean; mocked API tests pass; uncommitted.
 - 2026-11-11 — SEO: per-route pre-rendered HTML, JSON-LD, sitemap, robots, llms.txt/llms-full.txt, 34 OG cards, icons, manifest. Builds clean, verified in preview; uncommitted.
