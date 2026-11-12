@@ -156,6 +156,8 @@
 
 ## Session log
 
+- 2026-11-12 — Contact: form in hero (first screen on phone too), photo removed, heading fixed; wearables mandala behind photos. Committed everything (`5327f36`), pushed, `vercel --prod` → live at kala.anushkakishor.in (/, /contact, /shop, /artwork/shiva, /api/availability = 200).
+
 - 2026-11-12 — Brand SEO: visible Q&A + FAQPage schema (home/shop/contact), brand aliases in schema, copy + OG for 8 new works, IndexNow script. Builds clean; uncommitted.
 
 - 2026-11-12 — Added 8 cropped/straightened paintings to the shop; Contact photo → background-removed cut-out, no card, blends with the page. Builds clean; uncommitted.
