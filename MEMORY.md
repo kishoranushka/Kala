@@ -124,7 +124,7 @@
 - "Say hello." heading: no wrapping (the "." used to drop to its own line); smaller sizes (`clamp(56px,17vw,150px)`, lg `clamp(88px,9.5vw,160px)`); its `.lm` masks get `pb/-mb-[.26em]` so the "y" descender isn't clipped (default mask leaves only .1em).
 - Home Wearables: the line mandala was drawn over the 3 jacket photos on phones (the photo grid had no stacking) → grid now `relative z-1`. Rule: any content next to a `PageMandala` needs `relative z-1`, or the absolute mandala paints over it.
 
-### 2026-11-12 — Vercel NOT_FOUND / error pages fixed (uncommitted)
+### 2026-11-12 — Vercel NOT_FOUND / error pages fixed (`f6d0c30`, deployed)
 - **Root cause:** since `cleanUrls` was added (`29f4430`), the SPA rewrite to `/index.html` never resolved → any URL that wasn't pre-rendered (`/artwork`, `/artwork/Shiva`, old/mistyped links) got Vercel's raw NOT_FOUND. Rewrite removed; SEO build now writes `dist/404.html` (app shell, noindex) which Vercel serves with status 404 → app boots and the router redirects. `vercel.json` redirects `/artwork` → `/shop` (router too).
 - Root route `errorElement` = `components/layout/RouteError.jsx` (friendly page, no motion). Stale-deploy chunk errors (`vite:preloadError` in main.jsx + error-message match) reload once (30 s sessionStorage guard).
 - Artwork/collection ids are case-insensitive (redirect to the lowercase URL).
@@ -164,7 +164,7 @@
 
 ## Session log
 
-- 2026-11-12 — Fixed Vercel NOT_FOUND on non-pre-rendered URLs (404.html shell replaces broken rewrite), friendly route error page + stale-chunk reload, case-insensitive ids. Verified on a preview deploy; uncommitted.
+- 2026-11-12 — Fixed Vercel NOT_FOUND on non-pre-rendered URLs (404.html shell replaces broken rewrite), friendly route error page + stale-chunk reload, case-insensitive ids. Committed (`f6d0c30`, reel covers `b54a51b`), pushed, `vercel --prod`; verified live.
 
 - 2026-11-12 — Contact: form in hero (first screen on phone too), photo removed, heading fixed; wearables mandala behind photos. Committed everything (`5327f36`), pushed, `vercel --prod` → live at kala.anushkakishor.in (/, /contact, /shop, /artwork/shiva, /api/availability = 200).
 
