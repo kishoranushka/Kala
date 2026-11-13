@@ -130,6 +130,9 @@
 - Artwork/collection ids are case-insensitive (redirect to the lowercase URL).
 - Verified: every painting renders without errors in headless Edge; missing chunk → friendly page; preview deploy `kala-dog1blq5j…` → `/foo` serves shell, `/artwork/Shiva` 404+shell, `/artwork` 307.
 
+### 2026-11-13 — Missing reel covers (uncommitted)
+- Commit `b54a51b` had deleted `reel-taping-wall`, `reel-mandala-wall`, `reel-bicycle` .webp while `works.js` still used them → 3 blank cards in the home Instagram section. Restored from `5327f36`. Instagram's embed page no longer gives the poster to a plain HTTP fetch (it needs a real browser now).
+
 ## Open / Next up
 
 - **After deploying the SEO change:** `npm run indexnow`; in Google Search Console request indexing for `/`, `/artist`, `/shop` and resubmit the sitemap; link the site from the Instagram + YouTube bios (strongest brand-entity signal).
