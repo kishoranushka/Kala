@@ -1,6 +1,6 @@
 /* POST /api/order — start checkout.
    Body: { works: [id…], customer: { name, email, phone, address, city, state, pin, note }, replaces? }
-   Checks the details, prices the paintings from works.json (never trusts the browser), holds them for
+   Checks the details, prices the paintings from the catalogue (never trusts the browser), holds them for
    20 minutes so nobody else can buy them mid-payment, saves a pending order and creates the Razorpay order.
    Returns: { orderId, key, razorpayOrderId, amount, currency }
    Errors: { error, fields? } (422), { error, taken? } (409), 429 when too many checkouts are started.
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
 
   let works;
   try {
-    works = orderableWorks(ids);
+    works = await orderableWorks(ids);
   } catch (err) {
     return json(res, 409, { error: err.message, taken: err.taken || [] });
   }

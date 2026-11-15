@@ -207,8 +207,9 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
   }
 
   /* ------------------------------------------------------------- page builders */
-  function base({ path, title, description, og, imageAlt, noindex, ogType = 'website', h1, intro = [], links = [] }) {
-    const image = abs(ogImage(og) || ogImage('default'));
+  function base({ path, title, description, og, ogFallback, imageAlt, noindex, ogType = 'website', h1, intro = [], links = [] }) {
+    /* a painting added in the admin panel has no social card yet (npm run og): show its photo instead */
+    const image = abs(ogImage(og) || ogFallback || ogImage('default'));
     return {
       path,
       canonical: path === '/' ? `${BASE}/` : BASE + path,
@@ -354,7 +355,7 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
     const c = collById.get(w.collection);
     const wc = workCopy(w);
     const path = `/artwork/${w.id}`;
-    const m = base({ path, title: wc.title, description: wc.description, og: w.id, imageAlt: w.alt, ogType: isBuyable(w) ? 'product' : 'article', h1: w.title });
+    const m = base({ path, title: wc.title, description: wc.description, og: w.id, ogFallback: imageUrl(w.image), imageAlt: w.alt, ogType: isBuyable(w) ? 'product' : 'article', h1: w.title });
     m.intro = [w.alt, isPlaceholder(w.note) ? '' : w.note].filter(Boolean);
     m.facts = [
       ['Collection', c ? `${c.num}. ${c.title}` : ''],

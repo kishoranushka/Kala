@@ -52,8 +52,7 @@ function head(m) {
     `<meta property="og:title" content="${esc(m.title)}" />`,
     `<meta property="og:description" content="${esc(m.description)}" />`,
     `<meta property="og:image" content="${m.image}" />`,
-    `<meta property="og:image:width" content="1200" />`,
-    `<meta property="og:image:height" content="630" />`,
+    ...(m.image.includes('/og/') ? [`<meta property="og:image:width" content="1200" />`, `<meta property="og:image:height" content="630" />`] : []),
     `<meta property="og:image:alt" content="${esc(m.imageAlt)}" />`,
     `<meta name="twitter:title" content="${esc(m.title)}" />`,
     `<meta name="twitter:description" content="${esc(m.description)}" />`,
@@ -273,5 +272,5 @@ const full = [
 writeFileSync(join(DIST, 'llms-full.txt'), full);
 
 console.log(`[seo] ${paths.length} pages pre-rendered, sitemap (${indexable.length} urls), llms.txt, llms-full.txt`);
-const missingOg = paths.map((p) => seo.meta(p)).filter((m) => m.image.endsWith('/og/default.jpg') && !['/', '/track'].includes(m.path) && !POLICIES[m.path]);
+const missingOg = paths.map((p) => seo.meta(p)).filter((m) => !m.image.includes('/og/') || (m.image.endsWith('/og/default.jpg') && !['/', '/track'].includes(m.path) && !POLICIES[m.path]));
 if (missingOg.length) console.warn(`[seo] no social card yet for ${missingOg.map((m) => m.path).join(', ')} — run: npm run og`);

@@ -63,7 +63,7 @@ src/
   router.jsx               routes; each route's `handle` configures the page chrome
   styles/index.css         THEME tokens (@theme), base styles, type presets (eyebrow, heading-*, lead…)
   data/
-    works.json             the paintings + collections  ← edit with the painting editor (npm run admin)
+    works.json             build snapshot of the paintings + collections (source: database, edit at /admin)
     works.js               loads works.json; photos, reels, studio images + helpers
     site.js                navigation, menu, footer links, contact details
   assets/images            artwork and studio photographs
@@ -88,15 +88,19 @@ src/
 
 - **Breakpoints** are desktop-first, used as `max-lg:`, `max-sm:` and so on. Named text sizes (`text-sm`) set only the size; line height is inherited unless given (`text-sm/[22px]`).
 - **Motion** is driven by data attributes in the markup: `data-reveal`, `data-words`, `data-cap`, `data-stagger`, `data-spin`, `data-cursor`, `data-magnetic` and others. Add one to an element and the shared choreography picks it up. A page with its own choreography registers it with `usePageMotion(fn)`; see `pages/home/homeMotion.js`. Visitors who prefer reduced motion get a quiet fade instead.
-- **Content** comes from `data/works.json`, `data/works.js` and `data/site.js`. Bracketed text such as `[Medium]` or `[Location]` is a placeholder for the artist to replace.
-- **Painting editor** (local only): `npm run admin` opens http://localhost:5173/__admin. Add paintings, upload photos (auto-converted to WebP), set the tag (Available / Inquiry only / Sold / Archived), price and details, and pick close-up points. It writes `src/data/works.json` and `src/assets/images/`; commit and push to publish. It's a dev-server plugin (`scripts/admin/`), so it never ships with `vite build`. Paintings the site shows by ID (home hero, shop strip…) can't be deleted; mark them Sold or Archived instead.
+- **Content** comes from the database (paintings + collections), `data/works.js` (photos, reels, helpers) and `data/site.js`. Bracketed text such as `[Medium]` or `[Location]` is a placeholder for the artist to replace.
+- **Admin panel** at **/admin** (live site, or `npm run admin` locally): password login (`ADMIN_PASSWORD`). Works on a phone. Add and edit paintings: tag (Available / Inquiry only / Sold / Archived), price, details, close-up points, shipping box, second photo. A new photo goes through the **photo fixer** first (`src/admin/photo.js`): it finds the painting's 4 corners (OpenCV.js, loaded from jsDelivr on first use), you drag any that are off, rotate in 90° steps, then it straightens the perspective and trims a plain paper/table border. The server (`api/admin.js`) turns it into a ≤1400px WebP in Supabase Storage.
+  - Where things live: paintings and collections are rows in the Supabase tables `works` / `collections` (`data` = the same object as a works.json entry); photos are in the public Storage bucket `paintings`. `src/data/works.json` is now a **build snapshot**: `npm run build` first runs `scripts/catalog/pull.mjs`, which rewrites it from the database and downloads new photos into `src/assets/images/` (so they're served by Vercel). If the database can't be reached, the committed copy is used.
+  - Going live: the site fetches `/api/catalog` before its first render, so a saved change shows within ~10 s. Each save also calls the Vercel deploy hook (`VERCEL_DEPLOY_HOOK_URL`) to rebuild the pre-rendered SEO pages, sitemap and llms.txt (~2 min). A painting sold online is set to Sold in the database automatically.
+  - Paintings the site shows by ID (home hero, shop strip…; `PINNED` in `api/_lib/catalog.js`), collection covers and paintings with online orders can't be deleted; mark them Sold or Archived instead.
+  - One-time setup: run `supabase/schema.sql`, then `node scripts/catalog/migrate.mjs` (copies works.json + its photos into Supabase; refuses if the tables already have paintings unless `--force`).
 - **Forms** (commission, contact, order) are emailed to the artist via Web3Forms; the access key is `FORM_ACCESS_KEY` in `data/site.js`.
 - **Orders and payment** (Vercel functions in `api/`; `npm run dev` runs them too, reading `.env.local`):
-  1. `POST /api/order` checks the details, prices the paintings from `works.json`, holds them for 20 minutes in Supabase and creates a Razorpay order.
+  1. `POST /api/order` checks the details, prices the paintings from the database (falls back to the bundled `works.json`), holds them for 20 minutes in Supabase and creates a Razorpay order.
   2. The buyer pays in Razorpay Checkout (UPI QR code first, then cards and netbanking).
   3. `POST /api/verify` (from the browser) or `POST /api/razorpay-webhook` (from Razorpay) checks the signature and finalises the order once: paid → paintings sold → Shiprocket order (channel "Kala") → emails.
-  4. `GET /api/availability` lists paintings sold online; the site marks them Sold on load.
+  4. `GET /api/catalog` returns the live catalogue + paintings sold online; the site applies it on load (`GET /api/availability` still answers for old tabs).
   5. `GET /api/track` powers `/track` (order reference + email, no login).
   - Database tables: `supabase/schema.sql`. Only works marked Available **with a price** can be bought online. Shipping is free within India; orders from abroad go through Contact.
-  - Env vars (Vercel → Settings → Environment Variables, and `.env.local`): `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SHIPROCKET_EMAIL`, `SHIPROCKET_PASSWORD`, `SHIPROCKET_PICKUP_LOCATION`. Optional: `RESEND_API_KEY` (server emails the artist), `MAIL_FROM` (verified-domain sender, which also emails customers), `ORDER_EMAIL_TO`. Without Resend, the browser sends the artist alert via Web3Forms.
-  - Parcel size per painting: "Shipping box" in the painting editor.
+  - Env vars (Vercel → Settings → Environment Variables, and `.env.local`): `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SHIPROCKET_EMAIL`, `SHIPROCKET_PASSWORD`, `SHIPROCKET_PICKUP_LOCATION`, `ADMIN_PASSWORD` (admin panel), `VERCEL_DEPLOY_HOOK_URL` (Vercel → Settings → Git → Deploy Hooks, branch `main`). Optional: `ADMIN_SESSION_SECRET` (else derived from the password; changing either logs everyone out), `RESEND_API_KEY` (server emails the artist), `MAIL_FROM` (verified-domain sender, which also emails customers), `ORDER_EMAIL_TO`. Without Resend, the browser sends the artist alert via Web3Forms.
+  - Parcel size per painting: "Shipping box" in the admin panel.

@@ -6,8 +6,13 @@
 import { timedFetch } from './http.js';
 
 const env = (name) => (process.env[name] || '').trim();
-const key = () => env('SUPABASE_SECRET_KEY') || env('SUPABASE_SERVICE_ROLE_KEY');
-const base = () => env('SUPABASE_URL').replace(/\/+$/, '');
+export const key = () => env('SUPABASE_SECRET_KEY') || env('SUPABASE_SERVICE_ROLE_KEY');
+export const base = () => env('SUPABASE_URL').replace(/\/+$/, '');
+/* headers that authorise the server with the secret key (REST and Storage) */
+export const authHeaders = () => {
+  const k = key();
+  return { apikey: k, ...(k.startsWith('eyJ') ? { Authorization: `Bearer ${k}` } : {}) };
+};
 export const dbConfigured = () => Boolean(base() && key());
 
 async function rest(path, { method = 'GET', body, prefer } = {}) {
@@ -79,6 +84,57 @@ export async function lostWorks(order) {
   const rows = await rest(`/holds?select=work_id&sold=is.true&work_id=${inList(ids)}&order_id=neq.${encodeURIComponent(order.id)}`);
   return (rows || []).map((r) => r.work_id);
 }
+
+/* ------------------------------------------------------------------ catalogue (paintings + collections) */
+export async function readCatalog() {
+  const [collections, works] = await Promise.all([
+    rest('/collections?select=id,data&order=position.asc,id.asc'),
+    rest('/works?select=id,data&order=position.asc,id.asc'),
+  ]);
+  return {
+    collections: (collections || []).map((r) => ({ id: r.id, ...r.data })),
+    works: (works || []).map((r) => ({ id: r.id, ...r.data })),
+  };
+}
+
+export async function nextWorkPosition() {
+  const rows = await rest('/works?select=position&order=position.desc&limit=1');
+  return (rows?.[0]?.position ?? -1) + 1;
+}
+
+export const upsertRows = (table, rows) =>
+  rest(`/${table}?on_conflict=id`, { method: 'POST', body: rows, prefer: 'resolution=merge-duplicates,return=minimal' });
+
+export async function workExists(id) {
+  const rows = await rest(`/works?id=${eq(id)}&select=id`);
+  return Boolean(rows?.length);
+}
+
+export async function updateWork(id, data) {
+  const rows = await rest(`/works?id=${eq(id)}`, { method: 'PATCH', body: { data, updated_at: new Date().toISOString() }, prefer: 'return=representation' });
+  return rows?.[0] ?? null;
+}
+
+export const deleteWork = (id) => rest(`/works?id=${eq(id)}`, { method: 'DELETE', prefer: 'return=minimal' });
+
+/* has this painting ever been part of an online order (held or sold)? */
+export async function workHasOrders(id) {
+  const rows = await rest(`/holds?work_id=${eq(id)}&select=work_id`);
+  return Boolean(rows?.length);
+}
+
+/* ------------------------------------------------------------------ admin login attempts */
+export async function failedLogins({ client, minutes }) {
+  const since = new Date(Date.now() - minutes * 60 * 1000).toISOString();
+  const all = await rest(`/admin_attempts?select=client&at=gt.${encodeURIComponent(since)}&limit=500`);
+  return { mine: (all || []).filter((r) => r.client === client).length, all: all?.length ?? 0 };
+}
+export async function recordFailedLogin(client) {
+  await rest('/admin_attempts', { method: 'POST', body: { client }, prefer: 'return=minimal' });
+  const old = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  await rest(`/admin_attempts?at=lt.${encodeURIComponent(old)}`, { method: 'DELETE', prefer: 'return=minimal' }).catch(() => {});
+}
+export const clearFailedLogins = (client) => rest(`/admin_attempts?client=${eq(client)}`, { method: 'DELETE', prefer: 'return=minimal' });
 
 /* paintings sold online, and paintings someone is paying for right now */
 export async function liveHolds() {

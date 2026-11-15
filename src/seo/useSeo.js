@@ -1,18 +1,14 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import DATA from '@/data/works.json';
-import { WORKS, imageSrc } from '@/data/works';
+import { COLLECTIONS, WORKS, imageSrc } from '@/data/works';
 import COPY from './copy.json';
 import { createSeo } from './meta';
 
 /* The build pre-renders each route's <head> (scripts/seo/build.mjs); this keeps it right while the
-   visitor navigates inside the app. Live status (paintings sold online) comes from WORKS. */
-const liveStatus = new Map(WORKS.map((w) => [w.id, w.status]));
-const seo = createSeo({
-  data: { ...DATA, works: DATA.works.map((w) => ({ ...w, status: liveStatus.get(w.id) ?? w.status })) },
-  copy: COPY,
-  imageUrl: imageSrc,
-});
+   visitor navigates inside the app. Made on first use, so it sees the live catalogue (new paintings,
+   paintings sold online) that liveStatus.js loaded before the first render. */
+let seo;
+const getSeo = () => (seo ??= createSeo({ data: { collections: COLLECTIONS, works: WORKS }, copy: COPY, imageUrl: imageSrc }));
 
 function setTag(selector, create, attr, value) {
   let el = document.head.querySelector(selector);
@@ -58,6 +54,6 @@ export function applySeo(m) {
 export function useSeo() {
   const { pathname } = useLocation();
   useEffect(() => {
-    applySeo(seo.meta(pathname));
+    applySeo(getSeo().meta(pathname));
   }, [pathname]);
 }

@@ -1,4 +1,5 @@
 {
+  "storage": "https://ornshdfdvtbexauwucez.supabase.co/storage/v1/object/public/paintings",
   "collections": [
     {
       "id": "devotional",

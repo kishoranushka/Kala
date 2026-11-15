@@ -1,0 +1,69 @@
+<!doctype html>
+<html><body><pre id="out">running</pre>
+<script type="module">
+import { detectCorners, warp, findBorder, cropCanvas } from '/src/admin/photo.js';
+import peacock from '/src/assets/images/peacock.webp';
+const out = document.getElementById('out');
+const log = (s) => (out.textContent += '\n' + s);
+for (const PADF of [0.08, 0]) try {
+  log('--- paper border ' + PADF);
+  const im = new Image(); im.src = peacock; await im.decode();
+  // painting on white paper (8% border)
+  const pad = Math.round(im.width * PADF);
+  const paper = document.createElement('canvas'); paper.width = im.width + 2 * pad; paper.height = im.height + 2 * pad;
+  const pc = paper.getContext('2d'); pc.fillStyle = '#f3f0ea'; pc.fillRect(0, 0, paper.width, paper.height); pc.drawImage(im, pad, pad);
+  const P = pc.getImageData(0, 0, paper.width, paper.height).data;
+  // table photo 2000x1500 with noisy brown texture
+  const W = 2000, H = 1500;
+  const bg = document.createElement('canvas'); bg.width = W; bg.height = H;
+  const bc = bg.getContext('2d'); const B = bc.createImageData(W, H);
+  // camera projection of the paper rectangle, tilted 28° / -14° / 3°, focal 1.1 × long side
+  const F = 2200, R = (deg) => deg * Math.PI / 180;
+  const [ax, ay, az] = [R(28), R(-14), R(3)];
+  const rot = ([x, y, z]) => {
+    let [X, Y, Z] = [x, y * Math.cos(ax) - z * Math.sin(ax), y * Math.sin(ax) + z * Math.cos(ax)];
+    [X, Z] = [X * Math.cos(ay) + Z * Math.sin(ay), -X * Math.sin(ay) + Z * Math.cos(ay)];
+    return [X * Math.cos(az) - Y * Math.sin(az), X * Math.sin(az) + Y * Math.cos(az), Z];
+  };
+  const ph = 1, pw = paper.width / paper.height;
+  const quad = [[-pw/2,-ph/2,0],[pw/2,-ph/2,0],[pw/2,ph/2,0],[-pw/2,ph/2,0]].map((p) => { const [x,y,z] = rot(p); const Z = z + 2.0; return [W/2 + F*x/Z + 40, H/2 + F*y/Z]; });
+  log('paper ratio ' + pw.toFixed(3));
+  // inverse homography: photo -> unit square (solve by Newton-free method: build H then invert)
+  const [[x0,y0],[x1,y1],[x2,y2],[x3,y3]] = quad;
+  const dx1=x1-x2, dx2=x3-x2, dy1=y1-y2, dy2=y3-y2, sx=x0-x1+x2-x3, sy=y0-y1+y2-y3;
+  const den=dx1*dy2-dx2*dy1, g=(sx*dy2-dx2*sy)/den, h=(dx1*sy-sx*dy1)/den;
+  const M=[x1-x0+g*x1, x3-x0+h*x3, x0, y1-y0+g*y1, y3-y0+h*y3, y0, g, h, 1];
+  const [a,b,c,d,e,f,gg,hh,i]=M;
+  const inv=[e*i-f*hh, c*hh-b*i, b*f-c*e, f*gg-d*i, a*i-c*gg, c*d-a*f, d*hh-e*gg, b*gg-a*hh, a*e-b*d];
+  for (let y=0;y<H;y++) for (let x=0;x<W;x++) {
+    const o=(y*W+x)*4; const z=inv[6]*x+inv[7]*y+inv[8]; const u=(inv[0]*x+inv[1]*y+inv[2])/z, v=(inv[3]*x+inv[4]*y+inv[5])/z;
+    if (u>=0&&u<1&&v>=0&&v<1) { const px=Math.floor(u*paper.width), py=Math.floor(v*paper.height), j=(py*paper.width+px)*4; B.data[o]=P[j];B.data[o+1]=P[j+1];B.data[o+2]=P[j+2]; }
+    else { const n=(Math.sin(x*0.05)+Math.sin(y*0.013+x*0.002))*12 + Math.random()*20; B.data[o]=110+n; B.data[o+1]=78+n; B.data[o+2]=50+n; }
+    B.data[o+3]=255;
+  }
+  bc.putImageData(B,0,0);
+  if (location.search.includes('ui')) {
+    const { fixPhoto } = await import('/src/admin/photo.js');
+    await import('/src/admin/admin.css');
+    const blob = await new Promise((r) => bg.toBlob(r, 'image/jpeg', 0.9));
+    fixPhoto(blob).then((b) => log('fixed ' + (b && b.size)));
+    if (location.search.includes('result')) setTimeout(() => document.querySelector('[data-act=next]').click(), 6000);
+    break;
+  }
+  const t0 = performance.now();
+  const found = await detectCorners(bg);
+  log('detect ms ' + Math.round(performance.now()-t0));
+  log('expected ' + JSON.stringify(quad));
+  log('found    ' + JSON.stringify(found && found.map(p=>p.map(Math.round))));
+  const err = found ? Math.max(...found.map((p,k)=>Math.hypot(p[0]-quad[k][0],p[1]-quad[k][1]))) : -1;
+  log('max corner error px ' + err.toFixed(1));
+  const t1 = performance.now();
+  const flat = warp(bg, found || quad);
+  log('warp ' + flat.width + 'x' + flat.height + ' ms ' + Math.round(performance.now()-t1));
+  const border = findBorder(flat);
+  log('border ' + JSON.stringify(border) + ' expected ~' + Math.round(flat.width*pad/paper.width));
+  const res = cropCanvas(flat, border);
+  log('result ' + res.width + 'x' + res.height + ' ratio ' + (res.width/res.height).toFixed(3) + ' painting ratio ' + (im.width/im.height).toFixed(3));
+} catch (e) { log('ERROR ' + e.stack); }
+log('DONE');
+</script></body></html>

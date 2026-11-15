@@ -133,7 +133,21 @@
 ### 2026-11-13 — Missing reel covers (uncommitted)
 - Commit `b54a51b` had deleted `reel-taping-wall`, `reel-mandala-wall`, `reel-bicycle` .webp while `works.js` still used them → 3 blank cards in the home Instagram section. Restored from `5327f36`. Instagram's embed page no longer gives the poster to a plain HTTP fetch (it needs a real browser now).
 
+### 2026-11-14 — Online admin panel + catalogue in Supabase (uncommitted, NOT deployed, DB tables not created yet)
+- User choices: data in DB (Supabase tables `works`/`collections`, photos in public Storage bucket `paintings`), site shows changes instantly + Vercel deploy hook rebuilds SEO, password login, phone-first, photo auto-crop/straighten with manual adjust.
+- `/admin` = `admin.html` (2nd Vite entry) + `src/admin/{main.js,photo.js,admin.css}` (vanilla JS). API = one function `api/admin.js?a=session|login|logout|data|save|delete|upload|rebuild` (HMAC cookie, `X-Kala-Admin` header + Origin check, login rate limit via `admin_attempts`). Upload: browser JPEG → sharp WebP ≤1400 → Storage, name `<slug>-<6hex>.webp` (never overwritten). `sharp` moved to dependencies.
+- Photo fixer: OpenCV.js from jsDelivr (`@techstark/opencv-js@4.10.0-release.1`) finds the quad (Canny/Otsu/saturation contours), drag corners + loupe, rotate 90°, own homography warp, aspect from camera model (Zhang & He) with edge-length fallback, `findBorder` trims plain paper/table border. Synthetic test: corners ±8px, ratio within ~2%, paper trimmed, no false trim.
+- Site: `works.js` `setCatalog()` fills WORKS/COLLECTIONS in place; `liveStatus.js` fetches `/api/catalog` (catalogue + sold) before first render; images not in the bundle load from Storage. `useSeo` builds lazily. Painting OG falls back to its photo when no card.
+- Server reads catalogue via `api/_lib/catalog.js` (DB, 10 s cache, fallback bundled works.json): order pricing, Shiprocket. `finalize` marks sold works `sold` in DB + triggers rebuild.
+- Build: `scripts/catalog/pull.mjs` (first step of `npm run build`) rewrites works.json from DB (+ `storage` key) and downloads new photos. One-time `scripts/catalog/migrate.mjs`. Old local editor (`scripts/admin/`, `/__admin`) removed.
+
+### 2026-11-15 — Artist page portrait (uncommitted)
+- Hero centre photo `PHOTOS.park` → `PHOTOS.marble` (`artist-marble-wall.webp`, red top on white/gold marble, cropped 3:4 to cut the door out, 1050×1400). Background kept: it suits the beige palette. `artist-park.webp` is no longer used.
+- Cut-out alternative for comparison: `PHOTOS.marbleCutout` (`artist-marble-cutout.webp`, rembg isnet+human-seg, legs fade out) on a `bg-wall` arch; shown only with `/artist?cutout` (TEMP `CUTOUT` const in ArtistPage.jsx). **Waiting on user to pick** → then remove the flag and the unused variant/image.
+
 ## Open / Next up
+
+- **Admin panel go-live:** DONE 2026-11-15: schema run (via Management API + `SUPABASE_ACCESS_TOKEN`), migrate (5 collections, 29 works, 34 photos in Storage), local end-to-end API test against the real DB (login/rate/origin/upload/save/edit/dup/pinned-delete/delete/logout all pass), Storage CORS `*`, pull keeps works.json key order. LEFT: user sets `ADMIN_PASSWORD` + `VERCEL_DEPLOY_HOOK_URL` in Vercel (+ `.env.local`); user should revoke the Supabase access token + remove it from `.env.local`; delete `__fixertest.html`; commit + push. Then edits to works.json by hand are overwritten by the next build — use /admin.
 
 - **After deploying the SEO change:** `npm run indexnow`; in Google Search Console request indexing for `/`, `/artist`, `/shop` and resubmit the sitemap; link the site from the Instagram + YouTube bios (strongest brand-entity signal).
 

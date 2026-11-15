@@ -5,7 +5,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /__admin
+Disallow: /admin
 
 # AI crawlers and assistants (listed explicitly so the intent is clear)
 User-agent: GPTBot
@@ -24,5 +24,6 @@ User-agent: CCBot
 User-agent: meta-externalagent
 Allow: /
 Disallow: /api/
+Disallow: /admin
 
 Sitemap: https://kala.anushkakishor.in/sitemap.xml

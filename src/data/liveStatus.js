@@ -1,17 +1,18 @@
-import { getWork } from './works';
+import { getWork, setCatalog } from './works';
 
-/* Paintings bought online are recorded in the orders database, not in works.json. Before the app
-   renders, ask /api/availability which ones have sold and mark them Sold everywhere. Waits at most
-   `timeout` ms; if the check is slow or fails, the site shows works.json as it is (the server still
-   refuses to sell a painting twice). */
+/* Before the app renders, ask /api/catalog for the live catalogue: paintings added or changed in the
+   admin panel since the last build, and paintings sold online (marked Sold everywhere). Waits at most
+   `timeout` ms; if the check is slow or fails, the site shows the build's copy (works.json) as it is
+   (the server still prices orders from the database and refuses to sell a painting twice). */
 export async function applyLiveStatus(timeout = 1500) {
   try {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), timeout);
-    const res = await fetch('/api/availability', { signal: ctrl.signal });
+    const res = await fetch('/api/catalog', { signal: ctrl.signal });
     clearTimeout(timer);
     if (!res.ok) return;
-    const { sold = [] } = await res.json();
+    const { collections, works, storage, sold = [] } = await res.json();
+    setCatalog({ collections, works, storage });
     for (const id of sold) {
       const w = getWork(id);
       if (w) w.status = 'sold';

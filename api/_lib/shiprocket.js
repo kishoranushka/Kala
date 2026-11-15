@@ -2,11 +2,8 @@
    Env: SHIPROCKET_EMAIL, SHIPROCKET_PASSWORD  (an API user: Shiprocket → Settings → API → Configure → Create an API user)
         SHIPROCKET_PICKUP_LOCATION             (the pickup address nickname, exactly as in Settings → Pickup Addresses)
    Optional: SHIPROCKET_CHANNEL_NAME (default "Kala") or SHIPROCKET_CHANNEL_ID */
-import { createRequire } from 'node:module';
 import { timedFetch } from './http.js';
-
-const require = createRequire(import.meta.url);
-const DATA = require('../../src/data/works.json');
+import { getCatalog } from './catalog.js';
 
 const BASE = 'https://apiv2.shiprocket.in/v1/external';
 
@@ -77,8 +74,9 @@ export const rupees = (price) => Number(String(price ?? '').replace(/[^\d.]/g, '
    Throws an error with `taken` = the ids that can't be ordered, so the browser can drop them from the cart. */
 const orderError = (message, taken = []) => Object.assign(new Error(message), { taken });
 
-export function orderableWorks(ids) {
-  const byId = new Map(DATA.works.map((w) => [w.id, w]));
+export async function orderableWorks(ids) {
+  const { works: all } = await getCatalog();
+  const byId = new Map(all.map((w) => [w.id, w]));
   const unique = [...new Set(ids)];
   if (!unique.length) throw orderError('Your cart is empty. Choose at least one original.');
   const unknown = unique.filter((id) => !byId.has(id));

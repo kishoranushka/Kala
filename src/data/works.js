@@ -1,6 +1,7 @@
 /* KALA — artwork and collection records shared by every page.
-   The paintings themselves live in works.json — edit them with the local editor
-   (`npm run dev`, then open http://localhost:5173/__admin) or by hand.
+   The paintings live in the database and are edited in the admin panel (/admin). works.json is the
+   snapshot taken at build time (scripts/catalog/pull.mjs); before the first render the site swaps in
+   the live catalogue from /api/catalog (liveStatus.js → setCatalog), so changes show without a deploy.
    Status is one of: available · sold · archived · inquiry  (a business state — never inferred from price). */
 
 import DATA from './works.json';
@@ -10,12 +11,16 @@ import { discounted, rupeesOf } from './sale';
 const IMAGES = Object.fromEntries(
   Object.entries(import.meta.glob('../assets/images/*.{webp,jpg,jpeg,png}', { eager: true, import: 'default' })).map(([p, url]) => [p.split('/').pop(), url]),
 );
+/* photos uploaded in the admin panel since the last build are served from Supabase Storage */
+let storage = DATA.storage || null;
+const remote = (file) => (storage && /^[a-z0-9][a-z0-9._-]*\.(webp|jpe?g|png)$/i.test(file) ? `${storage}/${encodeURIComponent(file)}` : undefined);
 const img = (file) => {
-  if (!IMAGES[file]) console.warn(`[works] missing image: src/assets/images/${file}`);
-  return IMAGES[file];
+  const url = IMAGES[file] ?? remote(file);
+  if (!url) console.warn(`[works] missing image: ${file}`);
+  return url;
 };
-/* built URL of an image by file name, or undefined (used by src/seo) */
-export const imageSrc = (file) => IMAGES[file];
+/* URL of an image by file name, or undefined (used by src/seo) */
+export const imageSrc = (file) => IMAGES[file] ?? remote(file);
 
 /* every status pairs a word with a shape, never colour alone (see StatusBadge) */
 export const STATUS = {
@@ -40,14 +45,34 @@ const normalizeStatus = (s) => {
   return STATUS[key] ? key : 'inquiry';
 };
 
-export const COLLECTIONS = DATA.collections;
+/* filled in place by setCatalog, so every importer sees the same (live) arrays */
+export const COLLECTIONS = [];
+export const WORKS = [];
+const worksById = new Map();
+const collectionsById = new Map();
 
-export const WORKS = DATA.works.map(({ image, room, ...w }) => ({
-  ...w,
+const toWork = ({ room, ...w }) => ({
+  ...w, // keeps `image` (the file name) for the SEO helpers
   status: normalizeStatus(w.status),
-  img: img(image),
+  img: img(w.image),
   ...(room?.image ? { room: { ...room, img: img(room.image) } } : {}),
-}));
+});
+
+/* replace the catalogue (the build's snapshot, then the live one from /api/catalog) */
+export function setCatalog({ collections, works, storage: base }) {
+  if (base) storage = base;
+  if (Array.isArray(collections) && collections.length) {
+    COLLECTIONS.splice(0, COLLECTIONS.length, ...collections);
+    collectionsById.clear();
+    COLLECTIONS.forEach((c) => collectionsById.set(c.id, c));
+  }
+  if (Array.isArray(works) && works.length) {
+    WORKS.splice(0, WORKS.length, ...works.filter((w) => w?.id && w.image).map(toWork));
+    worksById.clear();
+    WORKS.forEach((w) => worksById.set(w.id, w));
+  }
+}
+setCatalog(DATA);
 
 /* photographs of the artist and her work off the canvas (real, not artworks) */
 export const PHOTOS = {
@@ -62,7 +87,9 @@ export const PHOTOS = {
   jacketWorn: { img: img('jacket-worn.webp'), alt: 'Anushka wearing the olive jacket off one shoulder, a painted butterfly on the sleeve and a painted leaf collar' },
   jacketBench: { img: img('jacket-park-bench.webp'), alt: 'Anushka sitting on a park bench with the painted butterfly jacket draped beside her' },
   paintingMural: { img: img('painting-mural.webp'), alt: 'Anushka in a red jacket painting a colourful mandala mural high on a white wall' },
-  park: { img: img('artist-park.webp'), alt: 'Anushka sitting on a stone post in a park, in a black top and wide blue jeans, smiling, with an ivy-covered slope behind her' },
+  marble: { img: img('artist-marble-wall.webp'), w: 1050, h: 1400, alt: 'Anushka smiling, hands in her pockets, in a red top and blue jeans, against a white marble wall veined with gold' },
+  /* same photo with the background removed (transparent WebP, legs fade out) */
+  marbleCutout: { img: img('artist-marble-cutout.webp'), w: 758, h: 1426, alt: 'Anushka smiling, hands in her pockets, in a red top and blue jeans' },
   pot: { img: img('artist-painted-pot.webp'), alt: 'Anushka holding a hand-painted pot in red, yellow and black, in front of a geometric wall painted in pink, sky blue, grey and black' },
   cobalt: { img: img('artist-cobalt-wall.webp'), alt: 'Anushka smiling in front of a cobalt-blue wall, a marigold tucked behind her ear, wearing her hand-painted olive jacket' },
   /* same photo as whiteTop with the background removed (transparent WebP) — sits straight on the page */
@@ -89,9 +116,6 @@ export const STUDIO = {
 };
 
 /* ------------------------------------------------------------------ helpers */
-const worksById = new Map(WORKS.map((w) => [w.id, w]));
-const collectionsById = new Map(COLLECTIONS.map((c) => [c.id, c]));
-
 export const getWork = (id) => worksById.get(id);
 export const getCollection = (id) => collectionsById.get(id);
 export const worksIn = (collectionId) => WORKS.filter((w) => w.collection === collectionId);

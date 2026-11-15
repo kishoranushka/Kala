@@ -1,13 +1,28 @@
 /* Runs once per order, after Razorpay confirms the payment — from /api/verify (the buyer's browser)
    or /api/razorpay-webhook (Razorpay itself), whichever arrives first.
    pending → paid (only one caller wins), paintings marked sold, Shiprocket order, emails. */
-import { createRequire } from 'node:module';
-import { getOrder, sellWorks, updateOrder } from './db.js';
+import { getOrder, sellWorks, updateOrder, updateWork } from './db.js';
 import { configured as shiprocketConfigured, createOrder } from './shiprocket.js';
 import { artistAlert, customerConfirmation, customerMailConfigured, mailConfigured } from './mail.js';
+import { forgetCatalog, getCatalog } from './catalog.js';
+import { triggerRebuild } from './deploy.js';
 
-const require = createRequire(import.meta.url);
-const DATA = require('../../src/data/works.json');
+/* the catalogue says Sold too (admin panel, and the next build's SEO pages) — best effort:
+   the holds table already keeps these paintings from being sold again */
+async function markSoldInCatalog(ids) {
+  try {
+    const { works, source } = await getCatalog({ fresh: true });
+    if (source !== 'db') return;
+    const sold = works.filter((w) => ids.includes(w.id) && w.status !== 'sold');
+    for (const { id, ...w } of sold) await updateWork(id, { id, ...w, status: 'sold' });
+    if (sold.length) {
+      forgetCatalog();
+      await triggerRebuild();
+    }
+  } catch (err) {
+    console.error('[finalize] marking sold in the catalogue', err);
+  }
+}
 
 export async function finalizeOrder(orderId, paymentId) {
   /* a "cancelled" checkout can still be paid late (e.g. a UPI request approved after the window closed): honour it */
@@ -25,8 +40,9 @@ export async function finalizeOrder(orderId, paymentId) {
     clash = (await sellWorks(order.id)) || [];
     if (clash.length) problems.push(`Paid, but another order had already taken: ${clash.join(', ')}. Contact the customer about a refund or alternative.`);
   } catch (err) {
-    problems.push(`Couldn’t mark the paintings sold (${err.message}). Mark them Sold in the editor.`);
+    problems.push(`Couldn’t mark the paintings sold (${err.message}). Mark them Sold in the admin panel.`);
   }
+  await markSoldInCatalog(order.works.map((w) => w.id).filter((id) => !clash.includes(id)));
 
   /* 2 · the shipping order */
   let shiprocket;
@@ -34,7 +50,7 @@ export async function finalizeOrder(orderId, paymentId) {
   else if (!shiprocketConfigured()) shiprocket = { ok: false, error: 'Shiprocket is not set up (missing SHIPROCKET_* settings).' };
   else {
     try {
-      const byId = new Map(DATA.works.map((w) => [w.id, w]));
+      const byId = new Map((await getCatalog()).works.map((w) => [w.id, w]));
       const works = order.works.map((w) => ({ ...byId.get(w.id), ...w, price: String(w.price) }));
       const out = await createOrder({ orderId: order.id, customer: order.customer, works });
       shiprocket = { ok: true, orderId: out.shiprocketOrderId, shipmentId: out.shipmentId };

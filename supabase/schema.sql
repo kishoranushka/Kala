@@ -96,3 +96,33 @@ revoke execute on function public.hold_works(text, text[], int) from public, ano
 revoke execute on function public.sell_works(text) from public, anon, authenticated;
 grant execute on function public.hold_works(text, text[], int) to service_role;
 grant execute on function public.sell_works(text) to service_role;
+
+-- ---------------------------------------------------------------- catalogue (admin panel at /admin)
+-- The paintings and collections. `data` holds the same object as an entry of src/data/works.json
+-- (title, price, status, image file name, …); `position` is the order on the site.
+-- Photos live in the public Storage bucket "paintings" (made by scripts/catalog/migrate.mjs).
+create table if not exists public.collections (
+  id         text primary key,
+  position   integer not null default 0,
+  data       jsonb not null,
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.works (
+  id         text primary key,
+  position   integer not null default 0,
+  data       jsonb not null,
+  updated_at timestamptz not null default now()
+);
+
+-- failed admin logins (rate limit); old rows are deleted by the server
+create table if not exists public.admin_attempts (
+  id     bigint generated always as identity primary key,
+  client text,
+  at     timestamptz not null default now()
+);
+create index if not exists admin_attempts_at on public.admin_attempts (at desc);
+
+alter table public.collections    enable row level security;
+alter table public.works          enable row level security;
+alter table public.admin_attempts enable row level security;
