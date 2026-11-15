@@ -142,8 +142,8 @@
 - Build: `scripts/catalog/pull.mjs` (first step of `npm run build`) rewrites works.json from DB (+ `storage` key) and downloads new photos. One-time `scripts/catalog/migrate.mjs`. Old local editor (`scripts/admin/`, `/__admin`) removed.
 
 ### 2026-11-15 — Artist page portrait (uncommitted)
-- Hero centre photo `PHOTOS.park` → `PHOTOS.marble` (`artist-marble-wall.webp`, red top on white/gold marble, cropped 3:4 to cut the door out, 1050×1400). Background kept: it suits the beige palette. `artist-park.webp` is no longer used.
-- Cut-out alternative for comparison: `PHOTOS.marbleCutout` (`artist-marble-cutout.webp`, rembg isnet+human-seg, legs fade out) on a `bg-wall` arch; shown only with `/artist?cutout` (TEMP `CUTOUT` const in ArtistPage.jsx). **Waiting on user to pick** → then remove the flag and the unused variant/image.
+- Hero centre photo (was `PHOTOS.park`) → `PHOTOS.marbleCutout` (`artist-marble-cutout.webp`): new red-top photo, marble background removed with rembg (isnet + human-seg), legs fade out, no card, on a `bg-wall` arch (`rounded-t-full`). User compared it with the framed marble photo and chose the cut-out. Pot + cobalt tilted cards unchanged. `artist-park.webp` and the old `PHOTOS.cutout` are unused.
+- rembg models live in an older session's scratchpad (`…/d47059bc…/scratchpad/u2net/models/<name>/<name>.onnx`); `U2NET_HOME` must point to a flat folder with `<name>.onnx`, else rembg re-downloads (very slow).
 
 ## Open / Next up
 

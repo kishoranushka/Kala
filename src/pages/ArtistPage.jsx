@@ -27,9 +27,6 @@ const METHOD = [
   { num: 'III', title: 'Resolve', work: 'om', scale: 2.6, origin: '50% 48%', alt: 'Close-up of the dot work around the Om', note: 'The last pass is the smallest: dots, highlights, a line of gold. A piece is finished when adding one more dot would take something away. Then I sign it.', className: 'mt-10 max-lg:mt-0 max-sm:mr-[12%]' },
 ];
 
-/* TEMP for comparing: /artist?cutout shows the background-removed portrait */
-const CUTOUT = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('cutout');
-
 const MAKES = ['Paintings', 'Mandalas', 'Wall murals', 'Painted wearables', 'Face paint'];
 
 const MILESTONES = [
@@ -142,19 +139,11 @@ export default function ArtistPage() {
           </p>
         </div>
         <div className="relative col-[6/13] pt-6 pb-[72px] max-lg:col-span-full max-lg:mt-10 max-lg:max-w-[640px] max-sm:pb-12">
-          {CUTOUT ? (
-            <>
-              {/* a soft arch of wall colour behind the cut-out, so she stands in a space rather than floating */}
-              <div data-intro aria-hidden="true" className="absolute top-[22%] bottom-[72px] left-[24%] w-[52%] rounded-t-full bg-wall max-sm:bottom-12 max-sm:left-[20%] max-sm:w-[60%]" />
-              <figure data-intro className="relative z-1 m-0 ml-[28%] w-[44%] max-sm:ml-[24%] max-sm:w-[52%]">
-                <img src={PHOTOS.marbleCutout.img} alt={PHOTOS.marbleCutout.alt} width={PHOTOS.marbleCutout.w} height={PHOTOS.marbleCutout.h} fetchpriority="high" className="block h-auto w-full" />
-              </figure>
-            </>
-          ) : (
-            <figure data-intro className="relative z-1 m-0 ml-[24%] aspect-[3/4] w-[58%] overflow-hidden rounded-ui bg-wall shadow-float max-sm:ml-[18%] max-sm:w-[70%]">
-              <img src={PHOTOS.marble.img} alt={PHOTOS.marble.alt} fetchpriority="high" className="block size-full object-cover object-[42%_30%]" />
-            </figure>
-          )}
+          {/* a soft arch of wall colour behind the cut-out, so she stands in a space rather than floating */}
+          <div data-intro aria-hidden="true" className="absolute top-[22%] bottom-[72px] left-[24%] w-[52%] rounded-t-full bg-wall max-sm:bottom-12 max-sm:left-[20%] max-sm:w-[60%]" />
+          <figure data-intro className="relative z-1 m-0 ml-[28%] w-[44%] max-sm:ml-[24%] max-sm:w-[52%]">
+            <img src={PHOTOS.marbleCutout.img} alt={PHOTOS.marbleCutout.alt} width={PHOTOS.marbleCutout.w} height={PHOTOS.marbleCutout.h} fetchpriority="high" className="block h-auto w-full" />
+          </figure>
           <figure data-intro className="absolute top-0 right-0 z-2 m-0 aspect-[3/4] w-[28%] rotate-4 overflow-hidden rounded-ui border-6 border-surface bg-wall shadow-float max-sm:w-[34%]">
             <img src={PHOTOS.pot.img} alt={PHOTOS.pot.alt} loading="lazy" className="block size-full object-cover" />
           </figure>

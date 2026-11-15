@@ -87,8 +87,7 @@ export const PHOTOS = {
   jacketWorn: { img: img('jacket-worn.webp'), alt: 'Anushka wearing the olive jacket off one shoulder, a painted butterfly on the sleeve and a painted leaf collar' },
   jacketBench: { img: img('jacket-park-bench.webp'), alt: 'Anushka sitting on a park bench with the painted butterfly jacket draped beside her' },
   paintingMural: { img: img('painting-mural.webp'), alt: 'Anushka in a red jacket painting a colourful mandala mural high on a white wall' },
-  marble: { img: img('artist-marble-wall.webp'), w: 1050, h: 1400, alt: 'Anushka smiling, hands in her pockets, in a red top and blue jeans, against a white marble wall veined with gold' },
-  /* same photo with the background removed (transparent WebP, legs fade out) */
+  /* Artist page hero: photo against a marble wall, background removed (transparent WebP, legs fade out) */
   marbleCutout: { img: img('artist-marble-cutout.webp'), w: 758, h: 1426, alt: 'Anushka smiling, hands in her pockets, in a red top and blue jeans' },
   pot: { img: img('artist-painted-pot.webp'), alt: 'Anushka holding a hand-painted pot in red, yellow and black, in front of a geometric wall painted in pink, sky blue, grey and black' },
   cobalt: { img: img('artist-cobalt-wall.webp'), alt: 'Anushka smiling in front of a cobalt-blue wall, a marigold tucked behind her ear, wearing her hand-painted olive jacket' },
