@@ -221,7 +221,7 @@
       "plate": "07",
       "title": "Vitthal",
       "collection": "devotional",
-      "status": "available",
+      "status": "sold",
       "price": "₹ 3,150",
       "medium": "Acrylic",
       "size": "A3",
@@ -910,6 +910,267 @@
           "label": "Detail II",
           "origin": "50% 50%",
           "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "balloons",
+      "plate": "30",
+      "title": "Balloons over the Peaks",
+      "collection": "small",
+      "status": "available",
+      "price": "₹ 129",
+      "medium": "Watercolour and acrylic on paper",
+      "size": "Bookmark",
+      "year": "",
+      "framing": "Unframed",
+      "image": "balloons-186c93.webp",
+      "w": 307,
+      "h": 1131,
+      "alt": "A tall bookmark: a tiny black figure on grey mountain peaks holds a bunch of red, green, orange, yellow and white balloons against a splattered blue sky that darkens to black, with two falling stars",
+      "note": "A bookmark-sized painting: a small figure on top of the mountains, holding on to a bunch of bright balloons. The sky goes from washed blue to a black night full of white splatter and two falling stars.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 55%",
+          "scale": 2.4
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 90%",
+          "scale": 2.4
+        }
+      ]
+    },
+    {
+      "id": "elephant-sunset",
+      "plate": "31",
+      "title": "Elephant at Sunset",
+      "collection": "small",
+      "status": "available",
+      "price": "₹ 149",
+      "medium": "Acrylic",
+      "size": "Small",
+      "year": "",
+      "framing": "Unframed",
+      "image": "elephant-sunset-4abd3c.webp",
+      "w": 824,
+      "h": 602,
+      "alt": "Black silhouettes of an acacia tree, a half-set sun and a walking elephant on a burnt-orange ground",
+      "note": "An evening on the savannah in two colours: a burnt-orange sky, and everything else in black. An acacia tree, the sun half sunk into the land, and an elephant walking slowly past.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 35%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 65%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "owl",
+      "plate": "32",
+      "title": "Owl in Moonlight",
+      "collection": "small",
+      "status": "available",
+      "price": "₹ 149",
+      "medium": "Acrylic",
+      "size": "Small",
+      "year": "",
+      "framing": "Unframed",
+      "image": "owl-4cc68a.webp",
+      "w": 775,
+      "h": 557,
+      "alt": "A black owl silhouette sits on a leafy branch in front of a glowing pale-blue moon on a dark blue-grey ground",
+      "note": "An owl on a branch, seen from behind, with the moon glowing right behind it. The blue is blended out from the centre so the light seems to come from the painting itself.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 35%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 65%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "fairy-lights",
+      "plate": "33",
+      "title": "Fairy Lights",
+      "collection": "small",
+      "status": "available",
+      "price": "₹ 129",
+      "medium": "Watercolour on paper",
+      "size": "Bookmark",
+      "year": "2021",
+      "framing": "Unframed",
+      "image": "fairy-lights-2c5c78.webp",
+      "w": 408,
+      "h": 1132,
+      "alt": "A bookmark painting: strings of glowing yellow bulbs above green grass, under a deep blue starry sky with a yellow crescent moon",
+      "note": "A bookmark painted in April 2021: two strings of warm fairy lights over a strip of grass, and a deep blue night with a crescent moon and scattered stars above them.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 15%",
+          "scale": 2.4
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 55%",
+          "scale": 2.4
+        }
+      ]
+    },
+    {
+      "id": "jagannath",
+      "plate": "34",
+      "title": "Little Jagannath",
+      "collection": "devotional",
+      "status": "available",
+      "price": "₹ 299",
+      "medium": "Acrylic and ink on paper",
+      "size": "Small",
+      "year": "2024",
+      "framing": "Unframed",
+      "image": "jagannath-a7d666.webp",
+      "w": 891,
+      "h": 945,
+      "alt": "A round black Jagannath face with big blue eyes, a golden tilak and a saffron smile, crowned with orange flowers and green leaves, on streaky turquoise",
+      "note": "Jagannath as a little round face with big, bright eyes and a smile, crowned with orange blossoms and leaves. The turquoise ground is pulled down in streaks so it shimmers behind him.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 35%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 65%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "teachers-day",
+      "plate": "35",
+      "title": "Happy Teachers’ Day",
+      "collection": "small",
+      "status": "available",
+      "price": "₹ 299",
+      "medium": "Ink calligraphy on watercolour",
+      "size": "Small",
+      "year": "",
+      "framing": "Unframed",
+      "image": "teachers-day-425f7c.webp",
+      "w": 744,
+      "h": 746,
+      "alt": "Flourished black calligraphy reading “Happy Teachers’ Day” over a watercolour wash from yellow to orange",
+      "note": "Hand lettering on a loose watercolour wash: “Happy Teachers’ Day” in looping black calligraphy, with the colour moving from sunny yellow to orange.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 35%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 65%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "cubes",
+      "plate": "36",
+      "title": "Cube Illusion",
+      "collection": "small",
+      "status": "available",
+      "price": "₹ 399",
+      "medium": "Pen and colour on paper",
+      "size": "Small",
+      "year": "2021",
+      "framing": "unframed",
+      "image": "cubes-ae09e0.webp",
+      "w": 1177,
+      "h": 789,
+      "alt": "An optical illusion of stacked 3D cubes in red, white and black inside a wide black border",
+      "note": "A pattern of red, white and black diamonds that turns into stacked cubes the moment you look at it, then flips again. Every face is shaded by hand, line by line.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 35%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 65%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "lantern",
+      "plate": "37",
+      "title": "Under the Lantern",
+      "collection": "small",
+      "status": "available",
+      "price": "₹ 499",
+      "medium": "Acrylic on paper",
+      "size": "A4",
+      "year": "2021",
+      "framing": "Unframed",
+      "image": "lantern-1a6952.webp",
+      "w": 1064,
+      "h": 729,
+      "alt": "Purple silhouettes of a little boy and girl sharing a kiss on dark grass under a hanging lantern on a lamp post, with red hearts, against a glowing golden background",
+      "note": "Two children under a lamp post, one with a heart behind his back, sharing a quick kiss while little red hearts float up. The background glows gold from the middle, like the lantern is lighting the whole scene.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 35%",
+          "scale": 2.2
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 65%",
+          "scale": 2.2
+        }
+      ]
+    },
+    {
+      "id": "dot-mandala",
+      "plate": "38",
+      "title": "Dot Mandala",
+      "collection": "mandala",
+      "status": "available",
+      "price": "₹ 199",
+      "medium": "Acrylic dots on a round board",
+      "size": "Round",
+      "year": "",
+      "framing": "Unframed",
+      "image": "dot-mandala-59979c.webp",
+      "w": 786,
+      "h": 786,
+      "alt": "A round black board covered in a dot mandala: pink dots at the centre, then rings of red, yellow and green dots, with green leaf shapes around the edge",
+      "note": "A dot mandala on a round black board, built outward from a single pink dot: rings of pink, red, yellow and green, finished with a border of little leaf shapes.",
+      "details": [
+        {
+          "label": "Detail I",
+          "origin": "50% 50%",
+          "scale": 2.4
+        },
+        {
+          "label": "Detail II",
+          "origin": "50% 12%",
+          "scale": 2.4
         }
       ]
     }

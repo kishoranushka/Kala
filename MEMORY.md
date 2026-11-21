@@ -2,13 +2,13 @@
 
 > Running log of work done, current state, and what's next. Read at the start of every session (auto-loaded via `CLAUDE.md`); update at the end of every session. Keep it short — this is a handoff note, not documentation (structure/how-to lives in `README.md`).
 
-## Snapshot (last updated 2026-11-11)
+## Snapshot (last updated 2026-11-15)
 
 - **What:** KALA by Anushka Kishor — paintings, mandalas, wall murals, painted wearables. Faithful React port of the artist's own design canvas.
 - **Design source of truth:** Claude Design canvas https://claude.ai/artifact/H27WqPukwCvbTamhj7wZ6J. Live design = beige "Homepage 2" (`project/Home2.dc.html` + `home.css`, `home-beige.css`, `site.css`) and the inner `*.dc.html` pages. `Main.dc.html` (indigo/Fraunces) is an unused alternate. Re-read the canvas when design questions come up — don't guess.
 - **Stack:** Vite 6 + React 18 (JSX) + Tailwind CSS v4 + React Router 6 + GSAP 3 / ScrollTrigger.
 - **Deploy:** Vercel project `kala` (`.vercel/` gitignored); pushing `main` to github.com/kishoranushka/Kala auto-deploys. Production: https://kala.anushkakishor.in
-- **Status:** Everything through Shiprocket committed and pushed (2026-11-11), live and verified (pages 200, `/api/order` responds). Shiprocket env vars set in Vercel (Production). Web3Forms key still empty → forms error until it's added.
+- **Status (2026-11-15):** All work committed + pushed (`fd0f6e2`), production Ready. Catalogue lives in Supabase and is edited at `/admin` (password login; saves trigger a Vercel deploy hook to refresh SEO pages). Payment flow live except Razorpay webhook + test purchase. Web3Forms key still empty → forms error until it's added.
 
 ## Done
 
@@ -133,7 +133,7 @@
 ### 2026-11-13 — Missing reel covers (uncommitted)
 - Commit `b54a51b` had deleted `reel-taping-wall`, `reel-mandala-wall`, `reel-bicycle` .webp while `works.js` still used them → 3 blank cards in the home Instagram section. Restored from `5327f36`. Instagram's embed page no longer gives the poster to a plain HTTP fetch (it needs a real browser now).
 
-### 2026-11-14 — Online admin panel + catalogue in Supabase (uncommitted, NOT deployed, DB tables not created yet)
+### 2026-11-14 — Online admin panel + catalogue in Supabase (`fa38f44`, live 2026-11-15)
 - User choices: data in DB (Supabase tables `works`/`collections`, photos in public Storage bucket `paintings`), site shows changes instantly + Vercel deploy hook rebuilds SEO, password login, phone-first, photo auto-crop/straighten with manual adjust.
 - `/admin` = `admin.html` (2nd Vite entry) + `src/admin/{main.js,photo.js,admin.css}` (vanilla JS). API = one function `api/admin.js?a=session|login|logout|data|save|delete|upload|rebuild` (HMAC cookie, `X-Kala-Admin` header + Origin check, login rate limit via `admin_attempts`). Upload: browser JPEG → sharp WebP ≤1400 → Storage, name `<slug>-<6hex>.webp` (never overwritten). `sharp` moved to dependencies.
 - Photo fixer: OpenCV.js from jsDelivr (`@techstark/opencv-js@4.10.0-release.1`) finds the quad (Canny/Otsu/saturation contours), drag corners + loupe, rotate 90°, own homography warp, aspect from camera model (Zhang & He) with edge-length fallback, `findBorder` trims plain paper/table border. Synthetic test: corners ±8px, ratio within ~2%, paper trimmed, no false trim.
@@ -141,13 +141,27 @@
 - Server reads catalogue via `api/_lib/catalog.js` (DB, 10 s cache, fallback bundled works.json): order pricing, Shiprocket. `finalize` marks sold works `sold` in DB + triggers rebuild.
 - Build: `scripts/catalog/pull.mjs` (first step of `npm run build`) rewrites works.json from DB (+ `storage` key) and downloads new photos. One-time `scripts/catalog/migrate.mjs`. Old local editor (`scripts/admin/`, `/__admin`) removed.
 
-### 2026-11-15 — Artist page portrait (uncommitted)
-- Hero centre photo (was `PHOTOS.park`) → `PHOTOS.marbleCutout` (`artist-marble-cutout.webp`): new red-top photo, marble background removed with rembg (isnet + human-seg), legs fade out, no card, on a `bg-wall` arch (`rounded-t-full`). User compared it with the framed marble photo and chose the cut-out. Pot + cobalt tilted cards unchanged. `artist-park.webp` and the old `PHOTOS.cutout` are unused.
-- rembg models live in an older session's scratchpad (`…/d47059bc…/scratchpad/u2net/models/<name>/<name>.onnx`); `U2NET_HOME` must point to a flat folder with `<name>.onnx`, else rembg re-downloads (very slow).
+### 2026-11-15 — Admin panel go-live (`fa38f44`, `6802294`)
+- Schema run (via Management API + `SUPABASE_ACCESS_TOKEN`), migrate (5 collections, 29 works, 34 photos in Storage), local end-to-end API test against the real DB passed, Storage CORS `*`. `VERCEL_DEPLOY_HOOK_URL` + `ADMIN_PASSWORD` set in Vercel. `__fixertest.html` deleted. Production verified: /admin 200, session `configured:true`, /api/catalog 200.
+
+### 2026-11-15 — Artist page portrait (`be3c03d`, live)
+- Hero centre photo (was `PHOTOS.park`) → `PHOTOS.marbleCutout` (`artist-marble-cutout.webp`): new red-top photo, marble background removed with rembg, legs fade out, no card, on a `bg-wall` arch (`rounded-t-full`), phones too. User compared it with a framed marble crop and chose the cut-out. Pot + cobalt tilted cards unchanged. `artist-park.webp` and `PHOTOS.cutout` (white-top) are now unused.
+
+### 2026-11-21 — Launch sale ended
+- `VITE_SALE_ON=false` in `.env.local` + Vercel production, `vercel --prod`. Sale code kept (switch only) for future sales. Live check: no sale text on /shop, no StrikethroughPrice in JSON-LD; full prices shown and charged.
+
+### 2026-11-21 — 9 new paintings (plates 30–38, live)
+- balloons, elephant-sunset (`elephant` id was taken), owl, fairy-lights, jagannath, teachers-day, cubes, lantern, dot-mandala. All `available`, no price yet (show "Price on request"). Added straight to Supabase (Storage + `works` rows) by a scratchpad script using `api/_lib` helpers; deploy hook fired (call timed out at 8 s but the deploy ran). Pages verified 200 live.
+- Photos (WhatsApp 960×1280, the source limit): edges snapped to the paper/fabric boundary + perspective warp (OpenCV, scratchpad venv), light denoise + sharpen, WebP q90 at native size. Rotated: fairy-lights 90° CCW, teachers-day 90° CCW, lantern 180° (it was upside down). White paper border trimmed on teachers-day and lantern; kept on fairy-lights and jagannath (signature/date are in it). Dot mandala = round transparent cut-out.
+- **Artist to check:** titles, mediums, sizes ("Small"/"Bookmark" guesses), years (only fairy-lights 2021 and jagannath 2024 are from the signatures), and set prices in `/admin`.
+
+### 2026-11-21 — Admin prices not showing on the shop grid (fixed)
+- Cause 1: `createBrowserRouter` starts loading the current page's chunk the moment it's created, and pages compute lists from WORKS at module load (Shop `SORTED`, Archive, Commission, home sections…). The router was created at import time, before `/api/catalog` had replaced WORKS → shop kept stale objects; artwork page (getWork at render) was fine. Now `router.jsx` exports `createRouter()`, called in `main.jsx` after `applyLiveStatus()`.
+- Cause 2: deploy hook answers in ~7.5 s but `timedFetch` default was 8 s → admin saves often aborted before Vercel queued a build, so the bundled works.json stayed old (and it's what the site uses when a cold `/api/catalog` takes >1.5 s). Hook timeout now 25 s (`api/admin.js` maxDuration 30).
 
 ## Open / Next up
 
-- **Admin panel go-live:** DONE 2026-11-15: schema run (via Management API + `SUPABASE_ACCESS_TOKEN`), migrate (5 collections, 29 works, 34 photos in Storage), local end-to-end API test against the real DB (login/rate/origin/upload/save/edit/dup/pinned-delete/delete/logout all pass), Storage CORS `*`, pull keeps works.json key order. 2026-11-15: `VERCEL_DEPLOY_HOOK_URL` + `ADMIN_PASSWORD` set in Vercel; everything committed (`fa38f44`, `be3c03d`, `6802294` removed `__fixertest.html`), pushed, production Ready (/admin 200, session says configured, /api/catalog 200, new Artist portrait live). Hook fires on admin save/delete/rebuild and when a work sells; code changes still deploy via git push. LEFT: first real login + edit on live /admin; user should revoke the Supabase access token + remove it from `.env.local`. Then edits to works.json by hand are overwritten by the next build — use /admin.
+- **Admin panel:** first real login + small edit on live `/admin` (confirm a Vercel deploy starts). Revoke the Supabase access token and remove it from `.env.local`. Optional: delete unused `artist-park.webp` / `artist-white-top-cutout.webp`.
 
 - **After deploying the SEO change:** `npm run indexnow`; in Google Search Console request indexing for `/`, `/artist`, `/shop` and resubmit the sitemap; link the site from the Instagram + YouTube bios (strongest brand-entity signal).
 
@@ -177,9 +191,17 @@
 - Windows PowerShell 5.1: no `&&`; `Get-Content` shows UTF-8 as mojibake (files are fine). Don't rewrite files via `Get-Content | Set-Content` — it corrupts UTF-8; use Edit/Write. Start the preview with `Start-Process cmd.exe -ArgumentList '/c','npx vite preview …'`.
 - **Soft 404 (GSC, 2026-11-11):** Google's renderer doesn't advance GSAP frames → entrance animations left every page blank → homepage "Soft 404". Fix in `src/motion/gsap.js`: crawlers/headless/`navigator.webdriver` (UA regex `CRAWLER`) get `stillFrames` (same as `?still`): final state, no motion. Real browsers unaffected. Never let content depend on an animation finishing to become visible for bots.
 - SEO copy is in `src/seo/copy.json`, not works.json; new painting → optional copy entry + `npm run og -- <id>`. Don't remove the `<!--seo:head-->`/`<!--seo:body-->` markers in `index.html` (build fails without them).
-- New paintings: use the editor (`npm run admin`). Other photos: drop JPG in `src/assets/images/`, run `node scripts/optimize-images.mjs`, reference the `.webp` via `img('name.webp')` in `works.js`, delete the JPG.
+- Catalogue = Supabase, not works.json: `npm run build` overwrites works.json from the DB, so edit paintings in `/admin`, never by hand. Deploy hook (`api/_lib/deploy.js`) fires on admin save/delete/rebuild and when a work sells; code changes still deploy via git push.
+- Background removal (rembg, isnet-general-use + u2net_human_seg masks): venv + models are in an older session's scratchpad (`…/d47059bc…/scratchpad/venv`, `u2net/models/<name>/<name>.onnx`). `U2NET_HOME` must be a flat folder holding `<name>.onnx` (hard-link them), else rembg re-downloads 180 MB at ~10 kB/s.
+- New paintings: use `/admin`. Other photos: drop JPG in `src/assets/images/`, run `node scripts/optimize-images.mjs`, reference the `.webp` via `img('name.webp')` in `works.js`, delete the JPG.
 
 ## Session log
+
+- 2026-11-21 — Shop grid ignored admin prices: router now created after the live catalogue loads; deploy-hook timeout 8 → 25 s. Committed + pushed.
+- 2026-11-21 — Added 9 paintings (cropped, straightened, 3 re-oriented) to Supabase; live after deploy-hook rebuild. Prices still to set.
+- 2026-11-21 — Ended the launch sale (env switch off in Vercel + local), redeployed, verified live.
+
+- 2026-11-15 — Artist hero → background-removed marble-wall portrait on an arch; admin panel + deploy hook live; `__fixertest.html` removed. All committed + pushed, production verified. Left: live /admin test edit, revoke Supabase token.
 
 - 2026-11-12 — Fixed Vercel NOT_FOUND on non-pre-rendered URLs (404.html shell replaces broken rewrite), friendly route error page + stale-chunk reload, case-insensitive ids. Committed (`f6d0c30`, reel covers `b54a51b`), pushed, `vercel --prod`; verified live.
 

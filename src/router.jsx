@@ -6,7 +6,10 @@ import { getCollection } from '@/data/works';
 /* pages load on demand; the router waits for them before the curtain lifts */
 const page = (load) => async () => ({ Component: (await load()).default });
 
-export const router = createBrowserRouter(
+/* Made by a function, not at import: creating the router starts loading the current page's code at once,
+   and pages compute lists from WORKS when their code loads (e.g. the shop's sorted grid). main.jsx calls this
+   only after the live catalogue (/api/catalog) is in WORKS, so no page captures the build's stale copy. */
+export const createRouter = () => createBrowserRouter(
   [
     {
       path: '/',

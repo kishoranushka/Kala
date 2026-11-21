@@ -11,7 +11,8 @@ export async function triggerRebuild() {
   const url = (process.env.VERCEL_DEPLOY_HOOK_URL || '').trim();
   if (!/^https:\/\/api\.vercel\.com\//.test(url)) return false;
   try {
-    const res = await timedFetch(url, { method: 'POST' });
+    /* Vercel's hook often takes 7–8 s to answer; the default 8 s timeout cut it off and no build started */
+    const res = await timedFetch(url, { method: 'POST' }, 25000);
     if (!res.ok) console.error('[deploy] hook answered', res.status);
     return res.ok;
   } catch (err) {
