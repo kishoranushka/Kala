@@ -159,7 +159,7 @@
 - Cause 1: `createBrowserRouter` starts loading the current page's chunk the moment it's created, and pages compute lists from WORKS at module load (Shop `SORTED`, Archive, Commission, home sections…). The router was created at import time, before `/api/catalog` had replaced WORKS → shop kept stale objects; artwork page (getWork at render) was fine. Now `router.jsx` exports `createRouter()`, called in `main.jsx` after `applyLiveStatus()`.
 - Cause 2: deploy hook answers in ~7.5 s but `timedFetch` default was 8 s → admin saves often aborted before Vercel queued a build, so the bundled works.json stayed old (and it's what the site uses when a cold `/api/catalog` takes >1.5 s). Hook timeout now 25 s (`api/admin.js` maxDuration 30).
 
-### 2026-11-22 — Delivery charge + optional framing (uncommitted)
+### 2026-11-22 — Delivery charge + optional framing (`57c9082`, live)
 - `src/data/shipping.js` (shared by site, API, SEO build): delivery free when paintings + framing ≥ ₹1,499, else flat ₹50 per order; frame ₹120 small / ₹400 large.
 - Frame offered per work via new catalogue field `frameSize` ('small'|'large'|'none'; missing = automatic: offered when `framing` is "Unframed"/"No", large if size is A0–A3). Admin: "Framing option for buyers" select; `cleanWork` keeps it. Named `frameSize` so it can't clash with order line `frame` (₹ charge).
 - Cart: `framed` ids in BagContext (localStorage `kala-frames`); `FrameOption` checkbox on artwork page (buyable + frameable), drawer, cart step. `cartTotals(ids, framed)` in works.js; Totals shows Framing + Delivery + "Add ₹X more for free delivery".
@@ -169,7 +169,7 @@
 
 ## Open / Next up
 
-- **Framing/delivery:** commit + push; regenerate shop/order OG cards; artist to review which paintings offer framing (and large vs small) in /admin.
+- **Framing/delivery:** artist to review which paintings offer framing (and large vs small) in /admin.
 
 - **Admin panel:** first real login + small edit on live `/admin` (confirm a Vercel deploy starts). Revoke the Supabase access token and remove it from `.env.local`. Optional: delete unused `artist-park.webp` / `artist-white-top-cutout.webp`.
 
@@ -207,7 +207,7 @@
 
 ## Session log
 
-- 2026-11-22 — Delivery ₹50 below ₹1,499 (free above) + optional framing (₹120/₹400) across cart, API, Shiprocket, emails, admin, policies, SEO. Builds clean; mocked checkout test passes; uncommitted.
+- 2026-11-22 — Delivery ₹50 below ₹1,499 (free above) + optional framing (₹120/₹400) across cart, API, Shiprocket, emails, admin, policies, SEO. Mocked checkout test passes. Committed `57c9082`, pushed, production verified.
 - 2026-11-21 — Shop grid ignored admin prices: router now created after the live catalogue loads; deploy-hook timeout 8 → 25 s. Committed + pushed.
 - 2026-11-21 — Added 9 paintings (cropped, straightened, 3 re-oriented) to Supabase; live after deploy-hook rebuild. Prices still to set.
 - 2026-11-21 — Ended the launch sale (env switch off in Vercel + local), redeployed, verified live.
