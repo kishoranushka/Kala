@@ -8,6 +8,7 @@
 
 import { SALE, discounted } from '../data/sale.js';
 import { FAQ_BY_PATH } from '../data/faq.js';
+import { FEE_TEXT, FREE_FROM_TEXT, shippingFor } from '../data/shipping.js';
 
 const STATUS = ['available', 'inquiry', 'sold', 'archived'];
 export const normalizeStatus = (s) => {
@@ -52,7 +53,7 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
     const facts = [w.medium, isPlaceholder(w.size) ? null : w.size, w.year].filter(Boolean).join(', ');
     const lead = c.lead || `${w.title} by ${S.artist}${facts ? `: ${facts}` : ''}${coll ? `, from the ${coll.title} chapter` : ''}.`;
     let tail;
-    if (isBuyable(w)) tail = `${priceText(w)}, free shipping in India.`;
+    if (isBuyable(w)) tail = `${priceText(w)}, ${shippingFor(payValue(w)) ? `delivery in India ${FEE_TEXT} (free on orders of ${FREE_FROM_TEXT}+)` : 'free delivery in India'}.`;
     else if (w.status === 'available') tail = 'Original, available: enquire for the price.';
     else if (w.status === 'sold') tail = 'Sold. Commission something similar.';
     else if (w.status === 'inquiry') tail = 'One of a kind: enquire about this original.';
@@ -177,7 +178,8 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
           seller: { '@id': ID.org },
           shippingDetails: {
             '@type': 'OfferShippingDetails',
-            shippingRate: { '@type': 'MonetaryAmount', value: 0, currency: 'INR' },
+            /* this painting on its own: free from ₹1,499, else the flat delivery fee */
+            shippingRate: { '@type': 'MonetaryAmount', value: shippingFor(payValue(w)), currency: 'INR' },
             shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'IN' },
           },
           hasMerchantReturnPolicy: {
@@ -248,7 +250,7 @@ export function createSeo({ data, copy, imageUrl = () => null, ogImage = (key) =
       ];
       page('WebPage', { about: { '@id': ID.org } });
     } else if (path === '/shop') {
-      m.intro = ['Every painting here is an original, so there is only ever one. Shipping is free within India; pay with UPI, card or netbanking.'];
+      m.intro = [`Every painting here is an original, so there is only ever one. Free delivery within India on orders of ${FREE_FROM_TEXT} or more; pay with UPI, card or netbanking.`];
       m.links = [...works].sort((a, b) => STATUS.indexOf(a.status) - STATUS.indexOf(b.status)).map(workLink);
       page('CollectionPage', { mainEntity: itemList(m.links.map((l) => ({ path: l.href, name: l.text }))) });
       graph.push(crumbs([['Home', '/'], ['Shop', '/shop']]));

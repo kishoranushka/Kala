@@ -1,11 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { getWork, isBuyable } from '@/data/works';
+import { frameOf } from '@/data/shipping';
 
 /* The cart ("bag"): originals a visitor has set aside, as work ids.
    - Kept in localStorage, so it survives a reload or a new tab, and stays in step across open tabs.
    - Only ever holds works that can be bought online (available and priced). Anything that has sold
      since it was added is taken out, and its title kept in `dropped` so the page can say why. */
 const STORAGE_KEY = 'kala-bag';
+const FRAMES_KEY = 'kala-frames';
 const BagContext = createContext(null);
 
 const storage = () => {
@@ -30,12 +32,16 @@ function sanitize(ids) {
   return { keep, dropped };
 }
 
-function readStored() {
+/* unique, known, buyable works that offer a frame */
+const sanitizeFramed = (ids) => [...new Set(Array.isArray(ids) ? ids : [])].filter((id) => typeof id === 'string' && getWork(id) && isBuyable(getWork(id)) && frameOf(getWork(id)));
+
+function readStored(key = STORAGE_KEY) {
   try {
     const s = storage();
     /* carry over a cart from the older per-tab storage */
-    const raw = s?.getItem(STORAGE_KEY) ?? window.sessionStorage?.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const raw = s?.getItem(key) ?? (key === STORAGE_KEY ? window.sessionStorage?.getItem(key) : null);
+    const out = raw ? JSON.parse(raw) : [];
+    return Array.isArray(out) ? out : [];
   } catch {
     return [];
   }
@@ -83,6 +89,32 @@ export function BagProvider({ children }) {
     return () => window.removeEventListener('storage', onStorage);
   }, []);
 
+  /* paintings the buyer wants framed (only works that offer a frame); kept like the cart */
+  const [framed, setFramedState] = useState(() => sanitizeFramed(readStored(FRAMES_KEY)));
+  useEffect(() => {
+    try {
+      storage()?.setItem(FRAMES_KEY, JSON.stringify(framed));
+    } catch {
+      /* storage full or blocked */
+    }
+  }, [framed]);
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key !== FRAMES_KEY) return;
+      let ids = [];
+      try {
+        ids = JSON.parse(e.newValue || '[]');
+      } catch {
+        /* ignore a broken value */
+      }
+      const keep = sanitizeFramed(ids);
+      setFramedState((f) => (same(keep, f) ? f : keep));
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+  const setFramed = useCallback((id, on) => setFramedState((f) => sanitizeFramed(on ? [...f, id] : f.filter((x) => x !== id))), []);
+
   const add = useCallback((id) => setBag((b) => (b.includes(id) ? b : [...b, id])), [setBag]);
   const remove = useCallback((id) => setBag((b) => b.filter((x) => x !== id)), [setBag]);
   const removeMany = useCallback((ids) => setBag((b) => b.filter((x) => !ids.includes(x))), [setBag]);
@@ -92,8 +124,8 @@ export function BagProvider({ children }) {
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
   const value = useMemo(
-    () => ({ bag, setBag, add, remove, removeMany, toggle, dropped, clearDropped, drawerOpen, openDrawer, closeDrawer }),
-    [bag, setBag, add, remove, removeMany, toggle, dropped, clearDropped, drawerOpen, openDrawer, closeDrawer]
+    () => ({ bag, setBag, add, remove, removeMany, toggle, dropped, clearDropped, drawerOpen, openDrawer, closeDrawer, framed, setFramed }),
+    [bag, setBag, add, remove, removeMany, toggle, dropped, clearDropped, drawerOpen, openDrawer, closeDrawer, framed, setFramed]
   );
   return <BagContext.Provider value={value}>{children}</BagContext.Provider>;
 }

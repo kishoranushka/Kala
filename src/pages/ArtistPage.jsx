@@ -33,7 +33,7 @@ const MILESTONES = [
   { year: '2019', title: 'Sketchbook days', note: 'Sunflowers, butterflies and lettering, painted for the joy of it.' },
   { year: '2020', title: 'A first wall', note: 'A mandala mural, painted on a wall at home.' },
   { year: '2022', title: 'Painting on site', note: 'Think Out of the Box, a chalkboard mural in Bhopal.' },
-  { year: '2026', title: 'KALA opens', note: 'Originals online, shipped free across India.' },
+  { year: '2026', title: 'KALA opens', note: 'Originals online, shipped across India.' },
   { year: 'Now', title: 'Taking commissions', note: 'Paintings, portraits and walls.' },
 ];
 

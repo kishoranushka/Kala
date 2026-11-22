@@ -6,6 +6,7 @@
 
 import DATA from './works.json';
 import { discounted, rupeesOf } from './sale';
+import { framePrice, orderTotals } from './shipping';
 
 /* every image in src/assets/images, by file name (e.g. 'peacock.webp') */
 const IMAGES = Object.fromEntries(
@@ -131,6 +132,15 @@ export const isBuyable = (w) => w.status === 'available' && priceValue(w) >= 1;
 export const payValue = (w) => (isBuyable(w) ? discounted(priceValue(w)) : priceValue(w));
 /* a buyable work whose price is cut right now */
 export const onSale = (w) => isBuyable(w) && payValue(w) < priceValue(w);
+/* the cart's money: paintings at today's price, the frames asked for (only where offered), delivery.
+   Same rules as /api/order (src/data/shipping.js), so the page shows what Razorpay charges. */
+export function cartTotals(ids, framed = []) {
+  const works = ids.map(getWork).filter(Boolean);
+  const lines = works.map((w) => ({ price: payValue(w), frame: framed.includes(w.id) ? framePrice(w) : 0 }));
+  const full = works.reduce((s, w) => s + priceValue(w), 0);
+  const t = orderTotals(lines);
+  return { ...t, full, saved: full - t.paintings, count: works.length };
+}
 export const ratioOf = (w) => `${w.w} / ${w.h}`;
 export const metaLine = (w) => `${w.medium} · ${w.size}`;
 export const plateLabel = (w) => `Pl. ${w.plate} · ${getCollection(w.collection).title}`;

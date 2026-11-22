@@ -5,6 +5,8 @@ import { CONTACT } from '@/data/site';
 import { WORKS, formatINR, getWork, isAvailable, isBuyable, onSale, payValue, plateLabel, priceValue, ratioOf } from '@/data/works';
 import { SALE, saleEndsLabel } from '@/data/sale';
 import SalePrice from '@/components/art/Price';
+import FrameOption from '@/components/art/FrameOption';
+import { FEE_TEXT, FREE_FROM_TEXT, frameOf, framePrice } from '@/data/shipping';
 import { useBag } from '@/context/BagContext';
 import { cartOffLabel } from '@/components/art/CartButton';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
@@ -325,16 +327,23 @@ function ArtworkView({ work }) {
                 </p>
               )}
 
+              {buyable && frameOf(work) && (
+                <div data-intro className="mt-5 rounded-ui bg-surface px-4 py-3">
+                  <FrameOption work={work} />
+                </div>
+              )}
+
               <div data-intro className="mt-6 flex flex-col gap-3">
                 <StatusActions work={work} inBag={inBag} adding={adding} onAdd={addToBag} onOpenBag={viewBag} />
               </div>
 
               <div data-intro className="mt-8">
                 <Disclosure title="Shipping & delivery">
-                  Free shipping within India. I pack every painting myself and hand it to a tracked courier within 7 working days of payment; tracking reaches you by SMS and email. Ordering from abroad? <Link to="/contact" className="font-semibold text-link">Write to me</Link>. <Link to="/shipping" className="font-semibold text-link">Shipping policy</Link>
+                  Free delivery within India on orders of {FREE_FROM_TEXT} or more; {FEE_TEXT} for smaller orders. I pack every painting myself and hand it to a tracked courier within 7 working days of payment; tracking reaches you by SMS and email. Ordering from abroad? <Link to="/contact" className="font-semibold text-link">Write to me</Link>. <Link to="/shipping" className="font-semibold text-link">Shipping policy</Link>
                 </Disclosure>
                 <Disclosure title="Framing & care">
-                  It comes to you as described under Framing above. Hang it out of direct sunlight and away from damp walls, kitchens and bathrooms. To clean, dust gently with a soft, dry cloth: no water or sprays on the paint. Works under glass can have the glass wiped with a barely damp cloth.
+                  It comes to you as described under Framing above
+                  {buyable && frameOf(work) ? `, or framed if you tick “Frame it for me” (${formatINR(framePrice(work))})` : ''}. Hang it out of direct sunlight and away from damp walls, kitchens and bathrooms. To clean, dust gently with a soft, dry cloth: no water or sprays on the paint. Works under glass can have the glass wiped with a barely damp cloth.
                 </Disclosure>
                 <Disclosure title="Returns">
                   Each painting is a one-of-a-kind original, so all sales are final: no cancellations, returns or refunds once your order is confirmed. If it arrives damaged in transit, tell me within 48 hours with an unboxing video and I’ll repair or replace it. <Link to="/returns" className="font-semibold text-link">Returns policy</Link>

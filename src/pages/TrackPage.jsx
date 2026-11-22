@@ -61,9 +61,12 @@ function Result({ order }) {
       <div className="bg-page p-6 max-sm:p-4">
         <dl className={REVIEW_LIST}>
           <dt>Paintings</dt>
-          <dd>{order.works.map((w) => getWork(w.id)?.title ?? w.title).join(', ')}</dd>
+          <dd>{order.works.map((w) => `${getWork(w.id)?.title ?? w.title}${w.frame ? ' (framed)' : ''}`).join(', ')}</dd>
           <dt>Total</dt>
-          <dd>{formatINR(order.amount)}</dd>
+          <dd>
+            {formatINR(order.amount)}
+            {order.shipping > 0 ? ` (incl. ${formatINR(order.shipping)} delivery)` : ''}
+          </dd>
           <dt>Ordered</dt>
           <dd>{when(order.createdAt)}</dd>
           {order.city && (

@@ -84,14 +84,14 @@ const W = new Map(seo.works.map((w) => [w.id, w]));
 const img = (id) => W.get(id)?.image;
 const cards = {
   default: { images: [img('radhakrishna'), img('om'), img('peacock')], eyebrow: 'Paintings · mandalas · murals', title: 'Colour, devotion & a *little chaos.*', meta: 'Hand-painted canvases, mandalas and murals by Anushka Kishor' },
-  shop: { images: [img('krishna'), img('buddha'), img('peacock')], eyebrow: 'The shop', title: 'Paintings to take *home.*', meta: 'One-of-a-kind originals · free shipping in India' },
+  shop: { images: [img('krishna'), img('buddha'), img('peacock')], eyebrow: 'The shop', title: 'Paintings to take *home.*', meta: 'One-of-a-kind originals · free delivery in India from ₹1,499' },
   collections: { images: [img('child'), img('radhakrishna'), img('om')], eyebrow: 'The Collector’s Index', title: 'Five chapters of *work.*', meta: 'Devotional · Mandala · Portraits · Murals · Small works' },
   archive: { images: [img('flute'), img('om'), img('elephant')], eyebrow: 'The archive', title: 'The *uncollectable* collection', meta: 'Sold paintings and walls that stay where they were painted' },
   walls: { images: [img('mural')], eyebrow: 'Wall murals', title: 'Your walls, painted *by hand.*', meta: 'Homes · offices · cafés · schools · studios' },
   artist: { images: ['artist-with-peacock.webp'], eyebrow: 'The artist', title: 'Hello, I’m *Anushka Kishor.*', meta: 'Painter, mural artist and maker of wearable art' },
   commission: { images: ['child-sketch.webp', 'jacket-butterfly-back.webp'], eyebrow: 'Commissions', title: 'Begin with an *idea.*', meta: 'Paintings · portraits · murals · painted wearables' },
   contact: { images: ['artist-cobalt-wall.webp'], eyebrow: 'Contact', title: 'Say *hello.*', meta: 'Questions, commissions and collaborations' },
-  order: { images: [img('peacock'), img('krishna'), img('buddha')], eyebrow: 'Order an original', title: 'Choose a *work.*', meta: 'Pay with UPI, card or netbanking · free shipping in India' },
+  order: { images: [img('peacock'), img('krishna'), img('buddha')], eyebrow: 'Order an original', title: 'Choose a *work.*', meta: 'Pay with UPI, card or netbanking · free delivery from ₹1,499' },
   track: { images: ['escape-key-easel.webp'], eyebrow: 'Your order', title: 'Where is my *painting?*', meta: 'Track it with your order reference and email' },
 };
 for (const c of seo.collections) {

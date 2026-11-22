@@ -6,6 +6,7 @@ import { configured as shiprocketConfigured, createOrder } from './shiprocket.js
 import { artistAlert, customerConfirmation, customerMailConfigured, mailConfigured } from './mail.js';
 import { forgetCatalog, getCatalog } from './catalog.js';
 import { triggerRebuild } from './deploy.js';
+import { paidTotals } from '../../src/data/shipping.js';
 
 /* the catalogue says Sold too (admin panel, and the next build's SEO pages) — best effort:
    the holds table already keeps these paintings from being sold again */
@@ -52,7 +53,7 @@ export async function finalizeOrder(orderId, paymentId) {
     try {
       const byId = new Map((await getCatalog()).works.map((w) => [w.id, w]));
       const works = order.works.map((w) => ({ ...byId.get(w.id), ...w, price: String(w.price) }));
-      const out = await createOrder({ orderId: order.id, customer: order.customer, works });
+      const out = await createOrder({ orderId: order.id, customer: order.customer, works, shipping: paidTotals(order).shipping });
       shiprocket = { ok: true, orderId: out.shiprocketOrderId, shipmentId: out.shipmentId };
     } catch (err) {
       console.error('[finalize] shiprocket', err);

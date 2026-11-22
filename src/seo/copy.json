@@ -23,7 +23,7 @@
     },
     "/shop": {
       "title": "Shop Original Paintings Online",
-      "description": "Shop KALA by Anushka Kishor: original hand-painted paintings, devotional art, mandalas and small canvases. One of each, packed by hand, free shipping in India.",
+      "description": "Shop KALA by Anushka Kishor: original hand-painted paintings, devotional art, mandalas and small canvases. One of each, packed by hand, free delivery in India from ₹1,499.",
       "h1": "Paintings to take home",
       "og": "shop"
     },
@@ -65,7 +65,7 @@
     },
     "/order": {
       "title": "Order an Original Painting",
-      "description": "Order original paintings by Anushka Kishor and pay securely with UPI, card or netbanking. Every painting is packed by the artist; free shipping in India.",
+      "description": "Order original paintings by Anushka Kishor and pay securely with UPI, card or netbanking. Every painting is packed by the artist; free delivery in India from ₹1,499.",
       "h1": "Choose a work",
       "og": "order",
       "noindex": true
@@ -79,7 +79,7 @@
     },
     "/shipping": {
       "title": "Shipping & Delivery Policy",
-      "description": "KALA ships original paintings free within India. Each painting is packed by the artist and handed to a tracked courier within 7 working days of payment.",
+      "description": "KALA ships original paintings across India, free on orders of ₹1,499 or more (₹50 below that). Each painting is packed by the artist and handed to a tracked courier within 7 working days of payment.",
       "h1": "From my hands to your wall",
       "og": "default"
     },

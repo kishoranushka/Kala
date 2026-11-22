@@ -7,6 +7,7 @@
                          (they still get Razorpay's payment receipt). */
 import { timedFetch } from './http.js';
 import { confirmationHtml, LOGO } from './email-html.js';
+import { paidTotals } from '../../src/data/shipping.js';
 
 const ARTIST = 'kishoranushka96@gmail.com';
 const SITE = process.env.SITE_URL || 'https://kala.anushkakishor.in';
@@ -36,7 +37,16 @@ async function send({ to, subject, text, html, attachments, replyTo }) {
 
 const inr = (rupees) => `₹ ${Number(rupees).toLocaleString('en-IN')}`;
 const address = (c) => [c.address, c.city, c.state, c.pin, c.country].filter(Boolean).join(', ');
-const workLines = (order) => order.works.map((w) => `  • ${w.title} — ${inr(w.price)}${w.full > w.price ? ` (sale price, was ${inr(w.full)})` : ''}`).join('\n');
+const workLines = (order) => {
+  const { shipping } = paidTotals(order);
+  return [
+    ...order.works.map(
+      (w) =>
+        `  • ${w.title} — ${inr(w.price)}${w.full > w.price ? ` (sale price, was ${inr(w.full)})` : ''}${w.frame ? `\n      + framing ${inr(w.frame)} (FRAME THIS ONE)` : ''}`
+    ),
+    `  • Delivery — ${shipping ? inr(shipping) : 'Free'}`,
+  ].join('\n');
+};
 
 export function artistAlert(order) {
   const c = order.customer;

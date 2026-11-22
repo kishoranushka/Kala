@@ -17,6 +17,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 for (const [k, v] of Object.entries(loadEnv('production', ROOT, 'VITE_SALE_'))) if (process.env[k] === undefined) process.env[k] = v;
 const { createSeo } = await import('../../src/seo/meta.js');
 const { POLICIES, UPDATED } = await import('../../src/data/policies.js');
+const { SHIPPING_LINE, FRAMING_LINE } = await import('../../src/data/shipping.js');
 const DIST = join(ROOT, 'dist');
 const readJson = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
 
@@ -182,12 +183,12 @@ const others = seo.works.filter((w) => !seo.isBuyable(w));
 const llms = [
   `# ${S.brand}`,
   '',
-  `> ${S.summary} Original paintings can be bought online and ship free within India; paintings, portraits, wall murals and wearables can be commissioned by enquiry.`,
+  `> ${S.summary} Original paintings can be bought online and ship within India (free on larger orders); paintings, portraits, wall murals and wearables can be commissioned by enquiry.`,
   '',
   'Key facts:',
   `- Artist: ${S.artist}, India-based painter and mural artist. Instagram ${S.sameAs[0]} · YouTube ${S.sameAs[1]}`,
   '- Every painting is a one-of-a-kind original (no prints). Each painting page shows medium, size, year, framing and status: available, inquiry only, sold or archived.',
-  '- Buying: add works to the cart and pay online on the order page (UPI, card or netbanking via Razorpay). Shipping is free and India-only; for orders from abroad, use the contact page.',
+  `- Buying: add works to the cart and pay online on the order page (UPI, card or netbanking via Razorpay). ${SHIPPING_LINE}; India only, for orders from abroad use the contact page. ${FRAMING_LINE} (optional).`,
   `- Commissions: custom paintings, portraits, hand-painted wall murals (homes, offices, cafés, schools) and painted wearables (t-shirts, jackets, shoes). Contact: ${S.email}`,
   '- Orders can be tracked at /track with the order reference and email.',
   '',
@@ -207,7 +208,7 @@ const llms = [
   '',
   '## Paintings available to buy online',
   '',
-  ...buyable.map((w) => `- [${w.title}](${url(`/artwork/${w.id}`)}): ${factsOf(w)}. ${seo.priceText(w)}, free shipping in India. ${w.alt}.`),
+  ...buyable.map((w) => `- [${w.title}](${url(`/artwork/${w.id}`)}): ${factsOf(w)}. ${seo.priceText(w)}. ${w.alt}.`),
   '',
   '## Other works (enquire, sold or archived)',
   '',
@@ -232,7 +233,8 @@ const full = [
   '',
   '- Each painting is a single original; once sold it moves to the archive.',
   '- Works marked "Available" with a price can be bought online at /order: pay with UPI, card or netbanking (Razorpay). Works are held for you for 20 minutes during checkout.',
-  '- Shipping is free within India; the artist packs every painting. Orders from outside India: use the contact page.',
+  `- ${SHIPPING_LINE}; the artist packs every painting. Orders from outside India: use the contact page.`,
+  `- ${FRAMING_LINE}, chosen in the cart (optional).`,
   '- "Inquiry only" works: write via /commission or /contact. Sold and archived works can inspire a commission in the same spirit.',
   '- Track an order at /track with the order reference and the email used.',
   '',

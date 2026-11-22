@@ -1,5 +1,6 @@
 /* POST /api/order — start checkout.
-   Body: { works: [id…], customer: { name, email, phone, address, city, state, pin, note }, replaces? }
+   Body: { works: [id…], frames?: [id…] (works to frame), customer: { name, email, phone, address, city, state, pin, note }, replaces? }
+   Order lines: { id, title, price, full?, frame? } in rupees; delivery = amount − paintings − frames (see src/data/shipping.js).
    Checks the details, prices the paintings from the catalogue (never trusts the browser), holds them for
    20 minutes so nobody else can buy them mid-payment, saves a pending order and creates the Razorpay order.
    Returns: { orderId, key, razorpayOrderId, amount, currency }
@@ -11,6 +12,7 @@ import { dbConfigured, getOrder, holdWorks, insertOrder, recentCheckouts, releas
 import { createRazorpayOrder, publicKey, razorpayConfigured } from './_lib/razorpay.js';
 import { orderableWorks, rupees } from './_lib/shiprocket.js';
 import { discounted } from '../src/data/sale.js';
+import { framePrice, orderTotals } from '../src/data/shipping.js';
 
 const PHONE = /^[6-9]\d{9}$/;
 const PIN = /^[1-9]\d{5}$/;
@@ -73,14 +75,18 @@ export default async function handler(req, res) {
   if (missing.length) return json(res, 422, { error: `Please check: ${missing.join(', ')}.`, fields: missing });
 
   const orderId = newOrderId();
-  /* price = what is charged today (the sale price while VITE_SALE_ON is set); full = the price before the sale */
+  /* price = what is charged today (the sale price while VITE_SALE_ON is set); full = the price before the sale;
+     frame = the framing charge, only for works the buyer asked to frame and that offer it */
   const now = Date.now();
+  const wantFrame = new Set(Array.isArray(body.frames) ? body.frames.slice(0, MAX_WORKS).map((id) => clean(id, 60)) : []);
   const lines = works.map((w) => {
     const full = rupees(w.price);
     const price = discounted(full, now);
-    return { id: w.id, title: w.title, price, ...(price < full ? { full } : {}) };
+    const frame = wantFrame.has(w.id) ? framePrice(w) : 0;
+    return { id: w.id, title: w.title, price, ...(price < full ? { full } : {}), ...(frame ? { frame } : {}) };
   });
-  const amount = lines.reduce((s, w) => s + w.price, 0) * 100; // paise; shipping within India is free
+  const totals = orderTotals(lines);
+  const amount = totals.total * 100; // paise: paintings + frames + delivery (free from ₹1,499)
 
   let inserted = false;
   try {
@@ -119,7 +125,7 @@ export default async function handler(req, res) {
     const rzp = await createRazorpayOrder({
       amount,
       receipt: orderId,
-      notes: { kala_order: orderId, works: lines.map((w) => w.title).join(', ').slice(0, 250), customer: customer.name },
+      notes: { kala_order: orderId, works: lines.map((w) => `${w.title}${w.frame ? ' (framed)' : ''}`).join(', ').slice(0, 250), customer: customer.name },
     });
     await updateOrder(orderId, { razorpay_order_id: rzp.id });
 

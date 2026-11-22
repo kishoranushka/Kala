@@ -39,7 +39,7 @@ export const STATUSES = ['available', 'inquiry', 'sold', 'archived'];
    Keep in step with getWork('…') calls in src/ (search for them when adding one). */
 export const PINNED = ['krishna', 'om', 'child', 'ganesha', 'mural', 'chalk', 'vitthal', 'escape', 'radhakrishna', 'buddha', 'sunflower', 'butterfly', 'elephant', 'peacock', 'babybuddha', 'cat'];
 
-const FIELD_ORDER = ['id', 'plate', 'title', 'collection', 'status', 'badge', 'price', 'medium', 'size', 'year', 'framing', 'archiveNo', 'image', 'w', 'h', 'crop', 'room', 'ship', 'alt', 'note', 'details'];
+const FIELD_ORDER = ['id', 'plate', 'title', 'collection', 'status', 'badge', 'price', 'medium', 'size', 'year', 'framing', 'frameSize', 'archiveNo', 'image', 'w', 'h', 'crop', 'room', 'ship', 'alt', 'note', 'details'];
 const TEXT = { plate: 10, title: 120, collection: 40, status: 20, badge: 40, price: 30, medium: 120, size: 60, year: 20, framing: 120, archiveNo: 40, alt: 600, note: 4000 };
 
 const text = (v, max) =>
@@ -64,6 +64,9 @@ export function cleanWork(input) {
     w.price = n >= 1 ? `₹ ${Math.round(n).toLocaleString('en-IN')}` : '';
     if (!w.price) delete w.price;
   }
+  /* optional frame offered at checkout (src/data/shipping.js); missing = automatic */
+  const frameSize = text(input.frameSize, 10).toLowerCase();
+  if (['small', 'large', 'none'].includes(frameSize)) w.frameSize = frameSize;
   w.image = text(input.image, 100);
   w.w = int(input.w);
   w.h = int(input.h);

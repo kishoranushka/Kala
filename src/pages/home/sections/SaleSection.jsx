@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { SALE, saleEndsLabel } from '@/data/sale';
 import { WORKS, onSale } from '@/data/works';
+import { FREE_FROM_TEXT } from '@/data/shipping';
 import Button from '@/components/ui/Button';
 import { RingMandala } from '@/components/mandala/Mandala';
 import SalePrice, { SaleTag } from '@/components/art/Price';
@@ -42,7 +43,7 @@ export default function SaleSection() {
                 <Button variant="light" to="/shop?available" arrow data-magnetic>
                   Shop the sale
                 </Button>
-                <span className="text-[13px]/5 text-on-primary-muted">Free shipping in India · Secure UPI, card or netbanking</span>
+                <span className="text-[13px]/5 text-on-primary-muted">Free delivery in India from {FREE_FROM_TEXT} · Secure UPI, card or netbanking</span>
               </div>
             </div>
 

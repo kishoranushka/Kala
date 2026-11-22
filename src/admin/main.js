@@ -3,6 +3,7 @@
    Views (hash routes): #/ list · #/new · #/edit/<id> */
 import './admin.css';
 import { fixPhoto } from './photo.js';
+import { FRAME_PRICE } from '../data/shipping.js';
 
 const app = document.getElementById('app');
 const logoutBtn = document.getElementById('logout');
@@ -271,6 +272,14 @@ function showEdit(existing) {
               <label class="field">Size<input type="text" name="size" value="${esc(w.size)}" placeholder="A3, or 30 × 40 cm" /></label>
               <label class="field">Year<input type="text" name="year" inputmode="numeric" value="${esc(w.year)}" placeholder="2026" /></label>
               <label class="field">Framing<input type="text" name="framing" value="${esc(w.framing)}" placeholder="Unframed, canvas, black frame…" /></label>
+              <label class="field">Framing option for buyers <span class="hint">Optional frame added at checkout. Automatic: offered when Framing says “Unframed”; large for A3 and bigger.</span><select name="frameSize">${[
+                ['', 'Automatic'],
+                ['small', `Small frame (+ ₹${FRAME_PRICE.small})`],
+                ['large', `Large frame (+ ₹${FRAME_PRICE.large})`],
+                ['none', 'Don’t offer framing'],
+              ]
+                .map(([v, l]) => `<option value="${v}" ${(w.frameSize ?? '') === v ? 'selected' : ''}>${l}</option>`)
+                .join('')}</select></label>
               <label class="field full">Your words about it <span class="hint">A few lines for the painting’s page.</span><textarea name="note">${esc(w.note)}</textarea></label>
               <label class="field full">Describe the painting * <span class="hint">For blind visitors and Google: subject, colours, background.</span><textarea name="alt">${esc(w.alt)}</textarea></label>
             </div>

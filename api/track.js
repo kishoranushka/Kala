@@ -5,6 +5,7 @@
 import { clean, json, query, readJson } from './_lib/http.js';
 import { dbConfigured, getOrder, lostWorks } from './_lib/db.js';
 import { configured as shiprocketConfigured, trackShipment } from './_lib/shiprocket.js';
+import { paidTotals } from '../src/data/shipping.js';
 
 const NOT_FOUND = 'No order matches that reference and email. Check both, they’re in your confirmation.';
 
@@ -45,8 +46,9 @@ export default async function handler(req, res) {
       status: order.status,
       createdAt: order.created_at,
       paidAt: order.paid_at,
-      works: order.works.map((w) => ({ id: w.id, title: w.title, price: w.price, lost: lost.includes(w.id) })),
+      works: order.works.map((w) => ({ id: w.id, title: w.title, price: w.price, ...(w.frame ? { frame: w.frame } : {}), lost: lost.includes(w.id) })),
       amount: order.amount / 100,
+      shipping: paidTotals(order).shipping,
       city: order.customer?.city,
       shipment,
     });

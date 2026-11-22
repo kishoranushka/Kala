@@ -3,7 +3,9 @@
    Body blocks: a string is a paragraph, { list: [...] } a bulleted list. Inline links: [text](/path or mailto:…).
    Change UPDATED whenever the wording of any policy changes. */
 
-export const UPDATED = '11 November 2026';
+import { FEE_TEXT, FRAME_PRICE, FRAMING_LINE, FREE_FROM_TEXT } from './shipping.js';
+
+export const UPDATED = '22 November 2026';
 
 const EMAIL = 'kishoranushka96@gmail.com';
 const MAIL = `[${EMAIL}](mailto:${EMAIL})`;
@@ -118,9 +120,10 @@ export const POLICIES = {
     label: 'Shipping',
     eyebrow: 'Shipping & delivery',
     lines: ['From my hands', 'to your *wall.*'],
-    lead: 'Paintings bought on this site ship free within India. I pack every one myself and send it with a tracked courier.',
+    lead: `Paintings bought on this site are delivered anywhere in India, free on orders of ${FREE_FROM_TEXT} or more. I pack every one myself and send it with a tracked courier.`,
     summary: [
-      'Free shipping on every order within India.',
+      `Free delivery within India on orders of ${FREE_FROM_TEXT} or more; ${FEE_TEXT} per order below that.`,
+      `${FRAMING_LINE}, chosen at checkout.`,
       'Packed by me and handed to the courier within 7 working days of payment.',
       'Tracking reaches you by SMS and email, and on the tracking page.',
       'Ordering from outside India? Write to me and I’ll arrange it.',
@@ -137,7 +140,11 @@ export const POLICIES = {
       {
         id: 'cost',
         title: 'What it costs',
-        body: ['Shipping within India is free. The price you see at checkout is the full amount you pay for the painting and its delivery.'],
+        body: [
+          `Delivery within India is free when your order (paintings plus any framing) comes to ${FREE_FROM_TEXT} or more. Below that, a flat ${FEE_TEXT} is added per order, however many paintings it holds. The cart shows the delivery charge before you pay.`,
+          `${FRAMING_LINE}. Framing is optional and only offered on unframed paintings; it is added to your total at checkout and the painting is framed before it ships.`,
+          'The total you see at checkout is the full amount you pay for the paintings, any framing and delivery.',
+        ],
       },
       {
         id: 'when',
@@ -226,7 +233,7 @@ export const POLICIES = {
         id: 'prices',
         title: 'Prices',
         body: [
-          'Prices are in Indian Rupees (₹). The total shown at checkout is the full amount you pay, with free shipping within India. Prices may change at any time, but the price on your confirmed order won’t.',
+          `Prices are in Indian Rupees (₹). The total shown at checkout is the full amount you pay: the paintings, any framing you choose (₹${FRAME_PRICE.small} for a small painting, ₹${FRAME_PRICE.large} for a larger one) and delivery, which is free on orders of ${FREE_FROM_TEXT} or more and ${FEE_TEXT} below that. Prices may change at any time, but the price on your confirmed order won’t.`,
           'During a sale, the reduced price is shown beside the original price, which is struck through. A sale price applies to orders paid while the sale is running; it isn’t applied to earlier orders.',
           'If a price was clearly shown by mistake, I may cancel the order, tell you by email and refund you in full.',
         ],
@@ -257,7 +264,7 @@ export const POLICIES = {
         id: 'delivery',
         title: 'Shipping and delivery',
         body: [
-          'Orders ship free within India and are handed to the courier within 7 working days of payment. The [shipping policy](/shipping) has the details. The painting becomes your responsibility once it is delivered to the address you gave.',
+          `Orders ship within India (free on orders of ${FREE_FROM_TEXT} or more, ${FEE_TEXT} below that) and are handed to the courier within 7 working days of payment. The [shipping policy](/shipping) has the details. The painting becomes your responsibility once it is delivered to the address you gave.`,
         ],
       },
       {

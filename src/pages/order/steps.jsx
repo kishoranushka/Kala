@@ -3,6 +3,8 @@ import cx from '@/utils/cx';
 import { WORKS, getWork, isBuyable, metaLine, onSale, plateLabel, ratioOf } from '@/data/works';
 import SalePrice from '@/components/art/Price';
 import ShopCard from '@/components/art/ShopCard';
+import FrameOption from '@/components/art/FrameOption';
+import { FEE_TEXT, FREE_FROM_TEXT } from '@/data/shipping';
 import { Checkbox, ErrorSummary, Field, FieldError, FieldRow, Input, Textarea, describe } from '@/components/form/Fields';
 import FormSuccess from '@/components/form/FormSuccess';
 import Button from '@/components/ui/Button';
@@ -74,6 +76,7 @@ export function CartStep({ selection, onRemove, onContinue, pickError, notices =
                   {w.title}
                 </Link>
                 <span className="meta">{metaLine(w)}</span>
+                <FrameOption work={w} className="mt-2" />
                 <div className="mt-auto flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pt-3">
                   <SalePrice work={w} />
                   <button
@@ -172,7 +175,7 @@ export function DetailsStep({ form, errors, onChange, onBack, onSubmit }) {
       <fieldset className="m-0 flex flex-col gap-6 border-0 p-0">
         <legend className="mb-1 p-0 text-[13px]/5 font-semibold">Where should it go? *</legend>
         <p className="meta -mt-1">
-          Packed with care and shipped free within India. Ordering from abroad?{' '}
+          Packed with care and sent anywhere in India: free delivery on orders of {FREE_FROM_TEXT} or more, {FEE_TEXT} below that. Ordering from abroad?{' '}
           <Link to="/contact" className="font-semibold text-link">
             Write to me
           </Link>{' '}

@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
-import { formatINR, getWork, metaLine, payValue, priceValue } from '@/data/works';
+import { cartTotals, formatINR, getWork, metaLine } from '@/data/works';
 import { SALE } from '@/data/sale';
 import SalePrice from '@/components/art/Price';
+import FrameOption from '@/components/art/FrameOption';
+import { FreeDeliveryHint } from '@/pages/order/OrderSummary';
 import { useBag } from '@/context/BagContext';
 import { gsap, canAnimate } from '@/motion/gsap';
 import { useDialogKeys } from '@/hooks/useDialogKeys';
@@ -13,7 +15,7 @@ import TextLink from '@/components/ui/TextLink';
 
 /* the cart slides in from the right; the originals inside settle one after another */
 export default function BagDrawer() {
-  const { bag, remove, drawerOpen, closeDrawer, dropped, clearDropped } = useBag();
+  const { bag, remove, drawerOpen, closeDrawer, dropped, clearDropped, framed } = useBag();
   const drawerRef = useRef(null);
   const scrimRef = useRef(null);
   const closeRef = useRef(null);
@@ -47,8 +49,7 @@ export default function BagDrawer() {
 
   if (!drawerOpen) return null;
   const items = bag.map(getWork).filter(Boolean);
-  const total = items.reduce((s, w) => s + payValue(w), 0);
-  const saved = items.reduce((s, w) => s + priceValue(w), 0) - total;
+  const t = cartTotals(bag, framed);
 
   return (
     <>
@@ -102,6 +103,7 @@ export default function BagDrawer() {
                   <span className="font-display text-xl/6 font-medium">{w.title}</span>
                   <span className="meta">{metaLine(w)}</span>
                   <span className="meta">Original · quantity 1</span>
+                  <FrameOption work={w} className="mt-1.5" />
                 </span>
                 <span className="flex flex-col items-end gap-2">
                   <SalePrice work={w} size="sm" badge={false} stacked />
@@ -113,17 +115,28 @@ export default function BagDrawer() {
             ))}
             <div className="mt-auto flex flex-col gap-4 border-t border-divider p-6">
               <div className="flex flex-col gap-1.5 text-sm">
-                {saved > 0 && (
+                {t.saved > 0 && (
                   <div className="flex justify-between">
                     <span className="font-semibold text-sale">{SALE.name} ({SALE.percent}% off)</span>
-                    <span className="font-semibold text-sale tabular-nums">− {formatINR(saved)}</span>
+                    <span className="font-semibold text-sale tabular-nums">− {formatINR(t.saved)}</span>
+                  </div>
+                )}
+                {t.framing > 0 && (
+                  <div className="flex justify-between">
+                    <span>Framing</span>
+                    <span className="tabular-nums">{formatINR(t.framing)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="font-semibold">Subtotal · free shipping in India</span>
-                  <span className="font-bold tabular-nums">{formatINR(total)}</span>
+                  <span>Delivery in India</span>
+                  <span className="tabular-nums">{t.shipping ? formatINR(t.shipping) : 'Free'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-semibold">Total</span>
+                  <span className="font-bold tabular-nums">{formatINR(t.total)}</span>
                 </div>
               </div>
+              <FreeDeliveryHint value={t.value} className="-mt-2" />
               <Notice tone="info">You pay securely on the order page with UPI (scan a QR code), card or netbanking, through Razorpay.</Notice>
               <Button to="/order" block data-cursor="explore">
                 Continue to Order

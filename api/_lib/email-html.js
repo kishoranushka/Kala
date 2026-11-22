@@ -5,6 +5,7 @@
    No flexbox/grid, no CSS variables, no background images, no external CSS.
    The logo is embedded (cid:kala-logo) so it shows without the site being reachable. */
 import { LOGO } from './email-logo.js';
+import { paidTotals } from '../../src/data/shipping.js';
 
 export { LOGO };
 
@@ -65,6 +66,7 @@ export function confirmationHtml({ order, track, lost = [], allLost = false }) {
   const c = order.customer;
   const first = esc(String(c.name || '').trim().split(/\s+/)[0] || 'there');
   const lostIds = new Set(lost.map((w) => w.id));
+  const { shipping } = paidTotals(order);
   const address = [c.address, c.city, c.state && c.pin ? `${c.state} ${c.pin}` : c.state || c.pin, c.country || 'India'].filter(Boolean).map(esc).join('<br>');
   const lostNames = esc(lost.map((w) => w.title).join(', '));
   const preheader = allLost ? `About your order ${order.id}` : `Thank you, ${first}. Your painting is reserved for you and will be on its way soon.`;
@@ -76,7 +78,15 @@ export function confirmationHtml({ order, track, lost = [], allLost = false }) {
       <tr>
         <td class="item" style="padding:14px 0;border-bottom:1px solid ${C.divider};font-family:${SERIF};font-size:17px;line-height:24px;color:${C.primary};${gone ? 'text-decoration:line-through;color:' + C.muted + ';' : ''}">${esc(w.title)}</td>
         <td align="right" style="padding:14px 0 14px 12px;border-bottom:1px solid ${C.divider};font-family:${SANS};font-size:15px;line-height:24px;color:${C.soft};white-space:nowrap;vertical-align:top;">${w.full > w.price ? `<span style="color:${C.muted};font-size:13px;text-decoration:line-through;">${inr(w.full)}</span>&nbsp;&nbsp;<b style="color:${C.sale};">${inr(w.price)}</b>` : inr(w.price)}</td>
-      </tr>`;
+      </tr>${
+        w.frame
+          ? `
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid ${C.divider};font-family:${SANS};font-size:14px;line-height:20px;color:${C.soft};">Framing for ${esc(w.title)}</td>
+        <td align="right" style="padding:10px 0 10px 12px;border-bottom:1px solid ${C.divider};font-family:${SANS};font-size:15px;line-height:20px;color:${C.soft};white-space:nowrap;">${inr(w.frame)}</td>
+      </tr>`
+          : ''
+      }`;
     })
     .join('');
 
@@ -168,8 +178,8 @@ export function confirmationHtml({ order, track, lost = [], allLost = false }) {
                     </tr>
                     ${rows}
                     <tr>
-                      <td style="padding:16px 0 0 0;font-family:${SANS};font-size:14px;line-height:20px;color:${C.muted};">Shipping</td>
-                      <td align="right" style="padding:16px 0 0 12px;font-family:${SANS};font-size:14px;line-height:20px;color:${C.muted};white-space:nowrap;">Free</td>
+                      <td style="padding:16px 0 0 0;font-family:${SANS};font-size:14px;line-height:20px;color:${C.muted};">Delivery</td>
+                      <td align="right" style="padding:16px 0 0 12px;font-family:${SANS};font-size:14px;line-height:20px;color:${C.muted};white-space:nowrap;">${shipping ? inr(shipping) : 'Free'}</td>
                     </tr>
                     <tr>
                       <td style="padding:8px 0 0 0;font-family:${SANS};font-size:16px;line-height:24px;font-weight:bold;color:${C.primary};">Total paid</td>

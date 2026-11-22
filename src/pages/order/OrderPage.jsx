@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { CONTACT, EMAIL_PATTERN } from '@/data/site';
-import { formatINR, getWork, isBuyable, payValue, priceValue } from '@/data/works';
+import { cartTotals, formatINR, getWork, isBuyable, payValue, priceValue } from '@/data/works';
+import { FEE_TEXT, FREE_FROM_TEXT, framePrice } from '@/data/shipping';
 import { sendForm } from '@/utils/sendForm';
 import { payWithRazorpay } from '@/utils/razorpay';
 import { useBag } from '@/context/BagContext';
@@ -65,8 +66,8 @@ async function postJson(url, body, ms = 20000) {
 }
 
 /* 1 · /api/order prices the works, holds them while you pay, and opens a Razorpay order */
-async function startCheckout(bag, form, replaces) {
-  const { res, out } = await postJson('/api/order', { works: bag, customer: { ...form, phone: cleanPhone(form.phone) }, replaces });
+async function startCheckout(bag, frames, form, replaces) {
+  const { res, out } = await postJson('/api/order', { works: bag, frames, customer: { ...form, phone: cleanPhone(form.phone) }, replaces });
   if (!res) throw userError('Couldn’t reach the shop. Check your connection and try again.');
   if (res.status === 409) throw userError(out.error || 'Something in your order is no longer available.', { taken: out.taken || [] });
   if (res.status === 422) throw userError(out.error || 'Please check your details.', { fields: out.fields || [] });
@@ -91,7 +92,7 @@ async function confirmPayment(orderId, paid) {
 
 /* Choose → details → review & pay → paid. The selection is the bag, limited to works that can be bought online. */
 export default function OrderPage() {
-  const { bag, add, remove, removeMany, dropped, clearDropped } = useBag();
+  const { bag, add, remove, removeMany, dropped, clearDropped, framed } = useBag();
   const [params] = useSearchParams();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -187,9 +188,10 @@ export default function OrderPage() {
     setPayError(null);
     const botcheck = e.currentTarget.elements.botcheck?.checked;
     const ids = [...bag];
+    const frames = ids.filter((id) => framed.includes(id));
     const works = ids.map(getWork).filter(Boolean);
-    const total = works.reduce((s, w) => s + payValue(w), 0);
-    const sig = JSON.stringify([ids, form]);
+    const totals = cartTotals(ids, frames);
+    const sig = JSON.stringify([ids, frames, form]);
 
     try {
       /* 1 · start (or reopen) the checkout */
@@ -197,7 +199,7 @@ export default function OrderPage() {
       const open = checkout.current;
       let session = open?.sig === sig && Date.now() - open.at < SESSION_MINUTES * 60 * 1000 ? open : null;
       if (!session) {
-        session = { sig, at: Date.now(), ...(await startCheckout(ids, form, open?.orderId)) };
+        session = { sig, at: Date.now(), ...(await startCheckout(ids, frames, form, open?.orderId)) };
         checkout.current = session;
       }
 
@@ -231,8 +233,11 @@ export default function OrderPage() {
           botcheck,
           fields: {
             'Order': session.orderId,
-            'Paid': `${formatINR(total)} · Razorpay payment ${payment.razorpay_payment_id}${result.confirmed ? '' : ' (not yet verified by the server)'}`,
-            'Works': works.map((w) => `${w.title} (${formatINR(payValue(w))}${payValue(w) < priceValue(w) ? `, was ${formatINR(priceValue(w))}` : ''})`).join('\n'),
+            'Paid': `${formatINR(session.amount / 100)} · Razorpay payment ${payment.razorpay_payment_id}${result.confirmed ? '' : ' (not yet verified by the server)'}`,
+            'Works': works
+              .map((w) => `${w.title} (${formatINR(payValue(w))}${payValue(w) < priceValue(w) ? `, was ${formatINR(priceValue(w))}` : ''})${frames.includes(w.id) ? ` + FRAME IT (${formatINR(framePrice(w))})` : ''}`)
+              .join('\n'),
+            'Delivery': totals.shipping ? formatINR(totals.shipping) : 'Free',
             'Phone': cleanPhone(form.phone),
             'Ship to': [form.address, form.city, form.state, form.pin, 'India'].map((s) => s.trim()).filter(Boolean).join(', '),
             'Shiprocket': !result.confirmed ? 'Not confirmed yet: check the Razorpay dashboard, then Shiprocket.' : result.shiprocket?.ok ? 'Created automatically. Assign a courier and ship.' : `NOT created: ${result.shiprocket?.error || 'unknown'}. Add this order in Shiprocket by hand.`,
@@ -247,7 +252,7 @@ export default function OrderPage() {
       checkout.current = null;
       removeMany(ids);
       if (!alive.current) return;
-      setPaid({ orderId: session.orderId, email: form.email.trim(), works: ids, confirmed: result.confirmed, lost: result.lost.map((w) => w.title) });
+      setPaid({ orderId: session.orderId, email: form.email.trim(), works: ids, frames, confirmed: result.confirmed, lost: result.lost.map((w) => w.title) });
       setStep(4);
     } catch (err) {
       console.error('Checkout failed:', err);
@@ -316,7 +321,9 @@ export default function OrderPage() {
           <p className="lead max-sm:hidden">
             Pick the originals you’d like, tell me where they’re going, and pay securely with UPI, card or netbanking. I pack and send every painting myself.
           </p>
-          <p className="meta mt-3.5 font-semibold text-success!">Free shipping within India.</p>
+          <p className="meta mt-3.5 font-semibold text-success!">
+            Free delivery in India on orders of {FREE_FROM_TEXT} or more ({FEE_TEXT} below that).
+          </p>
         </div>
         <div data-intro className="relative col-span-full mt-14 mb-4 max-sm:mt-8">
           <span
@@ -362,7 +369,7 @@ export default function OrderPage() {
               {step === 3 && (
                 <ReviewStep
                   form={form}
-                  total={formatINR(bag.map(getWork).reduce((s, w) => s + payValue(w), 0))}
+                  total={formatINR(cartTotals(bag, framed).total)}
                   ack={ack}
                   ackError={ackError}
                   phase={phase}
@@ -379,6 +386,7 @@ export default function OrderPage() {
             </div>
             <OrderSummary
               selection={step === 4 && paid ? paid.works : bag}
+              framed={step === 4 && paid ? paid.frames : undefined}
               canEdit={step <= 2}
               onRemove={onRemove}
               paid={step === 4}

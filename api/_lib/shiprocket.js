@@ -130,9 +130,15 @@ export function parcel(works) {
   };
 }
 
-export async function createOrder({ orderId, customer, works }) {
+/* works: catalogue entries merged with the order lines (price = charged price, frame = framing charge in ₹);
+   shipping = the delivery charge the buyer paid */
+export async function createOrder({ orderId, customer, works, shipping = 0 }) {
   const [first, ...rest] = customer.name.trim().split(/\s+/);
-  const subTotal = works.reduce((s, w) => s + rupees(w.price), 0);
+  const items = works.flatMap((w) => [
+    { name: w.title, sku: `KALA-${w.id}`, units: 1, selling_price: rupees(w.price) },
+    ...(Number(w.frame) > 0 ? [{ name: `Framing: ${w.title}`, sku: `KALA-FRAME-${w.id}`, units: 1, selling_price: Number(w.frame) }] : []),
+  ]);
+  const subTotal = items.reduce((s, i) => s + i.selling_price, 0);
   const today = new Date(Date.now() + 5.5 * 3600 * 1000).toISOString().slice(0, 16).replace('T', ' '); // IST
   const channel_id = await channel();
   const out = await call('/orders/create/adhoc', {
@@ -151,10 +157,10 @@ export async function createOrder({ orderId, customer, works }) {
     billing_email: customer.email,
     billing_phone: customer.phone,
     shipping_is_billing: true,
-    order_items: works.map((w) => ({ name: w.title, sku: `KALA-${w.id}`, units: 1, selling_price: rupees(w.price) })),
+    order_items: items,
     payment_method: 'Prepaid',
     sub_total: subTotal,
-    shipping_charges: 0,
+    shipping_charges: shipping,
     ...parcel(works),
   });
   return { shiprocketOrderId: out.order_id, shipmentId: out.shipment_id, subTotal };

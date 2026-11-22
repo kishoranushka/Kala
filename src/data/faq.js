@@ -4,6 +4,8 @@
    rendered by <FaqSection> on its page — edit the text here and both stay in step.
    Answers are plain text (no links), keep them true to how the shop works (see policies.js). */
 
+import { FEE_TEXT, FRAMING_LINE, FREE_FROM_TEXT } from './shipping.js';
+
 /* home: who / what KALA is — answers searches for "kala", "kala by anushka", "anushka kishor" */
 export const HOME_FAQ = [
   {
@@ -20,7 +22,7 @@ export const HOME_FAQ = [
   },
   {
     q: 'Where can I buy Anushka Kishor’s paintings?',
-    a: 'Right here, in the KALA shop. Every painting is an original, so there is only one of each. Add a painting to your cart and pay securely online with UPI, card or netbanking. Shipping is free anywhere in India.',
+    a: `Right here, in the KALA shop. Every painting is an original, so there is only one of each. Add a painting to your cart and pay securely online with UPI, card or netbanking. Delivery is free anywhere in India on orders of ${FREE_FROM_TEXT} or more.`,
   },
   {
     q: 'Can I commission a painting, portrait or wall mural?',
@@ -44,7 +46,11 @@ export const SHOP_FAQ = [
   },
   {
     q: 'How much is shipping and how long does it take?',
-    a: 'Shipping is free anywhere in India. Each painting is packed by the artist and handed to a tracked courier within 7 working days of payment. You can follow it on the Track order page with your order reference and email.',
+    a: `Delivery anywhere in India is free on orders of ${FREE_FROM_TEXT} or more; smaller orders pay a flat ${FEE_TEXT}. Each painting is packed by the artist and handed to a tracked courier within 7 working days of payment. You can follow it on the Track order page with your order reference and email.`,
+  },
+  {
+    q: 'Can I get a painting framed?',
+    a: `Yes, for unframed paintings. ${FRAMING_LINE}. Tick “Frame it for me” on the painting’s page or in your cart, and it is framed before it ships.`,
   },
   {
     q: 'Can I return a painting?',
@@ -54,7 +60,7 @@ export const SHOP_FAQ = [
 
 /* contact: before you write */
 export const CONTACT_FAQ = [
-  { q: 'Do you ship outside India?', a: 'Paintings ordered on this site ship free anywhere in India. I pack each one myself, wrapped and protected at the corners, and send it with a tracked courier. For delivery abroad, write to me first and we’ll work out shipping and customs together.' },
+  { q: 'Do you ship outside India?', a: 'Paintings ordered on this site ship anywhere in India. I pack each one myself, wrapped and protected at the corners, and send it with a tracked courier. For delivery abroad, write to me first and we’ll work out shipping and customs together.' },
   { q: 'How long does a commission take?', a: 'It depends on the size and the detail: a small canvas takes far less time than a large portrait or a wall. Once we’ve talked it through, I’ll give you a clear timeline along with the quote, before any paint goes on.' },
   { q: 'Can I see a painting in person?', a: 'Most of my work lives online, so I’m happy to send more photographs, close-ups in daylight, or a short video of a painting before you decide. Just ask on the work’s page or write to me.' },
   { q: 'Do you paint walls outside your city?', a: 'Yes. I travel for murals within India. Tell me your city and the size of the wall, and travel and stay are included in the quote so there are no surprises.' },
